@@ -1,9 +1,12 @@
 package models
 
+import "gorm.io/gorm"
+
+// Product merepresentasikan entitas produk dalam sistem
 type Product struct {
-	ID          uint   `json:"id" gorm:"primaryKey"`
-	Name        string `json:"name"`
-	Description string `json:"description"`
-	Price       int    `json:"price"`
-	Image       string `json:"image"`
+	gorm.Model         // Menyediakan field ID, CreatedAt, UpdatedAt, DeletedAt
+	Name        string // Nama produk
+	Description string // Deskripsi produk
+	Price       int    // Harga produk
+	Image       string // Path atau URL gambar produk
 }

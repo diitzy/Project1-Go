@@ -139,3 +139,11 @@ if (contactForm) {
         `;
   });
 }
+
+// Contoh fetch di script.js
+fetch("/api/products")
+  .then((res) => res.json())
+  .then((data) => {
+    console.log(data);
+    // Tampilkan ke UI
+  });

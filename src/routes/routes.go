@@ -6,10 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RegisterRoutes(router *gin.Engine) {
+// ProductRoutes mendefinisikan semua endpoint terkait produk
+func ProductRoutes(router *gin.Engine) {
+	// Grup API untuk versi dan namespace
 	api := router.Group("/api")
 	{
+		// Endpoint untuk mendapatkan semua produk
 		api.GET("/products", controllers.GetProducts)
+
+		// Endpoint untuk menambahkan produk baru
 		api.POST("/products", controllers.AddProduct)
 	}
 }

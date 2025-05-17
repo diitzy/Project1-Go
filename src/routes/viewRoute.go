@@ -2,20 +2,23 @@ package routes
 
 import "github.com/gin-gonic/gin"
 
+// ViewRoute mengatur routing statis untuk halaman-halaman frontend
 func ViewRoute(router *gin.Engine) {
 
+	// Middleware untuk menonaktifkan cache pada setiap request
 	router.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Cache-Control", "no-store")
 	})
 
-	//Static route from public
+	// Routing statis untuk semua file di folder ./frontend
 	router.Static("/frontend", "./frontend")
 
-	//redirect route to login page
+	// Redirect root URL ke halaman utama (home)
 	router.GET("/", func(c *gin.Context) {
 		c.Redirect(302, "/home")
 	})
 
+	// Route ke file HTML spesifik
 	router.GET("/home", func(c *gin.Context) {
 		c.File("./frontend/index.html")
 	})
