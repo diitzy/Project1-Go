@@ -5,7 +5,7 @@ import (
 	"project-1/src/models"
 	"project-1/src/routes"
 
-	"github.com/gin-gonic/gin" // Framework web Gin
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
