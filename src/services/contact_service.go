@@ -5,8 +5,8 @@ import (
 	"project-1/src/models"
 )
 
-// SaveMessage menyimpan pesan kontak ke database
-func SaveMessage(msg models.Contact) error {
-	result := config.DB.Create(&msg)
+// SaveMessage menyimpan data contact ke database
+func SaveMessage(contact *models.Contact) error {
+	result := config.DB.Create(contact)
 	return result.Error
 }

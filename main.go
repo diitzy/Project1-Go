@@ -13,9 +13,9 @@ func main() {
 	config.ConnectDB()
 
 	// Melakukan migrasi otomatis pada model Product
-	// config.DB.AutoMigrate(&models.Contact{})
-	// config.DB.AutoMigrate(&models.Product{})
-	config.DB.AutoMigrate(&models.Contact{}, &models.Product{})
+	config.DB.AutoMigrate(&models.Contact{})
+	config.DB.AutoMigrate(&models.Product{})
+	// config.DB.AutoMigrate(&models.Contact{}, &models.Product{})
 
 	// Membuat instance default dari router Gin
 	router := gin.Default()

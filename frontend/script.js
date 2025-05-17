@@ -117,35 +117,6 @@ document.head.insertAdjacentHTML(
 window.addEventListener("scroll", highlightActiveLink);
 window.addEventListener("load", highlightActiveLink);
 
-// Formulir kontak: validasi dan tampilkan pesan sukses setelah submit
-const contactForm = document.querySelector(".contact-form");
-
-if (contactForm) {
-	contactForm.addEventListener("submit", function (e) {
-		e.preventDefault();
-
-		// Ambil nilai input form
-		const name = this.querySelector("#name").value;
-		const email = this.querySelector("#email").value;
-		const message = this.querySelector("#message").value;
-
-		// Validasi sederhana: semua kolom wajib diisi
-		if (!name || !email || !message) {
-			alert("Harap isi semua kolom formulir.");
-			return;
-		}
-
-		// Simulasi pengiriman data dan tampilkan pesan sukses
-		this.innerHTML = `
-			<div class="success-message">
-				<i class="ri-check-line" style="font-size: 48px; color: #51cf66; margin-bottom: 20px;"></i>
-				<h3>Terima Kasih!</h3>
-				<p>Pesan Anda telah terkirim. Kami akan segera menghubungi Anda.</p>
-			</div>
-		`;
-	});
-}
-
 // Contoh fetch data produk dari API dan log hasilnya ke console// Contoh fetch data contact dari API dan log hasilnya ke console
 	fetch("/api/contact")
 	.then((res) => res.json())

@@ -39,7 +39,7 @@ func getDSN() string {
 	pass := getEnv("DB_PASS", "")
 	host := getEnv("DB_HOST", "127.0.0.1")
 	port := getEnv("DB_PORT", "3306")
-	name := getEnv("DB_NAME", "ecommerce")
+	name := getEnv("DB_NAME", "project1-go")
 
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",

@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"log"
 	"net/http"
 	"project-1/src/models"
 	"project-1/src/services"
@@ -8,14 +9,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// HandleContactForm menangani form kontak dari frontend
+// HandleContactForm memproses pengiriman form kontak
 func HandleContactForm(c *gin.Context) {
 	var msg models.Contact
 
-	// Bind form-data (application/x-www-form-urlencoded)
+	// Mengambil data dari form input
+	log.Println("📩 Controller HandleContactForm terpanggil")
+
 	msg.Name = c.PostForm("name")
 	msg.Email = c.PostForm("email")
 	msg.Message = c.PostForm("message")
+
+	log.Printf("📥 Data masuk: %#v\n", msg)
 
 	// Validasi sederhana
 	if msg.Name == "" || msg.Email == "" || msg.Message == "" {
@@ -23,12 +28,12 @@ func HandleContactForm(c *gin.Context) {
 		return
 	}
 
-	// Simpan ke database
-	if err := services.SaveMessage(msg); err != nil {
+	// Simpan pesan ke database
+	if err := services.SaveMessage(&msg); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan pesan."})
 		return
 	}
 
-	// Redirect ke halaman kontak setelah sukses
+	// Tanggapan sukses
 	c.Redirect(http.StatusFound, "/contact")
 }
