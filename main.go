@@ -13,7 +13,9 @@ func main() {
 	config.ConnectDB()
 
 	// Melakukan migrasi otomatis pada model Product
-	config.DB.AutoMigrate(&models.Product{})
+	// config.DB.AutoMigrate(&models.Contact{})
+	// config.DB.AutoMigrate(&models.Product{})
+	config.DB.AutoMigrate(&models.Contact{}, &models.Product{})
 
 	// Membuat instance default dari router Gin
 	router := gin.Default()
@@ -22,6 +24,7 @@ func main() {
 	routes.ViewRoute(router)
 
 	// Mengatur route untuk API produk
+	routes.ContactRoutes(router)
 	routes.ProductRoutes(router)
 
 	// Menjalankan server pada port 8080

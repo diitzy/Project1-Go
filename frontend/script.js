@@ -146,8 +146,8 @@ if (contactForm) {
 	});
 }
 
-// Contoh fetch data produk dari API dan log hasilnya ke console
-fetch("/api/products")
+// Contoh fetch data produk dari API dan log hasilnya ke console// Contoh fetch data contact dari API dan log hasilnya ke console
+	fetch("/api/contact")
 	.then((res) => res.json())
 	.then((data) => {
 		console.log(data);

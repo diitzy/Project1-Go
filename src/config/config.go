@@ -25,7 +25,7 @@ func ConnectDB() {
 	}
 
 	// Migrasi model Product ke dalam schema database
-	err = DB.AutoMigrate(&models.Product{})
+	err = DB.AutoMigrate(&models.Contact{}, &models.Product{})
 	if err != nil {
 		log.Fatal("❌ Gagal migrasi schema:", err)
 	}
