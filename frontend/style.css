@@ -1,4 +1,6 @@
-/* Reset and Base Styles */
+/* ============================== */
+/* Reset and Base Styles         */
+/* ============================== */
 * {
     margin: 0;
     padding: 0;
@@ -21,7 +23,10 @@ ul {
     list-style: none;
 }
 
-/* Header */
+
+/* ============================== */
+/* Header                        */
+/* ============================== */
 .header {
     position: fixed;
     width: 100%;
@@ -113,7 +118,10 @@ ul {
     cursor: pointer;
 }
 
-/* Banner Section */
+
+/* ============================== */
+/* Banner Section                */
+/* ============================== */
 .banner-section {
     padding-top: 100px;
     min-height: 600px;
@@ -169,7 +177,10 @@ ul {
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Section Title */
+
+/* ============================== */
+/* Section Title Global Style    */
+/* ============================== */
 .section-title {
     text-align: center;
     margin-bottom: 40px;
@@ -199,7 +210,10 @@ ul {
     font-size: 16px;
 }
 
-/* Products Section */
+
+/* ============================== */
+/* Products Section              */
+/* ============================== */
 .products-section {
     padding: 80px 20px;
     max-width: 1200px;
@@ -324,7 +338,10 @@ ul {
     color: #fff;
 }
 
-/* About Section */
+
+/* ============================== */
+/* About Section                 */
+/* ============================== */
 .about-section {
     padding: 80px 20px;
     background-color: #f8f9fa;
@@ -356,7 +373,10 @@ ul {
     line-height: 1.7;
 }
 
-/* Contact Section */
+
+/* ============================== */
+/* Contact Section               */
+/* ============================== */
 .contact-section {
     padding: 80px 20px;
     background-color: #fff;
@@ -412,7 +432,10 @@ ul {
     background-color: #fd5252;
 }
 
-/* Footer */
+
+/* ============================== */
+/* Footer Section                */
+/* ============================== */
 .footer {
     background-color: #333;
     color: #fff;
@@ -490,7 +513,10 @@ ul {
     font-size: 14px;
 }
 
-/* Responsive Design */
+
+/* ============================== */
+/* Responsive Design             */
+/* ============================== */
 @media (max-width: 991px) {
     .banner-container {
         flex-direction: column;
@@ -543,11 +569,15 @@ ul {
     }
 }
 
-/* Cart Page */
+
+/* ============================== */
+/* Cart Page Styles              */
+/* ============================== */
 .cart-section .container {
     padding: 2rem;
     max-width: 1000px;
     margin: auto;
+    padding-top: 100px;
 }
 
 .cart-item {

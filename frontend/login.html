@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Anto Frozen Food</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Pacifico', cursive;
+            font-size: 24px;
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: #333;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ff6b6b;
+        }
+
+        .icon-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #333;
+        }
+
+        .cart-icon,
+        .user-icon {
+            position: relative;
+            margin-left: 20px;
+            color: #333;
+            font-size: 20px;
+            text-decoration: none;
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #ff6b6b;
+            color: #fff;
+            font-size: 12px;
+            height: 18px;
+            width: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+        }
+
+        /* Login Form Styles */
+        .login-container {
+            max-width: 450px;
+            margin: 120px auto 50px;
+            padding: 30px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header h2 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .login-header p {
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #444;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #ff6b6b;
+            outline: none;
+        }
+
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-top: 5px;
+            color: #ff6b6b;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .btn-login {
+            width: 100%;
+            background-color: #ff6b6b;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-login:hover {
+            background-color: #ff5252;
+        }
+
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 15px;
+            color: #666;
+        }
+
+        .register-link a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #333;
+            color: #fff;
+            padding: 40px 0 0;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-logo h3 {
+            font-family: 'Pacifico', cursive;
+            font-size: 24px;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        .footer-logo,
+        .footer-links,
+        .footer-contact,
+        .footer-social {
+            margin-bottom: 30px;
+            flex: 1 1 200px;
+            padding: 0 15px;
+        }
+
+        .footer h4 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a,
+        .footer-social a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover,
+        .footer-social a:hover {
+            color: #ff6b6b;
+        }
+
+        .footer-contact p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            color: #ccc;
+        }
+
+        .footer-contact i {
+            margin-right: 10px;
+            margin-top: 5px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+            width: 40px;
+            background-color: #444;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .social-icons a:hover {
+            background-color: #ff6b6b;
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            background-color: #222;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+            }
+
+            .footer-logo,
+            .footer-links,
+            .footer-contact,
+            .footer-social {
+                flex: 1 1 100%;
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/home" class="logo">Anto Frozen Food</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/home" class="nav-link">HOME</a></li>
+                    <li><a href="/shop" class="nav-link">SHOP</a></li>
+                    <li><a href="/about" class="nav-link">ABOUT</a></li>
+                    <li><a href="/contact" class="nav-link">CONTACT</a></li>
+                </ul>
+            </nav>
+            <div class="icon-container">
+                <button class="mobile-menu-btn"><i class="ri-menu-line"></i></button>
+                <a href="#" class="cart-icon">
+                    <i class="ri-shopping-cart-line"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <a href="/login" class="user-icon">
+                    <i class="ri-user-line"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="login-container">
+            <div class="login-header">
+                <h2>Masuk ke Akun Anda</h2>
+                <p>Masukkan email dan password Anda untuk login</p>
+            </div>
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email Anda"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control"
+                        placeholder="Masukkan password Anda" required>
+                    <a href="/forgot-password" class="forgot-password">Lupa password?</a>
+                </div>
+                <button type="submit" class="btn-login">Masuk</button>
+                <div class="register-link">
+                    <p>Belum memiliki akun? <a href="/register">Daftar sekarang</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>Anto Frozen Food</h3>
+                <p>Frozen Food Berkualitas</p>
+            </div>
+            <div class="footer-links">
+                <h4>Tautan Cepat</h4>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/shop">Shop</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Kontak</h4>
+                <p><i class="ri-map-pin-line"></i> Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004, Sukaasih,
+                    Tanggerang, Kota Tangerang, Banten 15111</p>
+                <p><i class="ri-phone-line"></i> 081223656546</p>
+                <p><i class="ri-mail-line"></i> antofrozenfood@gmail.com</p>
+            </div>
+            <div class="footer-social">
+                <h4>Ikuti Kami</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="ri-instagram-line"></i></a>
+                    <a href="#"><i class="ri-facebook-fill"></i></a>
+                    <a href="#"><i class="ri-twitter-fill"></i></a>
+                    <a href="#"><i class="ri-whatsapp-line"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Anto Frozen Food. Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>

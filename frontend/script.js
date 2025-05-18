@@ -126,7 +126,7 @@ window.addEventListener("load", highlightActiveLink);
 const userIcon = document.querySelector(".ri-user-line");
 if (userIcon) {
 	userIcon.addEventListener("click", () => {
-		window.location.href = "/account";
+		window.location.href = "/login";
 	});
 }
 
