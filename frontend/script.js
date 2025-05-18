@@ -2,12 +2,13 @@
 const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
 const navMenu = document.querySelector(".nav-menu");
 
-if (mobileMenuBtn) {
-	// Pasang event listener pada tombol menu mobile
+if (mobileMenuBtn && navMenu) {
 	mobileMenuBtn.addEventListener("click", () => {
 		navMenu.classList.toggle("active"); // Toggle kelas aktif pada nav menu
 
 		const icon = mobileMenuBtn.querySelector("i");
+		if (!icon) return;
+
 		if (navMenu.classList.contains("active")) {
 			// Ganti icon menjadi close jika menu aktif
 			icon.classList.remove("ri-menu-line");
@@ -21,27 +22,32 @@ if (mobileMenuBtn) {
 }
 
 // Smooth scrolling untuk anchor link yang mengarah ke section dalam halaman
-document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 	anchor.addEventListener("click", function (e) {
 		e.preventDefault();
 
 		// Jika menu mobile terbuka, tutup saat klik link navigasi
-		if (navMenu.classList.contains("active")) {
+		if (navMenu && navMenu.classList.contains("active")) {
 			navMenu.classList.remove("active");
-			const icon = mobileMenuBtn.querySelector("i");
-			icon.classList.remove("ri-close-line");
-			icon.classList.add("ri-menu-line");
+
+			if (mobileMenuBtn) {
+				const icon = mobileMenuBtn.querySelector("i");
+				if (icon) {
+					icon.classList.remove("ri-close-line");
+					icon.classList.add("ri-menu-line");
+				}
+			}
 		}
 
 		const targetId = this.getAttribute("href");
-		if (targetId === "#") return; // Abaikan jika hanya '#' tanpa target
+		if (targetId === "#" || !targetId) return;
 
 		const targetElement = document.querySelector(targetId);
 		if (targetElement) {
 			// Scroll dengan animasi smooth ke posisi section dikurangi offset header (70px)
 			window.scrollTo({
 				top: targetElement.offsetTop - 70,
-				behavior: "smooth",
+				behavior: "smooth"
 			});
 		}
 	});
@@ -53,7 +59,7 @@ const cartCount = document.querySelector(".cart-count");
 let itemsInCart = 0;
 
 if (cartButtons.length > 0 && cartCount) {
-	cartButtons.forEach((button) => {
+	cartButtons.forEach(button => {
 		button.addEventListener("click", () => {
 			itemsInCart++; // Hitung jumlah item di keranjang
 			cartCount.textContent = itemsInCart; // Update tampilan jumlah item
@@ -64,8 +70,7 @@ if (cartButtons.length > 0 && cartCount) {
 
 			// Kembalikan tombol ke tampilan awal setelah 1.5 detik
 			setTimeout(() => {
-				button.innerHTML =
-					'<i class="ri-shopping-cart-line"></i> Tambah ke Keranjang';
+				button.innerHTML = '<i class="ri-shopping-cart-line"></i> Tambah ke Keranjang';
 				button.style.backgroundColor = "";
 			}, 1500);
 		});
@@ -79,7 +84,7 @@ const navLinks = document.querySelectorAll(".nav-link");
 function highlightActiveLink() {
 	let scrollPosition = window.scrollY + 100; // Offset untuk akurasi highlight
 
-	sections.forEach((section) => {
+	sections.forEach(section => {
 		const sectionTop = section.offsetTop - 100;
 		const sectionHeight = section.offsetHeight;
 		const sectionId = section.getAttribute("id");
@@ -88,7 +93,7 @@ function highlightActiveLink() {
 			scrollPosition >= sectionTop &&
 			scrollPosition < sectionTop + sectionHeight
 		) {
-			navLinks.forEach((link) => {
+			navLinks.forEach(link => {
 				link.classList.remove("active");
 				if (link.getAttribute("href") === `#${sectionId}`) {
 					link.classList.add("active");
@@ -117,10 +122,26 @@ document.head.insertAdjacentHTML(
 window.addEventListener("scroll", highlightActiveLink);
 window.addEventListener("load", highlightActiveLink);
 
-// Contoh fetch data produk dari API dan log hasilnya ke console// Contoh fetch data contact dari API dan log hasilnya ke console
-	fetch("/api/contact")
-	.then((res) => res.json())
-	.then((data) => {
+// Navigasi user icon ke halaman account
+const userIcon = document.querySelector(".ri-user-line");
+if (userIcon) {
+	userIcon.addEventListener("click", () => {
+		window.location.href = "/account";
+	});
+}
+
+// Navigasi cart icon ke halaman cart
+const cartIcon = document.querySelector(".ri-shopping-cart-line");
+if (cartIcon) {
+	cartIcon.addEventListener("click", () => {
+		window.location.href = "/cart";
+	});
+}
+
+// Contoh fetch data contact dari API dan log hasilnya ke console
+fetch("/api/contact")
+	.then(res => res.json())
+	.then(data => {
 		console.log(data);
 		// TODO: tampilkan produk ke UI sesuai kebutuhan
 	});

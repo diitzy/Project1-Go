@@ -34,4 +34,16 @@ func ViewRoute(router *gin.Engine) {
 	router.GET("/shop", func(c *gin.Context) {
 		c.File("./frontend/shop.html")
 	})
+
+	router.GET("/acoount", func(c *gin.Context) {
+		c.File("./frontend/account.html")
+	})
+
+	router.GET("/cart", func(c *gin.Context) {
+		c.File("./frontend/cart.html")
+	})
+
+	router.GET("/checkout", func(c *gin.Context) {
+		c.File("./frontend/checkout.html")
+	})
 }
