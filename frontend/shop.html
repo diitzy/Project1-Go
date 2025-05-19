@@ -5,14 +5,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Shop - Anto Frozen Food</title>
+
+    <!-- Google Fonts dan Remix Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5/fonts/remixicon.css" rel="stylesheet" />
+
+    <!-- CSS -->
     <link rel="stylesheet" href="/frontend/style.css" />
 </head>
 
 <body>
+
+    <!-- ======================== HEADER ======================== -->
     <header class="header">
         <div class="header-content">
             <a href="/home" class="logo">Anto Frozen Food</a>
@@ -23,32 +29,40 @@
                     <li><a href="/about" class="nav-link">ABOUT</a></li>
                     <li><a href="/contact" class="nav-link">CONTACT</a></li>
                     <li>
+                        <!-- Tombol Login -->
                         <div class="icon-container">
                             <button class="nav-link"><i class="ri-user-line"></i></button>
                         </div>
                     </li>
                     <li>
+                        <!-- Tombol Keranjang -->
                         <div class="icon-container">
-                            <button class="nav-link"><i class="ri-shopping-cart-line"></i><span
-                                    class="cart-count">0</span></button>
+                            <button class="nav-link">
+                                <i class="ri-shopping-cart-line"></i>
+                                <span class="cart-count">0</span>
+                            </button>
                         </div>
                     </li>
                 </ul>
             </nav>
+
+            <!-- Tombol Menu Mobile -->
             <div class="mobile-menu-btn">
                 <i class="ri-menu-line"></i>
             </div>
         </div>
     </header>
 
+    <!-- ======================== MAIN / PRODUK ======================== -->
     <main>
         <section class="products-section">
             <div class="section-title">
                 <h2>Semua Produk</h2>
                 <p>Temukan berbagai pilihan frozen food berkualitas untuk keluarga Anda</p>
             </div>
+
             <div class="product-container">
-                <!-- Produk 1 -->
+                <!-- ===== Produk 1 ===== -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="/frontend/Img/GO-DimsumAyam.jpg" alt="Dimsum Ayam" />
@@ -61,11 +75,13 @@
                         <div class="product-price">
                             <p>Rp 13.000</p>
                         </div>
-                        <button class="add-to-cart"><i class="ri-shopping-cart-line"></i> Tambah ke Keranjang</button>
+                        <button class="add-to-cart">
+                            <i class="ri-shopping-cart-line"></i> Tambah ke Keranjang
+                        </button>
                     </div>
                 </div>
 
-                <!-- Produk 2 -->
+                <!-- ===== Produk 2 ===== -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="/frontend/Img/GO-NuggetStik.jpg" alt="Nugget Stik" />
@@ -78,11 +94,13 @@
                         <div class="product-price">
                             <p>Rp 12.500</p>
                         </div>
-                        <button class="add-to-cart"><i class="ri-shopping-cart-line"></i> Tambah ke Keranjang</button>
+                        <button class="add-to-cart">
+                            <i class="ri-shopping-cart-line"></i> Tambah ke Keranjang
+                        </button>
                     </div>
                 </div>
 
-                <!-- Produk 3 -->
+                <!-- ===== Produk 3 ===== -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="/frontend/Img/GO-SpringRoll.jpg" alt="Spring Roll" />
@@ -95,11 +113,13 @@
                         <div class="product-price">
                             <p>Rp 13.700</p>
                         </div>
-                        <button class="add-to-cart"><i class="ri-shopping-cart-line"></i> Tambah ke Keranjang</button>
+                        <button class="add-to-cart">
+                            <i class="ri-shopping-cart-line"></i> Tambah ke Keranjang
+                        </button>
                     </div>
                 </div>
 
-                <!-- Produk 4 -->
+                <!-- ===== Produk 4 ===== -->
                 <div class="product-card">
                     <div class="product-image">
                         <img src="/frontend/Img//GO-PandaBaksoIkan.jpg" alt="Panda Bakso Ikan" />
@@ -112,21 +132,28 @@
                         <div class="product-price">
                             <p>Rp 13.000</p>
                         </div>
-                        <button class="add-to-cart"><i class="ri-shopping-cart-line"></i> Tambah ke Keranjang</button>
+                        <button class="add-to-cart">
+                            <i class="ri-shopping-cart-line"></i> Tambah ke Keranjang
+                        </button>
                     </div>
                 </div>
 
-                <!-- Tambahkan lebih banyak produk di sini jika perlu -->
+                <!-- Tambahkan produk lainnya di sini -->
             </div>
         </section>
     </main>
 
+    <!-- ======================== FOOTER ======================== -->
     <footer class="footer">
         <div class="footer-content">
+
+            <!-- Logo dan Deskripsi -->
             <div class="footer-logo">
                 <h3>Anto Frozen Food</h3>
                 <p>Frozen Food Berkualitas</p>
             </div>
+
+            <!-- Tautan Navigasi -->
             <div class="footer-links">
                 <h4>Tautan Cepat</h4>
                 <ul>
@@ -136,13 +163,19 @@
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </div>
+
+            <!-- Informasi Kontak -->
             <div class="footer-contact">
                 <h4>Kontak</h4>
-                <p><i class="ri-map-pin-line"></i>Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004,
-                    Sukaasih, Tanggerang, Kota Tangerang, Banten 15111</p>
-                <p><i class="ri-phone-line"></i>081223656546</p>
-                <p><i class="ri-mail-line"></i>Mr.rafreaks@gmail.com</p>
+                <p>
+                    <i class="ri-map-pin-line"></i> Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004,
+                    Sukaasih, Tanggerang, Kota Tangerang, Banten 15111
+                </p>
+                <p><i class="ri-phone-line"></i> 081223656546</p>
+                <p><i class="ri-mail-line"></i> Mr.rafreaks@gmail.com</p>
             </div>
+
+            <!-- Ikon Sosial Media -->
             <div class="footer-social">
                 <h4>Ikuti Kami</h4>
                 <div class="social-icons">
@@ -153,11 +186,14 @@
                 </div>
             </div>
         </div>
+
+        <!-- Hak Cipta -->
         <div class="footer-bottom">
             <p>&copy; 2025 Anto Frozen Food. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
 
+    <!-- ======================== SCRIPT ======================== -->
     <script src="/frontend/script.js"></script>
 </body>
 

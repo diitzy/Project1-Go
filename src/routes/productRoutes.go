@@ -8,13 +8,13 @@ import (
 
 // ProductRoutes mendefinisikan semua endpoint terkait produk
 func ProductRoutes(router *gin.Engine) {
-	// Grup API untuk versi dan namespace
+	// Kelompokkan route dengan prefix /api sebagai namespace versi API
 	api := router.Group("/api")
 	{
-		// Endpoint untuk mendapatkan semua produk
+		// [GET] /api/products - Mengambil semua data produk
 		api.GET("/products", controllers.GetProducts)
 
-		// Endpoint untuk menambahkan produk baru
+		// [POST] /api/products - Menambahkan produk baru ke database
 		api.POST("/products", controllers.AddProduct)
 	}
 }

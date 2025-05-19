@@ -8,20 +8,24 @@ import (
 )
 
 func main() {
-	// Menghubungkan ke database
+	// Inisialisasi koneksi ke database
 	config.ConnectDB()
 
-	// Membuat instance default dari router Gin
+	// Membuat instance router default dari Gin
 	router := gin.Default()
 
-	// Mengatur route untuk tampilan (jika ada, misal halaman HTML)
-	routes.ViewRoute(router)
+	// Daftarkan routing untuk tampilan frontend (HTML)
+	routes.ViewRoutes(router)
 
-	// Mengatur route untuk API produk
+	// Daftarkan routing untuk autentikasi
 	routes.AuthRoutes(router)
+
+	// Daftarkan routing untuk form kontak
 	routes.ContactRoutes(router)
+
+	// Daftarkan routing untuk produk
 	routes.ProductRoutes(router)
 
-	// Menjalankan server pada port 8080
+	// Jalankan server pada port 8080
 	router.Run(":8080")
 }

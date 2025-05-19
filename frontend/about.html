@@ -2,17 +2,23 @@
 <html lang="en">
 
 <head>
+    <!-- Metadata dan pengaturan responsif -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About - Anto Frozen Food</title>
+
+    <!-- Font dan Icon -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- Stylesheet -->
     <link rel="stylesheet" href="/frontend/style.css">
 </head>
 
 <body>
+    <!-- Header -->
     <header class="header">
         <div class="header-content">
             <a href="/home" class="logo">Anto Frozen Food</a>
@@ -23,89 +29,121 @@
                     <li><a href="/about" class="nav-link active">ABOUT</a></li>
                     <li><a href="/contact" class="nav-link">CONTACT</a></li>
                     <li>
+                        <!-- Tombol profil pengguna -->
                         <div class="icon-container">
-                            <button class="nav-link"><i class="ri-user-line"></i></button>
+                            <button class="nav-link">
+                                <i class="ri-user-line"></i>
+                            </button>
                         </div>
                     </li>
                     <li>
+                        <!-- Tombol keranjang belanja -->
                         <div class="icon-container">
-                            <button class="nav-link"><i class="ri-shopping-cart-line"></i><span
-                                    class="cart-count">0</span></button>
+                            <button class="nav-link">
+                                <i class="ri-shopping-cart-line"></i>
+                                <span class="cart-count">0</span>
+                            </button>
                         </div>
                     </li>
                 </ul>
             </nav>
+            <!-- Tombol menu mobile -->
             <div class="mobile-menu-btn">
                 <i class="ri-menu-line"></i>
             </div>
         </div>
     </header>
 
+    <!-- Main Content -->
     <main>
-        <!-- Tentang Kami Section -->
+        <!-- Tentang Kami -->
         <section class="about-section" id="about">
             <div class="section-title">
                 <h2>Tentang Kami</h2>
             </div>
+
             <div class="about-container">
+                <!-- Gambar Tentang Kami -->
                 <div class="about-image">
-                    <!-- Gambar about di css -->
                     <img src="/frontend/Img/about.webp" alt="Tentang Anto Frozen Food">
                 </div>
+
+                <!-- Deskripsi Tentang Kami -->
                 <div class="about-text">
-                    <p>Anto Frozen Food adalah toko yang menjual berbagai macam produk frozen food berkualitas dengan
+                    <p>
+                        Anto Frozen Food adalah toko yang menjual berbagai macam produk frozen food berkualitas dengan
                         harga terjangkau.
-                        Kami menyediakan makanan praktis dan lezat untuk memenuhi kebutuhan harian Anda.</p>
-
-                    <p>Didirikan pada tahun 2020, Anto Frozen Food berawal dari kecintaan kami terhadap makanan
+                        Kami menyediakan makanan praktis dan lezat untuk memenuhi kebutuhan harian Anda.
+                    </p>
+                    <p>
+                        Didirikan pada tahun 2020, Anto Frozen Food berawal dari kecintaan kami terhadap makanan
                         berkualitas yang mudah disajikan. Kami memahami kesibukan masyarakat modern yang membutuhkan
-                        solusi makanan yang praktis namun tetap lezat dan bergizi.</p>
-
-                    <p>Semua produk kami dipilih dengan teliti dan diproduksi dengan standar kebersihan yang tinggi.
+                        solusi makanan yang praktis namun tetap lezat dan bergizi.
+                    </p>
+                    <p>
+                        Semua produk kami dipilih dengan teliti dan diproduksi dengan standar kebersihan yang tinggi.
                         Kami bekerja sama dengan pemasok terpercaya untuk memastikan kualitas bahan baku yang digunakan
-                        selalu terjaga.</p>
-
-                    <p>Dengan menjaga kualitas dan pelayanan yang ramah, kami berkomitmen untuk memberikan pengalaman
-                        belanja terbaik bagi semua pelanggan.</p>
-
+                        selalu terjaga.
+                    </p>
+                    <p>
+                        Dengan menjaga kualitas dan pelayanan yang ramah, kami berkomitmen untuk memberikan pengalaman
+                        belanja terbaik bagi semua pelanggan.
+                    </p>
                     <p>Terima kasih telah memilih Anto Frozen Food!</p>
                 </div>
             </div>
 
-            <!-- Testimoni Section -->
+            <!-- Testimoni Pelanggan -->
             <div class="section-title" style="margin-top: 60px;">
                 <h2>Testimoni Pelanggan</h2>
             </div>
+
+            <!-- Daftar Testimoni -->
             <div
                 style="max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                <!-- Testimoni 1 -->
                 <div
                     style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
-                    <p style="font-style: italic; margin-bottom: 15px;">"Produk frozen food dari Anto selalu jadi
-                        andalan saya untuk makan malam cepat. Rasanya enak dan tidak mengecewakan!"</p>
+                    <p style="font-style: italic; margin-bottom: 15px;">
+                        "Produk frozen food dari Anto selalu jadi andalan saya untuk makan malam cepat. Rasanya enak dan
+                        tidak mengecewakan!"
+                    </p>
                     <p style="font-weight: bold;">- Siti Nurhaliza</p>
                 </div>
+
+                <!-- Testimoni 2 -->
                 <div
                     style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
-                    <p style="font-style: italic; margin-bottom: 15px;">"Saya suka dengan nugget ayamnya, anak-anak juga
-                        suka. Pengirimannya selalu cepat dan produknya fresh."</p>
+                    <p style="font-style: italic; margin-bottom: 15px;">
+                        "Saya suka dengan nugget ayamnya, anak-anak juga suka. Pengirimannya selalu cepat dan produknya
+                        fresh."
+                    </p>
                     <p style="font-weight: bold;">- Budi Santoso</p>
                 </div>
+
+                <!-- Testimoni 3 -->
                 <div
                     style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
-                    <p style="font-style: italic; margin-bottom: 15px;">"Dimsum ayamnya juara! Tekstur dan rasanya
-                        persis seperti di restoran. Selalu jadi langganan keluarga kami."</p>
+                    <p style="font-style: italic; margin-bottom: 15px;">
+                        "Dimsum ayamnya juara! Tekstur dan rasanya persis seperti di restoran. Selalu jadi langganan
+                        keluarga kami."
+                    </p>
                     <p style="font-weight: bold;">- Dewi Safitri</p>
                 </div>
             </div>
         </section>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
+            <!-- Logo dan Deskripsi Singkat -->
             <div class="footer-logo">
                 <h3>Anto Frozen Food</h3>
                 <p>Frozen Food Berkualitas</p>
             </div>
+
+            <!-- Tautan Navigasi -->
             <div class="footer-links">
                 <h4>Tautan Cepat</h4>
                 <ul>
@@ -115,13 +153,17 @@
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </div>
+
+            <!-- Kontak Informasi -->
             <div class="footer-contact">
                 <h4>Kontak</h4>
-                <p><i class="ri-map-pin-line"></i>Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004,
-                    Sukaasih, Tanggerang, Kota Tangerang, Banten 15111</p>
-                <p><i class="ri-phone-line"></i>081223656546</p>
-                <p><i class="ri-mail-line"></i>Mr.rafreaks@gmail.com</p>
+                <p><i class="ri-map-pin-line"></i> Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004, Sukaasih,
+                    Tanggerang, Kota Tangerang, Banten 15111</p>
+                <p><i class="ri-phone-line"></i> 081223656546</p>
+                <p><i class="ri-mail-line"></i> Mr.rafreaks@gmail.com</p>
             </div>
+
+            <!-- Media Sosial -->
             <div class="footer-social">
                 <h4>Ikuti Kami</h4>
                 <div class="social-icons">
@@ -132,11 +174,14 @@
                 </div>
             </div>
         </div>
+
+        <!-- Hak Cipta -->
         <div class="footer-bottom">
             <p>&copy; 2025 Anto Frozen Food. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
 
+    <!-- Script -->
     <script src="/frontend/script.js"></script>
 </body>
 

@@ -8,16 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetProducts menangani permintaan GET untuk mengambil seluruh data produk
+// GetProducts menangani permintaan GET untuk mengambil seluruh data produk dari database
 func GetProducts(c *gin.Context) {
+	// Mengambil semua produk melalui service layer
 	products, err := services.GetAllProducts()
 	if err != nil {
+		// Jika gagal, kirimkan pesan kesalahan
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "❌ Gagal mengambil data produk",
 		})
 		return
 	}
 
+	// Kirim data produk dalam format JSON dengan status 200
 	c.JSON(http.StatusOK, products)
 }
 
@@ -25,7 +28,7 @@ func GetProducts(c *gin.Context) {
 func AddProduct(c *gin.Context) {
 	var product models.Product
 
-	// Bind JSON request ke struct Product
+	// Bind request JSON ke struct Product dan validasi format
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": "❌ Format data tidak valid: " + err.Error(),
@@ -42,5 +45,6 @@ func AddProduct(c *gin.Context) {
 		return
 	}
 
+	// Kirim respons sukses dengan data produk yang baru ditambahkan
 	c.JSON(http.StatusCreated, newProduct)
 }

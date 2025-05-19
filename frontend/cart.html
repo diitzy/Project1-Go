@@ -2,17 +2,23 @@
 <html lang="en">
 
 <head>
+    <!-- Metadata dan pengaturan responsif -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cart - Anto Frozen Food</title>
+
+    <!-- Font dan ikon eksternal -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5/fonts/remixicon.css" rel="stylesheet" />
+
+    <!-- CSS lokal -->
     <link rel="stylesheet" href="/frontend/style.css" />
 </head>
 
 <body>
+    <!-- Header Navigasi -->
     <header class="header">
         <div class="header-content">
             <a href="/home" class="logo">Anto Frozen Food</a>
@@ -23,6 +29,7 @@
                     <li><a href="/about" class="nav-link">ABOUT</a></li>
                     <li><a href="/contact" class="nav-link">CONTACT</a></li>
                     <li>
+                        <!-- Tombol akun pengguna -->
                         <div class="icon-container">
                             <button class="nav-link">
                                 <i class="ri-user-line"></i>
@@ -30,8 +37,12 @@
                         </div>
                     </li>
                     <li>
+                        <!-- Tombol keranjang aktif -->
                         <div class="icon-container">
-                            <button class="nav-link active"><i class="ri-shopping-cart-line"></i><span class="cart-count">0</span></button>
+                            <button class="nav-link active">
+                                <i class="ri-shopping-cart-line"></i>
+                                <span class="cart-count">0</span>
+                            </button>
                         </div>
                     </li>
                 </ul>
@@ -39,11 +50,16 @@
         </div>
     </header>
 
+    <!-- Konten utama halaman Cart -->
     <main>
         <section class="cart-section">
             <div class="container">
                 <h2>Keranjang Belanja</h2>
+
+                <!-- Daftar item dalam keranjang akan diisi via JavaScript -->
                 <div class="cart-items" id="cart-items-container"></div>
+
+                <!-- Ringkasan total harga dan tombol checkout -->
                 <div class="cart-summary">
                     <h3>Total Belanja</h3>
                     <p class="total-price">Rp 0</p>
@@ -53,13 +69,17 @@
         </section>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content"></div>
+        <div class="footer-content">
+            <!-- Tambahkan konten footer jika diperlukan -->
+        </div>
         <div class="footer-bottom">
             <p>&copy; 2025 Anto Frozen Food. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
 
+    <!-- Skrip JavaScript -->
     <script src="/frontend/script.js"></script>
 </body>
 
