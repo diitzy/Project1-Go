@@ -61,14 +61,29 @@ let itemsInCart = 0;
 if (cartButtons.length > 0 && cartCount) {
 	cartButtons.forEach(button => {
 		button.addEventListener("click", () => {
-			itemsInCart++; // Hitung jumlah item di keranjang
-			cartCount.textContent = itemsInCart; // Update tampilan jumlah item
+			itemsInCart++;
+			cartCount.textContent = itemsInCart;
+
+			// Ambil detail produk dari atribut data-*
+			const product = {
+				id: button.dataset.id,
+				name: button.dataset.name,
+				price: button.dataset.price
+			};
+
+			// Ambil cart dari localStorage
+			let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+			// Tambahkan produk ke cart
+			cart.push(product);
+
+			// Simpan kembali ke localStorage
+			localStorage.setItem("cart", JSON.stringify(cart));
 
 			// Ubah tampilan tombol saat berhasil ditambahkan
 			button.innerHTML = '<i class="ri-check-line"></i> Ditambahkan';
 			button.style.backgroundColor = "#51cf66";
 
-			// Kembalikan tombol ke tampilan awal setelah 1.5 detik
 			setTimeout(() => {
 				button.innerHTML = '<i class="ri-shopping-cart-line"></i> Tambah ke Keranjang';
 				button.style.backgroundColor = "";
