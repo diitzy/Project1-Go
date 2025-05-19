@@ -2,7 +2,6 @@ package main
 
 import (
 	"project-1/src/config"
-	"project-1/src/models"
 	"project-1/src/routes"
 
 	"github.com/gin-gonic/gin"
@@ -13,9 +12,9 @@ func main() {
 	config.ConnectDB()
 
 	// Melakukan migrasi otomatis pada model Product
-	config.DB.AutoMigrate(&models.Contact{})
-	config.DB.AutoMigrate(&models.Product{})
-	// config.DB.AutoMigrate(&models.Contact{}, &models.Product{})
+	// config.DB.AutoMigrate(&models.Contact{})
+	// config.DB.AutoMigrate(&models.Product{})
+	// config.DB.AutoMigrate(&models.Contact{}, &models.Product{}, &models.User{})
 
 	// Membuat instance default dari router Gin
 	router := gin.Default()
