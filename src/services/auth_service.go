@@ -1,31 +1,15 @@
 package services
 
 import (
-	"project-1/src/config"
-	"project-1/src/models"
-	"project-1/src/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
-// RegisterUser menyimpan user baru ke database dengan hash password
-func RegisterUser(user *models.User) (*models.User, error) {
-	hash, err := utils.HashPassword(user.Password)
-	if err != nil {
-		return nil, err
-	}
-	user.Password = hash
-	result := config.DB.Create(user)
-	return user, result.Error
+func HashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	return string(bytes), err
 }
 
-// LoginUser mencari user berdasarkan email dan validasi password
-func LoginUser(email, password string) (*models.User, bool) {
-	var user models.User
-	result := config.DB.Where("email = ?", email).First(&user)
-	if result.Error != nil {
-		return nil, false
-	}
-	if !utils.CheckPasswordHash(password, user.Password) {
-		return nil, false
-	}
-	return &user, true
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

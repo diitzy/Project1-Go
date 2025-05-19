@@ -14,6 +14,17 @@ import (
 // DB adalah instance global untuk koneksi database
 var DB *gorm.DB
 
+// getDSN membangun Data Source Name dari environment variable
+func getDSN() string {
+	user := getEnv("DB_USER", "root")
+	pass := getEnv("DB_PASS", "")
+	host := getEnv("DB_HOST", "127.0.0.1")
+	port := getEnv("DB_PORT", "3306")
+	name := getEnv("DB_NAME", "project1-go")
+
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, pass, host, port, name)
+}
+
 // ConnectDB bertugas untuk menghubungkan aplikasi ke database dan melakukan migrasi awal
 func ConnectDB() {
 	dsn := getDSN()
@@ -31,20 +42,11 @@ func ConnectDB() {
 	}
 
 	fmt.Println("✅ Database berhasil terkoneksi dan dimigrasi")
-}
 
-// getDSN membangun Data Source Name dari environment variable
-func getDSN() string {
-	user := getEnv("DB_USER", "root")
-	pass := getEnv("DB_PASS", "")
-	host := getEnv("DB_HOST", "127.0.0.1")
-	port := getEnv("DB_PORT", "3306")
-	name := getEnv("DB_NAME", "project1-go")
-
-	return fmt.Sprintf(
-		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		user, pass, host, port, name,
-	)
+	// password := "admin123"
+	// hash, _ := bcrypt.GenerateFromPassword([]byte(password), 14)
+	// fmt.Println(string(hash))
+	// fmt.Println("✅ Hash berhasil dibuat.")
 }
 
 // getEnv mengambil nilai dari environment variable atau fallback default jika tidak ditemukan

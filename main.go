@@ -11,11 +11,6 @@ func main() {
 	// Menghubungkan ke database
 	config.ConnectDB()
 
-	// Melakukan migrasi otomatis pada model Product
-	// config.DB.AutoMigrate(&models.Contact{})
-	// config.DB.AutoMigrate(&models.Product{})
-	// config.DB.AutoMigrate(&models.Contact{}, &models.Product{}, &models.User{})
-
 	// Membuat instance default dari router Gin
 	router := gin.Default()
 
@@ -23,6 +18,7 @@ func main() {
 	routes.ViewRoute(router)
 
 	// Mengatur route untuk API produk
+	routes.AuthRoutes(router)
 	routes.ContactRoutes(router)
 	routes.ProductRoutes(router)
 
