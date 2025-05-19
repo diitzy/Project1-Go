@@ -5,7 +5,7 @@ import (
 	"project-1/src/models"
 )
 
-// GetAllProducts mengambil semua data produk dari database
+// GetAllProducts mengambil semua data produk dari database dan mengembalikannya
 func GetAllProducts() ([]models.Product, error) {
 	var products []models.Product
 	result := config.DB.Find(&products)
@@ -13,6 +13,7 @@ func GetAllProducts() ([]models.Product, error) {
 }
 
 // CreateProduct menyimpan data produk baru ke dalam database
+// Menerima data produk sebagai input dan mengembalikannya beserta error jika ada
 func CreateProduct(product models.Product) (models.Product, error) {
 	result := config.DB.Create(&product)
 	return product, result.Error

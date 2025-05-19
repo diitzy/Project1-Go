@@ -1,112 +1,115 @@
-// Toggle menu mobile: membuka & menutup menu ketika tombol diklik
-const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
-const navMenu = document.querySelector(".nav-menu");
+document.addEventListener('DOMContentLoaded', function () {
+	// ===================== Toggle Mobile Menu =====================
+	const mobileMenuBtn = document.querySelector(".mobile-menu-btn");
+	const navMenu = document.querySelector(".nav-menu");
 
-if (mobileMenuBtn && navMenu) {
-	mobileMenuBtn.addEventListener("click", () => {
-		navMenu.classList.toggle("active"); // Toggle kelas aktif pada nav menu
+	if (mobileMenuBtn && navMenu) {
+		mobileMenuBtn.addEventListener("click", () => {
+			navMenu.classList.toggle("active");
 
-		const icon = mobileMenuBtn.querySelector("i");
-		if (!icon) return;
+			const icon = mobileMenuBtn.querySelector("i");
+			if (!icon) return;
 
-		if (navMenu.classList.contains("active")) {
-			// Ganti icon menjadi close jika menu aktif
-			icon.classList.remove("ri-menu-line");
-			icon.classList.add("ri-close-line");
-		} else {
-			// Kembalikan icon menu jika menu tidak aktif
-			icon.classList.remove("ri-close-line");
-			icon.classList.add("ri-menu-line");
-		}
-	});
-}
-
-// Smooth scrolling untuk anchor link yang mengarah ke section dalam halaman
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-	anchor.addEventListener("click", function (e) {
-		e.preventDefault();
-
-		// Jika menu mobile terbuka, tutup saat klik link navigasi
-		if (navMenu && navMenu.classList.contains("active")) {
-			navMenu.classList.remove("active");
-
-			if (mobileMenuBtn) {
-				const icon = mobileMenuBtn.querySelector("i");
-				if (icon) {
-					icon.classList.remove("ri-close-line");
-					icon.classList.add("ri-menu-line");
-				}
+			// Ganti ikon menu berdasarkan status menu
+			if (navMenu.classList.contains("active")) {
+				icon.classList.replace("ri-menu-line", "ri-close-line");
+			} else {
+				icon.classList.replace("ri-close-line", "ri-menu-line");
 			}
-		}
+		});
+	}
 
-		const targetId = this.getAttribute("href");
-		if (targetId === "#" || !targetId) return;
+	// ===================== Smooth Scroll & Tutup Menu saat Klik =====================
+	document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+		anchor.addEventListener("click", function (e) {
+			e.preventDefault();
 
-		const targetElement = document.querySelector(targetId);
-		if (targetElement) {
-			// Scroll dengan animasi smooth ke posisi section dikurangi offset header (70px)
-			window.scrollTo({
-				top: targetElement.offsetTop - 70,
-				behavior: "smooth"
-			});
-		}
-	});
-});
+			// Tutup menu jika sedang aktif
+			if (navMenu && navMenu.classList.contains("active")) {
+				navMenu.classList.remove("active");
 
-// Fungsi untuk menambah produk ke keranjang belanja dan animasi tombol
-const cartButtons = document.querySelectorAll(".add-to-cart");
-const cartCount = document.querySelector(".cart-count");
-let itemsInCart = 0;
+				const icon = mobileMenuBtn?.querySelector("i");
+				icon?.classList.replace("ri-close-line", "ri-menu-line");
+			}
 
-if (cartButtons.length > 0 && cartCount) {
-	cartButtons.forEach(button => {
-		button.addEventListener("click", () => {
-			itemsInCart++; // Hitung jumlah item di keranjang
-			cartCount.textContent = itemsInCart; // Update tampilan jumlah item
+			const targetId = this.getAttribute("href");
+			if (!targetId || targetId === "#") return;
 
-			// Ubah tampilan tombol saat berhasil ditambahkan
-			button.innerHTML = '<i class="ri-check-line"></i> Ditambahkan';
-			button.style.backgroundColor = "#51cf66";
-
-			// Kembalikan tombol ke tampilan awal setelah 1.5 detik
-			setTimeout(() => {
-				button.innerHTML = '<i class="ri-shopping-cart-line"></i> Tambah ke Keranjang';
-				button.style.backgroundColor = "";
-			}, 1500);
+			const targetElement = document.querySelector(targetId);
+			if (targetElement) {
+				window.scrollTo({
+					top: targetElement.offsetTop - 70,
+					behavior: "smooth"
+				});
+			}
 		});
 	});
-}
 
-// Highlight link navigasi aktif berdasarkan scroll posisi section
-const sections = document.querySelectorAll("section[id]");
-const navLinks = document.querySelectorAll(".nav-link");
+	// ===================== Tambah ke Keranjang =====================
+	const cartButtons = document.querySelectorAll(".add-to-cart");
+	const cartCount = document.querySelector(".cart-count");
+	let itemsInCart = 0;
 
-function highlightActiveLink() {
-	let scrollPosition = window.scrollY + 100; // Offset untuk akurasi highlight
+	if (cartButtons.length > 0 && cartCount) {
+		cartButtons.forEach(button => {
+			button.addEventListener("click", () => {
+				itemsInCart++;
+				cartCount.textContent = itemsInCart;
 
-	sections.forEach(section => {
-		const sectionTop = section.offsetTop - 100;
-		const sectionHeight = section.offsetHeight;
-		const sectionId = section.getAttribute("id");
+				// Ambil data produk dari atribut data
+				const product = {
+					id: button.dataset.id,
+					name: button.dataset.name,
+					price: button.dataset.price
+				};
 
-		if (
-			scrollPosition >= sectionTop &&
-			scrollPosition < sectionTop + sectionHeight
-		) {
-			navLinks.forEach(link => {
-				link.classList.remove("active");
-				if (link.getAttribute("href") === `#${sectionId}`) {
-					link.classList.add("active");
-				}
+				// Simpan ke localStorage
+				const cart = JSON.parse(localStorage.getItem("cart")) || [];
+				cart.push(product);
+				localStorage.setItem("cart", JSON.stringify(cart));
+
+				// Berikan feedback visual
+				button.innerHTML = '<i class="ri-check-line"></i> Ditambahkan';
+				button.style.backgroundColor = "#51cf66";
+
+				setTimeout(() => {
+					button.innerHTML = '<i class="ri-shopping-cart-line"></i> Tambah ke Keranjang';
+					button.style.backgroundColor = "";
+				}, 1500);
 			});
-		}
-	});
-}
+		});
+	}
 
-// Tambahkan style khusus untuk link aktif secara dinamis
-document.head.insertAdjacentHTML(
-	"beforeend",
-	`
+	// ===================== Highlight NavLink Aktif Saat Scroll =====================
+	const sections = document.querySelectorAll("section[id]");
+	const navLinks = document.querySelectorAll(".nav-link");
+
+	function highlightActiveLink() {
+		const scrollPosition = window.scrollY + 100;
+
+		sections.forEach(section => {
+			const top = section.offsetTop - 100;
+			const height = section.offsetHeight;
+			const id = section.getAttribute("id");
+
+			if (scrollPosition >= top && scrollPosition < top + height) {
+				navLinks.forEach(link => {
+					link.classList.remove("active");
+					if (link.getAttribute("href") === `#${id}`) {
+						link.classList.add("active");
+					}
+				});
+			}
+		});
+	}
+
+	window.addEventListener("scroll", highlightActiveLink);
+	window.addEventListener("load", highlightActiveLink);
+
+	// Tambahkan style untuk link aktif
+	document.head.insertAdjacentHTML(
+		"beforeend",
+		`
 		<style>
 			.nav-link.active {
 				color: #ff6b6b;
@@ -116,32 +119,131 @@ document.head.insertAdjacentHTML(
 			}
 		</style>
 	`
-);
+	);
 
-// Pasang event listener untuk highlight link saat scroll dan load halaman
-window.addEventListener("scroll", highlightActiveLink);
-window.addEventListener("load", highlightActiveLink);
+	// ===================== Login Form Handler =====================
+	const loginForm = document.getElementById("loginForm");
+	const loginMessage = document.getElementById("loginMessage");
 
-// Navigasi user icon ke halaman account
-const userIcon = document.querySelector(".ri-user-line");
-if (userIcon) {
-	userIcon.addEventListener("click", () => {
-		window.location.href = "/login";
-	});
-}
+	if (loginForm) {
+		loginForm.addEventListener("submit", async function (e) {
+			e.preventDefault();
 
-// Navigasi cart icon ke halaman cart
-const cartIcon = document.querySelector(".ri-shopping-cart-line");
-if (cartIcon) {
-	cartIcon.addEventListener("click", () => {
-		window.location.href = "/cart";
-	});
-}
+			const email = document.getElementById("email").value;
+			const password = document.getElementById("password").value;
 
-// Contoh fetch data contact dari API dan log hasilnya ke console
-fetch("/api/contact")
-	.then(res => res.json())
-	.then(data => {
-		console.log(data);
-		// TODO: tampilkan produk ke UI sesuai kebutuhan
-	});
+			try {
+				const response = await fetch("/api/login", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, password })
+				});
+
+				const data = await response.json();
+
+				if (response.status === 200 && data.message === "Login berhasil") {
+					localStorage.setItem("user", JSON.stringify({ email: data.user }));
+
+					if (loginMessage) {
+						loginMessage.textContent = "Login berhasil! Mengalihkan...";
+						loginMessage.style.color = "green";
+					}
+
+					setTimeout(() => {
+						window.location.href = "/home";
+					}, 1000);
+				} else {
+					loginMessage.textContent = data.message || "Login gagal.";
+					loginMessage.style.color = "red";
+				}
+			} catch (err) {
+				loginMessage.textContent = "Terjadi kesalahan koneksi.";
+				loginMessage.style.color = "red";
+			}
+		});
+	}
+
+	// ===================== Navigasi Login/Profile =====================
+	const user = JSON.parse(localStorage.getItem("user"));
+	const navMenuContainer = document.querySelector(".nav-menu");
+	const userIcon = document.querySelector(".ri-user-line");
+
+	if (user && navMenuContainer) {
+		const userIconContainer = document.querySelector(".icon-container.user");
+		if (userIconContainer) userIconContainer.remove();
+
+		const profileItem = document.createElement("li");
+		profileItem.classList.add("nav-link");
+		profileItem.innerHTML = `
+			<div class="dropdown">
+				<button class="dropbtn">${user.email}</button>
+				<div class="dropdown-content">
+					<a href="#" id="logoutBtn">Logout</a>
+				</div>
+			</div>
+		`;
+		navMenuContainer.appendChild(profileItem);
+
+		// Tambahkan style dropdown
+		const dropdownStyle = `
+			.dropdown { position: relative; display: inline-block; }
+			.dropbtn {
+				background: none;
+				border: none;
+				color: white;
+				font-weight: bold;
+				cursor: pointer;
+			}
+			.dropdown-content {
+				display: none;
+				position: absolute;
+				background-color: white;
+				min-width: 120px;
+				box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+				z-index: 1;
+			}
+			.dropdown-content a {
+				color: black;
+				padding: 10px 16px;
+				text-decoration: none;
+				display: block;
+			}
+			.dropdown-content a:hover {
+				background-color: #ddd;
+			}
+			.dropdown:hover .dropdown-content {
+				display: block;
+			}
+		`;
+		const styleTag = document.createElement("style");
+		styleTag.innerText = dropdownStyle;
+		document.head.appendChild(styleTag);
+
+		// Logout handler
+		document.getElementById("logoutBtn").addEventListener("click", () => {
+			localStorage.removeItem("user");
+			location.reload();
+		});
+	} else if (userIcon) {
+		// Arahkan ke login jika belum login
+		userIcon.addEventListener("click", () => {
+			window.location.href = "/login";
+		});
+	}
+
+	// ===================== Navigasi ke Cart =====================
+	const cartIcon = document.querySelector(".ri-shopping-cart-line");
+	if (cartIcon) {
+		cartIcon.addEventListener("click", () => {
+			window.location.href = "/cart";
+		});
+	}
+
+	// ===================== Contoh Fetch API Contact =====================
+	fetch("/api/contact")
+		.then(res => res.json())
+		.then(data => {
+			console.log(data);
+			// TODO: Tampilkan data kontak ke UI jika diperlukan
+		});
+});
