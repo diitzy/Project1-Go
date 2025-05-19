@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout - Anto Frozen Food</title>
+
+  <!--  font yang di pake template dan ikon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5/fonts/remixicon.css" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/frontend/style.css" />
+</head>
+
+<body>
+  <header class="header">
+    <div class="header-content">
+      <a href="/home" class="logo">Anto Frozen Food</a>
+      <nav>
+        <ul class="nav-menu">
+          <li><a href="/home" class="nav-link">HOME</a></li>
+          <li><a href="/shop" class="nav-link">SHOP</a></li>
+          <li><a href="/cart" class="nav-link">CART</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="checkout-container">
+    <h1>Checkout</h1>
+
+    <div class="checkout-summary">
+      <h2>Ringkasan Belanja</h2>
+      <ul id="cart-items"></ul>
+      <p><strong>Total:</strong> <span id="total-price">Rp0</span></p>
+    </div>
+
+    <form id="checkout-form">
+      <h2>Data Pemesan</h2>
+      <label for="name">Nama:</label>
+      <input type="text" id="name" required />
+
+      <label for="address">Alamat:</label>
+      <textarea id="address" required></textarea>
+
+      <label for="payment">Metode Pembayaran:</label>
+      <select id="payment" required>
+        <option value="">-- Pilih --</option>
+        <option value="cod">Bayar di Tempat</option>
+        <option value="transfer">Transfer Bank</option>
+        <option value="qris">QRIS</option>
+      </select>
+
+      <button type="submit" class="btn">Lakukan Pemesanan</button>
+    </form>
+  </main>
+
+  <!-- pake footer  index.html -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-logo">
+        <h3>Anto Frozen Food</h3>
+        <p>Frozen Food Berkualitas</p>
+      </div>
+      <div class="footer-links">
+        <h4>Tautan Cepat</h4>
+        <ul>
+          <li><a href="/home">Home</a></li>
+          <li><a href="/shop">Shop</a></li>
+          <li><a href="/about">About</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-contact">
+        <h4>Kontak</h4>
+        <p><i class="ri-map-pin-line"></i>Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004,
+          Sukaasih, Tanggerang, Kota Tangerang, Banten 15111</p>
+        <p><i class="ri-phone-line"></i>081223656546</p>
+        <p><i class="ri-mail-line"></i>Mr.rafreaks@gmail.com</p>
+      </div>
+      <div class="footer-social">
+        <h4>Ikuti Kami</h4>
+        <div class="social-icons">
+          <a href="#"><i class="ri-instagram-line"></i></a>
+          <a href="#"><i class="ri-facebook-fill"></i></a>
+          <a href="#"><i class="ri-twitter-x-line"></i></a>
+          <a href="#"><i class="ri-whatsapp-line"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Anto Frozen Food. Hak Cipta Dilindungi.</p>
+    </div>
+  </footer>
+
+  <!-- script  -->
+  <script src="/frontend/checkout.js"></script>
+  <script src="/frontend/script.js"></script>
+</body>
+
+</html>
