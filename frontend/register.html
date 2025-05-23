@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar - Anto Frozen Food</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="/frontend/style/home.css">
+    <link rel="stylesheet" href="/frontend/style/register.css">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/home" class="logo">Anto Frozen Food</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="/home" class="nav-link">HOME</a></li>
+                    <li><a href="/shop" class="nav-link">SHOP</a></li>
+                    <li><a href="/about" class="nav-link">ABOUT</a></li>
+                    <li><a href="/contact" class="nav-link">CONTACT</a></li>
+                </ul>
+            </nav>
+            <div class="icon-container">
+                <button class="mobile-menu-btn"><i class="ri-menu-line"></i></button>
+                <a href="#" class="cart-icon">
+                    <i class="ri-shopping-cart-line"></i>
+                    <span class="cart-count">0</span>
+                </a>
+                <a href="/login" class="user-icon">
+                    <i class="ri-user-line"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="register-container">
+            <div class="register-header">
+                <h2>Daftar Akun Baru</h2>
+                <p>Buat akun Anda untuk mulai berbelanja</p>
+            </div>
+            <form action="/api/register" method="post">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email Anda" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password Anda" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Konfirmasi Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" class="form-control" placeholder="Konfirmasi password Anda" required>
+                </div>
+                <button type="submit" class="btn-register">Daftar</button>
+                <div class="login-link">
+                    <p>Sudah memiliki akun? <a href="/login">Masuk sekarang</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <h3>Anto Frozen Food</h3>
+                <p>Frozen Food Berkualitas</p>
+            </div>
+            <div class="footer-links">
+                <h4>Tautan Cepat</h4>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/shop">Shop</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h4>Kontak</h4>
+                <p><i class="ri-map-pin-line"></i> Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004, Sukaasih,
+                    Tanggerang, Kota Tangerang, Banten 15111</p>
+                <p><i class="ri-phone-line"></i> 081223656546</p>
+                <p><i class="ri-mail-line"></i> antofrozenfood@gmail.com</p>
+            </div>
+            <div class="footer-social">
+                <h4>Ikuti Kami</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="ri-instagram-line"></i></a>
+                    <a href="#"><i class="ri-facebook-fill"></i></a>
+                    <a href="#"><i class="ri-twitter-fill"></i></a>
+                    <a href="#"><i class="ri-whatsapp-line"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Anto Frozen Food. Hak Cipta Dilindungi.</p>
+        </div>
+    </footer>
+
+    <script src="/frontend/js/script.js"></script>
+</body>
+
+</html>

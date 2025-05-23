@@ -1,0 +1,130 @@
+/* ===================================== */
+/* Products Section                     */
+/* ===================================== */
+.section-title {
+    padding-top: 100px; /* Added padding-top for content below fixed header */
+}
+
+.products-section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.product-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    background-color: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.product-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+.product-tags {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    gap: 5px;
+}
+
+.product-tags span {
+    padding: 5px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.tag-new {
+    background-color: #51cf66;
+}
+
+.tag-best {
+    background-color: #ff922b;
+}
+
+.product-info {
+    padding: 15px;
+}
+
+.product-info h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.product-price {
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #ff6b6b;
+    font-size: 16px;
+}
+
+.add-to-cart {
+    width: 100%;
+    padding: 10px;
+    background-color: #ff6b6b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+.add-to-cart:hover {
+    background-color: #fd5252;
+}
+
+.view-more {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.btn-view-more {
+    display: inline-block;
+    background-color: transparent;
+    border: 2px solid #ff6b6b;
+    color: #ff6b6b;
+    font-weight: 600;
+    padding: 10px 25px;
+    border-radius: 30px;
+    transition: all 0.3s;
+}
+
+.btn-view-more:hover {
+    background-color: #ff6b6b;
+    color: #fff;
+}

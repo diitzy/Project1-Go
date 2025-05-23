@@ -1,0 +1,81 @@
+/* ===================================== */
+/* Cart Page Styles                     */
+/* ===================================== */
+
+.cart-section .container {
+    padding: 2rem;
+    max-width: 1000px;
+    margin: auto;
+    padding-top: 100px; /* Adjust based on your header height */
+}
+
+.cart-item {
+    display: flex;
+    align-items: flex-start;
+    border-bottom: 1px solid #ccc;
+    padding: 1rem 0;
+    position: relative;
+}
+
+.cart-item img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 0.5rem;
+    margin-right: 1rem;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.qty-btn {
+    background: #eee;
+    border: none;
+    padding: 0.3rem 0.8rem;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.qty-input {
+    width: 50px;
+    text-align: center;
+    margin: 0 0.5rem;
+}
+
+.subtotal {
+    margin-top: 0.5rem;
+    font-weight: bold;
+}
+
+.remove-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.cart-summary {
+    text-align: right;
+    margin-top: 2rem;
+}
+
+.btn-checkout {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    background-color: #ff5722;
+    color: white;
+    border: none;
+    text-decoration: none;
+    border-radius: 5px;
+    margin-top: 1rem;
+}

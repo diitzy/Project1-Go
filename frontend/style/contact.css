@@ -1,0 +1,82 @@
+/* ============================== */
+/* Contact Section Specific Styles */
+/* ============================== */
+.contact-section {
+    padding: 100px 20px 80px; /* Adjusted padding-top to account for fixed header */
+    background-color: #f8f9fa;
+}
+
+.contact-container {
+    max-width: 600px; /* Reduced max-width since only form is here */
+    margin: 0 auto;
+    /* Removed flex properties as there's only one child now */
+}
+
+.contact-form {
+    width: 100%; /* Ensure form takes full width of its container */
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+/* Removed .contact-info styles as it's no longer in the main content */
+/* .contact-info { ... } */
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #444;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff6b6b;
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
+}
+
+.btn-submit {
+    display: block;
+    width: 100%;
+    padding: 12px 25px;
+    background-color: #ff6b6b;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-submit:hover {
+    background-color: #fd5252;
+    transform: translateY(-2px);
+}
+
+/* Responsive adjustments for contact section */
+@media (max-width: 768px) {
+    .contact-container {
+        /* No need for flex-direction: column anymore as there's only one main child */
+        gap: 0; /* Remove gap */
+    }
+    .contact-form {
+        width: 100%;
+    }
+}
