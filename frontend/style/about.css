@@ -1,0 +1,70 @@
+/* ============================== */
+/* About Section                 */
+/* ============================== */
+.about-section {
+    padding: 80px 20px;
+    background-color: #f8f9fa;
+}
+
+.about-container {
+    display: flex;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+/* In about.css or a new testimonials.css if you prefer */
+.testimonial-grid {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.testimonial-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.testimonial-card p:first-child { /* Targets the italic text */
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+.testimonial-card p:last-child { /* Targets the bold name */
+    font-weight: bold;
+}
+
+.about-image {
+    flex: 1;
+    height: 400px;
+    background-image: url('2025-04-12.webp');
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    margin-right: 40px;
+}
+
+.about-text {
+    flex: 1;
+}
+
+.about-text p {
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+/* Responsive Design for About Section */
+@media (max-width: 991px) {
+    .about-container {
+        flex-direction: column;
+    }
+
+    .about-image {
+        margin-right: 0;
+        margin-bottom: 30px;
+        width: 100%;
+    }
+}
