@@ -568,3 +568,79 @@ ul {
         font-size: 28px;
     }
 }
+
+/* Tambahkan atau sesuaikan di file CSS Anda */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    background: none;
+    border: none;
+    color: white; /* Sesuaikan warna teks header Anda */
+    font-weight: bold;
+    cursor: pointer;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dropbtn i {
+    font-size: 1.4rem; /* Sesuaikan ukuran ikon */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9; /* Warna latar belakang dropdown */
+    min-width: 120px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 100; /* Pastikan di atas elemen lain */
+    right: 0; /* Posisikan ke kanan */
+    top: 100%; /* Posisikan di bawah tombol */
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 10px 16px;
+    text-decoration: none;
+    display: block;
+    font-weight: normal;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Media queries untuk tampilan responsif */
+@media (max-width: 768px) {
+    .dropdown {
+        display: block; /* Agar dropdown tetap di daftar menu mobile */
+        width: 100%;
+        text-align: center; /* Pusatkan teks di mobile */
+    }
+    .dropbtn {
+        width: 100%;
+        justify-content: center;
+        color: white; /* Sesuaikan warna untuk menu mobile */
+        padding: 15px 0;
+    }
+    .dropdown-content {
+        position: static; /* Hilangkan posisi absolut di mobile */
+        width: 100%;
+        box-shadow: none;
+        border-radius: 0;
+        background-color: #444; /* Sesuaikan warna latar belakang mobile */
+    }
+    .dropdown-content a {
+        color: white; /* Sesuaikan warna teks untuk mobile */
+    }
+}

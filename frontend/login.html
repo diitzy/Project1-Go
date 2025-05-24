@@ -13,7 +13,6 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="/frontend/style/login.css">
     <link rel="stylesheet" href="/frontend/style/home.css">
-
 </head>
 
 <body>
@@ -49,7 +48,8 @@
                 <h2>Masuk ke Akun Anda</h2>
                 <p>Masukkan email dan password Anda untuk login</p>
             </div>
-            <form action="/api/login" method="post">
+            <!-- FORM DIEDIT: hapus action dan method -->
+            <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email Anda"
@@ -62,6 +62,7 @@
                     <a href="/forgot-password" class="forgot-password">Lupa password?</a>
                 </div>
                 <button type="submit" class="btn-login">Masuk</button>
+                <div id="loginMessage" style="margin-top:10px;"></div>
                 <div class="register-link">
                     <p>Belum memiliki akun? <a href="/register">Daftar sekarang</a></p>
                 </div>
@@ -107,7 +108,7 @@
         </div>
     </footer>
 
-    <!-- OPTIONAL SCRIPT -->
+    <!-- SCRIPT -->
     <script src="/frontend/js/script.js"></script>
 </body>
 
