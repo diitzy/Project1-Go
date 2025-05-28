@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manajemen Produk</title>
+    <link rel="stylesheet" href="/frontend/style/admin.css">
+</head>
+<body>
+    <header>
+        <h1>Manajemen Produk</h1>
+        <a href="/home" class="nav-link">Kembali ke Toko</a>
+    </header>
+
+    <main>
+        <div class="form-container">
+            <h2 id="form-title">Tambah Produk Baru</h2>
+            <form id="product-form">
+                <input type="hidden" id="product-id">
+                <div class="form-group">
+                    <label for="name">Nama Produk</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="price">Harga</label>
+                    <input type="number" id="price" required>
+                </div>
+                <div class="form-group">
+                    <label for="stock">Stok</label>
+                    <input type="number" id="stock" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">URL Gambar</label>
+                    <input type="text" id="image" placeholder="/frontend/Img/nama-gambar.jpg" required>
+                </div>
+                <button type="submit" id="submit-button">Simpan Produk</button>
+                <button type="button" id="cancel-edit" class="cancel-btn" style="display: none;">Batal Edit</button>
+            </form>
+        </div>
+
+        <div class="table-container">
+            <h2>Daftar Produk</h2>
+            <table id="product-table">
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Harga</th>
+                        <th>Stok</th>
+                        <th>Gambar</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="/frontend/js/admin.js"></script>
+</body>
+</html>
