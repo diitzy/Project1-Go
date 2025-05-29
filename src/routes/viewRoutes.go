@@ -13,6 +13,9 @@ func ViewRoutes(router *gin.Engine) {
 	// Sajikan file statis dari direktori ./frontend
 	router.Static("/frontend", "./frontend")
 
+	// [PERUBAHAN] Sajikan file gambar dari direktori ./uploads
+	router.Static("/uploads", "./uploads")
+
 	// Redirect root URL "/" ke halaman utama
 	router.GET("/", func(c *gin.Context) {
 		c.Redirect(302, "/home")
