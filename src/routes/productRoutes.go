@@ -2,19 +2,29 @@ package routes
 
 import (
 	"project-1/src/controllers"
-
+	"project-1/src/middlewares"
+	
 	"github.com/gin-gonic/gin"
 )
 
-// ProductRoutes mendefinisikan semua endpoint terkait produk
 func ProductRoutes(router *gin.Engine) {
-	// Kelompokkan route dengan prefix /api sebagai namespace versi API
 	api := router.Group("/api")
 	{
-		// [GET] /api/products - Mengambil semua data produk
+		// Rute publik
 		api.GET("/products", controllers.GetProducts)
+		api.GET("/products/:id", controllers.GetProductByID) // PERBAIKAN: Tambah rute get by ID
 
-		// [POST] /api/products - Menambahkan produk baru ke database
-		api.POST("/products", controllers.AddProduct)
+		// Rute cart - PERBAIKAN: Tambah rute cart yang hilang
+		api.POST("/cart/add", controllers.AddToCart)
+		api.POST("/cart/restore", controllers.RestoreStock)
+
+		// Grup rute KHUSUS ADMIN
+		adminGroup := api.Group("/admin")
+		adminGroup.Use(middlewares.AdminMiddleware())
+		{
+			adminGroup.POST("/products", controllers.AddProduct) // Pindah ke admin
+			adminGroup.PUT("/products/:id", controllers.UpdateProduct)
+			adminGroup.DELETE("/products/:id", controllers.DeleteProduct)
+		}
 	}
 }

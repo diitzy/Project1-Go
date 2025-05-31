@@ -1,54 +1,60 @@
-// Ambil data dari localStorage
-const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+document.addEventListener("DOMContentLoaded", () => {
+    const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const cartItemsList = document.getElementById("cart-items"); // Asumsikan ada <ul> dengan id ini di checkout.html
+    const totalPriceElem = document.getElementById("total-price"); // Asumsikan ada elemen ini
 
-// Referensi elemen DOM
-const cartItems = document.getElementById("cart-items");
-const totalPriceElem = document.getElementById("total-price");
+    let total = 0;
 
-// Tampilkan item dalam keranjang dan hitung total harga
-let total = 0;
-
-cart.forEach(item => {
-  const li = document.createElement("li");
-  li.textContent = `${item.name} x${item.quantity} - Rp${(item.price * item.quantity).toLocaleString()}`;
-  cartItems.appendChild(li);
-  total += item.price * item.quantity;
-});
-
-// Tampilkan total harga ke elemen total
-totalPriceElem.textContent = "Rp" + total.toLocaleString();
-
-// Event listener untuk submit form checkout
-document.getElementById("checkout-form").addEventListener("submit", async function (e) {
-  e.preventDefault(); // Mencegah reload halaman saat submit
-
-  // Ambil nilai dari input dan siapkan payload data
-  const data = {
-    name: document.getElementById("name").value,
-    address: document.getElementById("address").value,
-    payment: document.getElementById("payment").value,
-    cart: cart
-  };
-
-  try {
-    // Kirim data checkout ke server menggunakan Fetch API
-    const response = await fetch("/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-
-    // Cek respons dari server
-    if (response.ok) {
-      alert("Pesanan berhasil dilakukan!");
-      localStorage.removeItem("cart"); // Kosongkan keranjang
-      window.location.href = "/home";  // Redirect ke halaman utama
-    } else {
-      alert("Gagal melakukan checkout.");
+    if (cartItemsList) {
+        cart.forEach(item => {
+            const li = document.createElement("li");
+            const subtotal = item.price * item.quantity;
+            li.textContent = `${item.name} x ${item.quantity} - Rp ${subtotal.toLocaleString("id-ID")}`;
+            cartItemsList.appendChild(li);
+            total += subtotal;
+        });
     }
-  } catch (error) {
-    // Tangani error jaringan atau server
-    console.error("Checkout error:", error);
-    alert("Terjadi kesalahan saat checkout.");
-  }
+
+    if (totalPriceElem) {
+        totalPriceElem.textContent = "Rp " + total.toLocaleString("id-ID");
+    }
+
+    const checkoutForm = document.getElementById("checkout-form");
+    if (checkoutForm) {
+        checkoutForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            if (cart.length === 0) {
+                alert("Keranjang Anda kosong. Tidak dapat melanjutkan checkout.");
+                return;
+            }
+
+            const data = {
+                name: document.getElementById("name").value,
+                address: document.getElementById("address").value,
+                payment: document.getElementById("payment").value,
+                cart: cart
+            };
+
+            try {
+                const response = await fetch("/api/checkout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    alert("Pesanan berhasil dilakukan!");
+                    localStorage.removeItem("cart");
+                    window.location.href = "/home";
+                } else {
+                    const errorData = await response.json();
+                    alert(`Gagal checkout: ${errorData.error || 'Silakan coba lagi.'}`);
+                }
+            } catch (error) {
+                console.error("Checkout error:", error);
+                alert("Terjadi kesalahan saat melakukan checkout.");
+            }
+        });
+    }
 });

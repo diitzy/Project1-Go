@@ -163,46 +163,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 	// ===================== Login Form Handler =====================
-	const loginForm = document.getElementById("loginForm");
-	const loginMessage = document.getElementById("loginMessage");
+	loginForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-	if (loginForm) {
-		loginForm.addEventListener("submit", async function (e) {
-			e.preventDefault();
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
 
-			const email = document.getElementById("email").value;
-			const password = document.getElementById("password").value;
+    try {
+        const response = await fetch("/api/login", { // Sesuaikan endpoint jika berbeda
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
 
-			try {
-				const response = await fetch("/api/login", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ email, password })
-				});
+        const data = await response.json();
 
-				const data = await response.json();
+        if (response.ok) {
+            // Simpan token ke localStorage
+            localStorage.setItem("token", data.token);
 
-				if (response.status === 200 && data.message === "Login berhasil") {
-					localStorage.setItem("user", JSON.stringify({ email: data.user }));
+            alert("Login berhasil!");
 
-					if (loginMessage) {
-						loginMessage.textContent = "Login berhasil! Mengalihkan...";
-						loginMessage.style.color = "green";
-					}
+            // LAKUKAN PENGARAHAN BERDASARKAN ROLE
+            if (data.role === "admin") {
+                window.location.href = "/admin"; // Arahkan admin ke halaman admin
+            } else {
+                window.location.href = "/shop"; // Arahkan user biasa ke halaman toko
+            }
 
-					setTimeout(() => {
-						window.location.href = "/home";
-					}, 1000);
-				} else {
-					loginMessage.textContent = data.message || "Login gagal.";
-					loginMessage.style.color = "red";
-				}
-			} catch (err) {
-				loginMessage.textContent = "Terjadi kesalahan koneksi.";
-				loginMessage.style.color = "red";
-			}
-		});
-	}
+        } else {
+            alert(data.error || "Login gagal.");
+        }
+    } catch (err) {
+        alert("Terjadi kesalahan koneksi.");
+    }
+});
 
 	// ===================== Navigasi Login/Profile (Perbaikan) =====================
 	const user = JSON.parse(localStorage.getItem("user"));

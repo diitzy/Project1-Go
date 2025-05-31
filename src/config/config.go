@@ -4,17 +4,16 @@ import (
 	"fmt"
 	"log"
 	"os"
-
 	"project-1/src/models"
+	"time"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-// DB adalah instance global dari *gorm.DB untuk koneksi database
 var DB *gorm.DB
 
-// getDSN membangun Data Source Name dari environment variable yang tersedia
 func getDSN() string {
 	user := getEnv("DB_USER", "root")
 	pass := getEnv("DB_PASS", "")
@@ -22,25 +21,47 @@ func getDSN() string {
 	port := getEnv("DB_PORT", "3306")
 	name := getEnv("DB_NAME", "project1-go")
 
-	// Format DSN sesuai dengan driver MySQL GORM
 	return fmt.Sprintf(
 		"%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		user, pass, host, port, name,
 	)
 }
 
-// ConnectDB menginisialisasi koneksi ke database dan melakukan migrasi model
+// PERBAIKAN: Tambah retry mechanism untuk koneksi database
 func ConnectDB() {
 	dsn := getDSN()
 	var err error
 
-	// Membuka koneksi ke database menggunakan DSN
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		log.Fatal("❌ Gagal koneksi ke database:", err)
+	// Retry connection up to 5 times
+	for i := 0; i < 5; i++ {
+		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
+			Logger: logger.Default.LogMode(logger.Info), // Enable logging
+		})
+		if err == nil {
+			break
+		}
+
+		log.Printf("❌ Percobaan koneksi ke database gagal (%d/5): %v", i+1, err)
+		if i < 4 {
+			time.Sleep(time.Second * 2) // Wait 2 seconds before retry
+		}
 	}
 
-	// Melakukan auto-migrasi untuk model yang dibutuhkan
+	if err != nil {
+		log.Fatal("❌ Gagal koneksi ke database setelah 5 percobaan:", err)
+	}
+
+	// Test connection
+	sqlDB, err := DB.DB()
+	if err != nil {
+		log.Fatal("❌ Gagal mendapatkan database instance:", err)
+	}
+
+	if err := sqlDB.Ping(); err != nil {
+		log.Fatal("❌ Gagal ping database:", err)
+	}
+
+	// Auto migrate
 	err = DB.AutoMigrate(
 		&models.Contact{},
 		&models.Product{},
@@ -51,15 +72,8 @@ func ConnectDB() {
 	}
 
 	fmt.Println("✅ Database berhasil terkoneksi dan dimigrasi")
-
-	// Contoh hashing password untuk kebutuhan awal
-	// password := "admin123"
-	// hash, _ := bcrypt.GenerateFromPassword([]byte(password), 14)
-	// fmt.Println(string(hash))
-	// fmt.Println("✅ Hash berhasil dibuat.")
 }
 
-// getEnv mengambil nilai dari environment variable atau menggunakan fallback default jika tidak ditemukan
 func getEnv(key, fallback string) string {
 	if value, exists := os.LookupEnv(key); exists {
 		return value
