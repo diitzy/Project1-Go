@@ -1,6 +1,10 @@
 package routes
 
-import "github.com/gin-gonic/gin"
+import (
+	"project-1/src/middleware"
+
+	"github.com/gin-gonic/gin"
+)
 
 // ViewRoutes mengatur routing statis untuk halaman-halaman frontend HTML
 func ViewRoutes(router *gin.Engine) {
@@ -19,8 +23,12 @@ func ViewRoutes(router *gin.Engine) {
 	})
 
 	// Routing ke file HTML spesifik
-	router.GET("/home", func(c *gin.Context) {
+	router.GET("/home", middleware.AuthRequired(), func(c *gin.Context) {
 		c.File("./frontend/index.html")
+	})
+
+	router.GET("/admin/dashboard", middleware.AuthRequired(), middleware.RoleRequired("admin"), func(c *gin.Context) {
+		// Tampilkan halaman khusus admin
 	})
 
 	router.GET("/about", func(c *gin.Context) {
