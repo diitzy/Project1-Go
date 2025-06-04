@@ -3,58 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Manajemen Produk</title>
+    <title>Admin - Manajemen</title>
     <link rel="stylesheet" href="/frontend/style/admin.css">
 </head>
 <body>
-    <header>
-        <h1>Manajemen Produk</h1>
-        <a href="/home" class="nav-link">Kembali ke Toko</a>
-    </header>
+    <div class="sidebar">
+        <h2>Anto Frozen Food</h2>
+        <nav>
+            <ul>
+                <li><a href="#product-section" class="active">Produk</a></li>
+                <li><a href="#">Pesanan</a></li>
+                <li><a href="#">Kontak</a></li>
+                <li><a href="/home" class="nav-link">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
 
-    <main>
-        <div class="form-container">
-            <h2 id="form-title">Tambah Produk Baru</h2>
-            <form id="product-form">
-                <input type="hidden" id="product-id">
-                <div class="form-group">
-                    <label for="name">Nama Produk</label>
-                    <input type="text" id="name" required>
-                </div>
-                <div class="form-group">
-                    <label for="price">Harga</label>
-                    <input type="number" id="price" required>
-                </div>
-                <div class="form-group">
-                    <label for="stock">Stok</label>
-                    <input type="number" id="stock" required>
-                </div>
-                <div class="form-group">
-                    <label for="image">URL Gambar</label>
-                    <input type="text" id="image" placeholder="/frontend/Img/nama-gambar.jpg" required>
-                </div>
-                <button type="submit" id="submit-button">Simpan Produk</button>
-                <button type="button" id="cancel-edit" class="cancel-btn" style="display: none;">Batal Edit</button>
-            </form>
-        </div>
+    <div class="main-content">
+        <header>
+            <h1>Manajemen Produk</h1>
+        </header>
 
-        <div class="table-container">
-            <h2>Daftar Produk</h2>
-            <table id="product-table">
-                <thead>
-                    <tr>
-                        <th>Nama</th>
-                        <th>Harga</th>
-                        <th>Stok</th>
-                        <th>Gambar</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    </tbody>
-            </table>
-        </div>
-    </main>
+        <main id="product-section">
+            <div class="form-container">
+                <h2 id="form-title">Tambah Produk Baru</h2>
+                <form id="product-form">
+                    <input type="hidden" id="product-id">
+                    <div class="form-group">
+                        <label for="name">Nama Produk</label>
+                        <input type="text" id="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price">Harga</label>
+                        <input type="number" id="price" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stock">Stok</label>
+                        <input type="number" id="stock" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Gambar Produk</label>
+                        <input type="file" id="image" accept="image/*" required>
+                        <img id="image-preview" src="" alt="Pratinjau Gambar" style="margin-top: 10px; max-height: 100px; display: none;">
+                    </div>
+                    <button type="submit" id="submit-button">Simpan Produk</button>
+                    <button type="button" id="cancel-edit" class="cancel-btn" style="display: none;">Batal Edit</button>
+                </form>
+            </div>
+
+            <div class="table-container">
+                <h2>Daftar Produk</h2>
+                <table id="product-table">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Harga</th>
+                            <th>Stok</th>
+                            <th>Gambar</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </main>
+    </div>
 
     <script src="/frontend/js/admin.js"></script>
 </body>

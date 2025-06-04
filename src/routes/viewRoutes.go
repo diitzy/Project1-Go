@@ -9,7 +9,7 @@ func ViewRoutes(router *gin.Engine) {
 	router.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Cache-Control", "no-store")
 	})
-
+		
 	// Sajikan file statis dari direktori ./frontend
 	router.Static("/frontend", "./frontend")
 

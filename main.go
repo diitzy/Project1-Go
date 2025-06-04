@@ -18,12 +18,14 @@ func main() {
 
 	// Middleware CORS
 	router.Use(middlewares.CORSMiddleware())
+	router.Static("/uploads", "./uploads")
 
 	// Setup routes
 	routes.ViewRoutes(router)
 	routes.AuthRoutes(router)
 	routes.ContactRoutes(router)
 	routes.ProductRoutes(router)
+	routes.ProductAdminRoutes(router)
 
 	// Jalankan server
 	log.Println("🚀 Server berjalan di http://localhost:8080")

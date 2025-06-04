@@ -3,26 +3,95 @@
 /* ===================================== */
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #f4f7f6;
+    background-color: #f8f9fa; /* Updated: Matches home page background */
     margin: 0;
     color: #333;
+    display: flex; /* For sidebar layout */
+    min-height: 100vh; /* For sidebar layout */
 }
 
-header {
-    background-color: #2c3e50;
+/* ===================================== */
+/* Sidebar Layout                        */
+/* ===================================== */
+.sidebar {
+    width: 220px;
+    background-color: #333; /* Updated: Dark background like home footer */
     color: white;
+    padding: 2rem 1rem;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    position: fixed;
+    height: 100%;
+    z-index: 200; /* Ensure sidebar is above fixed header if they overlap */
+}
+
+.sidebar h2 { /* "Admin Panel" title */
+    margin-top: 0;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #ff6b6b; /* Updated: Accent color for title */
+    padding-bottom: 0.75rem; /* Copied from main content h2 */
+    margin-bottom: 1.5rem; /* Copied from main content h2 */
+    border-bottom: 2px solid #444; /* Darker border for dark bg */
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar nav ul li {
+    margin: 1rem 0;
+}
+
+.sidebar nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar nav ul li a:hover,
+.sidebar nav ul li a.active {
+    background-color: #ff6b6b; /* Updated: Accent color for active/hover */
+    color: white;
+}
+
+/* ===================================== */
+/* Main Content Area                    */
+/* ===================================== */
+.main-content {
+    margin-left: 220px; /* Matches sidebar width */
+    padding: 0; /* Remove padding here, add to header and main sections */
+    width: calc(100% - 220px);
+    box-sizing: border-box;
+}
+
+header { /* Header for "Manajemen Produk" */
+    position: fixed;
+    top: 0;
+    left: 250px; /* Updated: Matches sidebar width */
+    width: calc(100% - 250px); /* Updated: Calculates width based on sidebar */
+    z-index: 100;
+    background-color: #fff; /* Updated: Matches home header background */
+    color: #333; /* Updated: Text color for light background */
     padding: 1rem 2rem;
     display: flex;
-    justify-content: space-between;
+    justify-content:center;
     align-items: center;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Updated: Matches home header shadow */
+    box-sizing: border-box;
 }
 
 header h1 {
     margin: 0;
     font-size: 1.5rem;
+    color: #333; /* Ensures text color if not inherited */
 }
 
+/* Logout link styling - already uses accent color which is good */
 header .nav-link {
     color: #ff6b6b;
     text-decoration: none;
@@ -31,13 +100,15 @@ header .nav-link {
 }
 
 header .nav-link:hover {
-    color: #ff8787;
+    color: #ff8787; /* Lighter shade of accent */
 }
 
-main {
+main { /* Main content within .main-content, below the fixed header */
     padding: 2rem;
-    max-width: 1200px;
-    margin: auto;
+    padding-top: calc(1rem + 1rem + 1.5rem + 30px); /* Approximate header height: padding + h1 font-size. Adjust as needed */
+    /* Or fixed padding-top: 80px; if header height is consistent */
+    max-width: 1200px; /* Consistent with home.css */
+    margin: 0 auto; /* Center content if max-width is applied */
 }
 
 /* ===================================== */
@@ -45,19 +116,19 @@ main {
 /* ===================================== */
 .form-container,
 .table-container {
-    background-color: white;
+    background-color: white; /* Keep: Matches home cards */
     padding: 2rem;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); /* Keep: Similar to home cards */
     margin-bottom: 2rem;
 }
 
-h2 {
+h2 { /* Titles like "Tambah Produk Baru", "Daftar Produk" */
     margin-top: 0;
-    border-bottom: 2px solid #eee;
+    border-bottom: 2px solid #eee; /* Keep: Subtle separator */
     padding-bottom: 0.75rem;
     margin-bottom: 1.5rem;
-    color: #2c3e50;
+    color: #333; /* Updated: Matches home section titles */
     font-size: 1.4rem;
 }
 
@@ -72,21 +143,23 @@ h2 {
     display: block;
     margin-bottom: 0.5rem;
     font-weight: 600;
-    color: #555;
+    color: #555; /* Keep: Good for labels */
 }
 
-.form-group input {
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="file"] { /* Be more specific to avoid styling all inputs if others are added */
     width: 100%;
     padding: 0.8rem;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box; /* Penting agar padding tidak merusak layout */
+    box-sizing: border-box;
     transition: border-color 0.3s;
 }
 
 .form-group input:focus {
     outline: none;
-    border-color: #ff6b6b;
+    border-color: #ff6b6b; /* Keep: Accent color for focus */
 }
 
 button {
@@ -104,22 +177,22 @@ button:hover {
 }
 
 button[type="submit"] {
-    background-color: #ff6b6b;
+    background-color: #ff6b6b; /* Keep: Accent color */
     color: white;
 }
 
 button[type="submit"]:hover {
-    background-color: #e65a5a;
+    background-color: #fd5252; /* Updated: Matches home button hover */
 }
 
 .cancel-btn {
-    background-color: #777;
-    color: white;
+    background-color: #ddd; /* Updated: Lighter gray */
+    color: #333; /* Updated: Darker text for light bg */
     margin-left: 0.5rem;
 }
 
 .cancel-btn:hover {
-    background-color: #666;
+    background-color: #ccc; /* Updated: Slightly darker gray for hover */
 }
 
 /* ===================================== */
@@ -139,12 +212,12 @@ td {
 }
 
 th {
-    background-color: #f8f9fa;
+    background-color: #f8f9fa; /* Keep: Light gray for table header */
     font-weight: 600;
 }
 
 tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f1f1f1; /* Keep: Hover effect for rows */
 }
 
 td img {
@@ -162,22 +235,33 @@ td img {
     margin-right: 5px;
     font-size: 0.8rem;
     font-weight: normal;
+    transition: background-color 0.3s, color 0.3s; /* Added transition */
 }
 
 .edit-btn {
-    color: #28a745;
-    border-color: #28a745;
+    color: #3efc38; /* Updated: Accent color */
+    border-color: #27cc12; /* Updated: Accent color */
 }
 .edit-btn:hover {
-    background-color: #28a745;
+    background-color: #38ce24; /* Updated: Accent color */
     color: white;
 }
 
 .delete-btn {
-    color: #dc3545;
-    border-color: #dc3545;
+    color: #dc3545; /* Keep: Standard danger color */
+    border-color: #dc3545; /* Keep: Standard danger color */
 }
 .delete-btn:hover {
-    background-color: #dc3545;
+    background-color: #dc3545; /* Keep: Standard danger color */
     color: white;
+}
+
+/* Image preview specific styling */
+#image-preview {
+    margin-top: 10px;
+    max-height: 100px;
+    display: none; /* Initially hidden */
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 4px;
 }

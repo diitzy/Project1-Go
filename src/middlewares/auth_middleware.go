@@ -7,8 +7,8 @@ import (
 	"project-1/src/services" // Sesuaikan path jika perlu
 	"strings"
 
-	"github.com/golang-jwt/jwt/v5" // Pastikan Anda mengimpor jwt-go
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5" // Pastikan Anda mengimpor jwt-go
 )
 
 // AdminMiddleware memeriksa apakah pengguna adalah admin
