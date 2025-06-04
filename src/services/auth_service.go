@@ -1,19 +1,39 @@
 package services
 
 import (
-	"golang.org/x/crypto/bcrypt"
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt" // Import bcrypt
 )
 
-// HashPassword menerima plain password dan menghasilkan hash-nya
+var jwtKey = []byte("kunci_rahasia_super_aman_milik_anda")
+
+// PERBAIKAN: Gunakan jwt.RegisteredClaims instead of jwt.StandardClaims
+type Claims struct {
+	Email                string `json:"email"`
+	Role                 string `json:"role"`
+	jwt.RegisteredClaims        // Mengganti jwt.StandardClaims
+}
+
+// HashPassword mengenkripsi password menggunakan bcrypt
 func HashPassword(password string) (string, error) {
-	// Gunakan cost 14 untuk keamanan tingkat tinggi (bisa disesuaikan)
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
 }
 
-// CheckPasswordHash membandingkan password dengan hash-nya
-func CheckPasswordHash(password, hash string) bool {
-	// Mengembalikan true jika password cocok dengan hash yang diberikan
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+// GenerateToken membuat token JWT baru untuk pengguna
+func GenerateToken(email string, role string) (string, error) {
+	expirationTime := time.Now().Add(24 * time.Hour)
+
+	claims := &Claims{
+		Email: email,
+		Role:  role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(expirationTime), // Perbaikan format
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(jwtKey)
 }

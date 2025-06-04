@@ -1,31 +1,33 @@
 package main
 
 import (
+	"log"
 	"project-1/src/config"
+	"project-1/src/middlewares"
 	"project-1/src/routes"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// Inisialisasi koneksi ke database
+	// Koneksi ke database
 	config.ConnectDB()
 
-	// Membuat instance router default dari Gin
+	// Inisialisasi router Gin
 	router := gin.Default()
 
-	// Daftarkan routing untuk tampilan frontend (HTML)
+	// Middleware CORS
+	router.Use(middlewares.CORSMiddleware())
+
+	// Setup routes
 	routes.ViewRoutes(router)
-
-	// Daftarkan routing untuk autentikasi
 	routes.AuthRoutes(router)
-
-	// Daftarkan routing untuk form kontak
 	routes.ContactRoutes(router)
-
-	// Daftarkan routing untuk produk
 	routes.ProductRoutes(router)
 
-	// Jalankan server pada port 8080
-	router.Run(":8080")
+	// Jalankan server
+	log.Println("🚀 Server berjalan di http://localhost:8080")
+	if err := router.Run(":8080"); err != nil {
+		log.Fatal("❌ Gagal menjalankan server:", err)
+	}
 }

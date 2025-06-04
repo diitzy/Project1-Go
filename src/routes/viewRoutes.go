@@ -54,4 +54,8 @@ func ViewRoutes(router *gin.Engine) {
 	router.GET("/checkout", func(c *gin.Context) {
 		c.File("./frontend/checkout.html")
 	})
+	// Rute BARU untuk halaman admin
+	router.GET("/admin", func(c *gin.Context) {
+		c.File("./frontend/admin.html")
+	})
 }
