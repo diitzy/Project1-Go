@@ -16,7 +16,7 @@
 </head>
 
 <body>
-    <header class="header">
+   <header class="header">
         <div class="header-content">
             <a href="/home" class="logo">Anto Frozen Food</a>
             <nav>
@@ -25,20 +25,22 @@
                     <li><a href="/shop" class="nav-link">SHOP</a></li>
                     <li><a href="/about" class="nav-link">ABOUT</a></li>
                     <li><a href="/contact" class="nav-link active">CONTACT</a></li>
-                    <li><a href="/login" class="nav-link">LOGIN</a></li>
+                    <li>
+                        <div class="icon-container">
+                            <a href="/login" class="user-icon nav-link"> <i class="ri-user-line"></i>
+                            </a>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="icon-container">
+                             <a href="#" class="cart-icon nav-link"> <i class="ri-shopping-cart-line"></i>
+                                <span class="cart-count">0</span>
+                            </a>
+                        </div>
+                    </li>
                 </ul>
             </nav>
-            <div class="icon-container">
-                <a href="#" class="cart-icon">
-                    <i class="ri-shopping-cart-line"></i>
-                    <span class="cart-count">0</span>
-                </a>
-                <a href="/login" class="user-icon">
-                    <i class="ri-user-line"></i>
-                </a>
-                <button class="mobile-menu-btn">
-                    <i class="ri-menu-line"></i>
-                </button>
+            <div class="mobile-menu-btn"> <i class="ri-menu-line"></i>
             </div>
         </div>
     </header>
@@ -69,7 +71,7 @@
                         <button type="submit" class="btn-submit">Kirim Pesan</button>
                     </form>
                 </div>
-            </div>
+                </div>
         </section>
     </main>
 

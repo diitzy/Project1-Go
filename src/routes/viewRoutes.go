@@ -1,10 +1,6 @@
 package routes
 
-import (
-	"project-1/src/controllers"
-
-	"github.com/gin-gonic/gin"
-)
+import "github.com/gin-gonic/gin"
 
 // ViewRoutes mengatur routing statis untuk halaman-halaman frontend HTML
 func ViewRoutes(router *gin.Engine) {
@@ -13,7 +9,7 @@ func ViewRoutes(router *gin.Engine) {
 	router.Use(func(c *gin.Context) {
 		c.Writer.Header().Set("Cache-Control", "no-store")
 	})
-
+		
 	// Sajikan file statis dari direktori ./frontend
 	router.Static("/frontend", "./frontend")
 
@@ -62,6 +58,4 @@ func ViewRoutes(router *gin.Engine) {
 	router.GET("/admin", func(c *gin.Context) {
 		c.File("./frontend/admin.html")
 	})
-
-	router.GET("/api/orders", controllers.GetUserOrders)
 }
