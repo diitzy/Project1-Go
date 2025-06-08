@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const hiddenId = document.getElementById('product-id');
     const imagePreview = document.getElementById('image-preview');
     const imageInput = document.getElementById('image');
+    const orderSection = document.getElementById("order-section");
+    const productSection = document.getElementById("product-section");
 
     const PUBLIC_API_BASE_URL = '/api/products';
     const ADMIN_API_BASE_URL = '/admin/products';
@@ -210,5 +212,48 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    document.querySelector('a[href="#order-section"]').addEventListener("click", (e) => {
+        e.preventDefault();
+        productSection.style.display = "none";
+        orderSection.style.display = "block";
+        loadOrders();
+    });
+
+    document.querySelector('a[href="#product-section"]').addEventListener("click", (e) => {
+        e.preventDefault();
+        orderSection.style.display = "none";
+        productSection.style.display = "block";
+    });
+
     fetchProducts();
 });
+
+async function loadOrders() {
+    const tableBody = document.querySelector("#order-table tbody");
+    tableBody.innerHTML = ""; // Clear existing rows
+
+    try {
+        const res = await fetch("http://localhost:8080/admin/orders");
+        const orders = await res.json();
+
+        orders.forEach(order => {
+            const row = document.createElement("tr");
+
+            const items = order.Items.map(item =>
+                `${item.Name} (${item.Quantity} x ${item.Price})`
+            ).join("<br>");
+
+            row.innerHTML = `
+                <td>${order.ID}</td>
+                <td>${order.Name}</td>
+                <td>${order.Address}</td>
+                <td>${order.Payment}</td>
+                <td>${order.Total.toFixed(2)}</td>
+                <td>${items}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Gagal mengambil data pesanan:", error);
+    }
+}

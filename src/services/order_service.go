@@ -8,3 +8,5 @@ import (
 func CreateOrder(order *models.Order) error {
 	return config.DB.Create(order).Error
 }
+
+// TERBARU

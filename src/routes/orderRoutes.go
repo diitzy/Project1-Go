@@ -8,4 +8,6 @@ import (
 
 func OrderRoutes(router *gin.Engine) {
 	router.POST("/checkout", controllers.Checkout)
+
+	// TERBARU
 }
