@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fetchProducts = async () => {
         try {
             const response = await fetch(PUBLIC_API_BASE_URL);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            if (!response.ok) throw new Error(HTTP error! status: ${response.status});
             const products = await response.json();
 
             tableBody.innerHTML = '';
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Gagal mengambil produk:', error);
-            tableBody.innerHTML = `<tr><td colspan="5">Gagal memuat produk: ${error.message}. Coba muat ulang halaman.</td></tr>`;
+            tableBody.innerHTML = <tr><td colspan="5">Gagal memuat produk: ${error.message}. Coba muat ulang halaman.</td></tr>;
         }
     };
 
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let method = 'POST';
 
         if (id) {
-            url = `${ADMIN_API_BASE_URL}/${id}`;
+            url = ${ADMIN_API_BASE_URL}/${id};
             method = 'PUT';
         }
 
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(url, {
                 method: method,
                 headers: {
-                    Authorization: `Bearer ${getToken()}`
+                    Authorization: Bearer ${getToken()}
                 },
                 body: formData,
             });
@@ -85,70 +85,65 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     const errorData = JSON.parse(text);
                     console.error('Gagal menyimpan produk:', errorData);
-                    showNotification(`Gagal menyimpan produk: ${errorData.error || response.statusText}`, 'error');
+                    showNotification(Gagal menyimpan produk: ${errorData.error || response.statusText}, 'error');
                 } catch (e) {
                     console.error('Respon bukan JSON:', text);
-                    showNotification(`Terjadi kesalahan: ${text}`, 'error');
+                    showNotification(Terjadi kesalahan: ${text}, 'error');
                 }
             }
         } catch (error) {
             console.error('Error saat submit form:', error);
-            showNotification(`Terjadi kesalahan: ${error.message}`, 'error');
+            showNotification(Terjadi kesalahan: ${error.message}, 'error');
         }
     });
 
     const resetForm = () => {
-    form.reset();
-    hiddenId.value = '';
-    imageInput.value = '';
-    formTitle.textContent = 'Tambah Produk Baru';
-    submitButton.textContent = 'Simpan Produk';
-    cancelEditButton.style.display = 'none';
-
-    // Tambahan penting: sembunyikan pratinjau gambar
-    imagePreview.src = '';
-    imagePreview.style.display = 'none';
-};
-
+        form.reset();
+        hiddenId.value = '';
+        imageInput.value = '';
+        formTitle.textContent = 'Tambah Produk Baru';
+        submitButton.textContent = 'Simpan Produk';
+        cancelEditButton.style.display = 'none';
+        imagePreview.src = '';
+        imagePreview.style.display = 'none';
+    };
 
     window.editProduct = async (id) => {
-    try {
-        const response = await fetch(`${PUBLIC_API_BASE_URL}/${id}`);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const product = await response.json();
+        try {
+            const response = await fetch(${PUBLIC_API_BASE_URL}/${id});
+            if (!response.ok) throw new Error(HTTP error! status: ${response.status});
+            const product = await response.json();
 
-        hiddenId.value = product.ID || product.id;
-        document.getElementById('name').value = product.name;
-        document.getElementById('price').value = product.price;
-        document.getElementById('stock').value = product.stock;
+            hiddenId.value = product.ID || product.id;
+            document.getElementById('name').value = product.name;
+            document.getElementById('price').value = product.price;
+            document.getElementById('stock').value = product.stock;
 
-        // Tampilkan pratinjau gambar
-        if (product.image) {
-            imagePreview.src = product.image;
-            imagePreview.style.display = 'block';
-        } else {
-            imagePreview.style.display = 'none';
+            if (product.image) {
+                imagePreview.src = product.image;
+                imagePreview.style.display = 'block';
+            } else {
+                imagePreview.style.display = 'none';
+            }
+
+            formTitle.textContent = 'Edit Produk';
+            submitButton.textContent = 'Update Produk';
+            cancelEditButton.style.display = 'inline-block';
+        } catch (error) {
+            console.error('Gagal mengambil detail produk untuk diedit:', error);
+            showNotification(Gagal mengambil detail produk: ${error.message}, 'error');
         }
-
-        formTitle.textContent = 'Edit Produk';
-        submitButton.textContent = 'Update Produk';
-        cancelEditButton.style.display = 'inline-block';
-    } catch (error) {
-        console.error('Gagal mengambil detail produk untuk diedit:', error);
-        showNotification(`Gagal mengambil detail produk: ${error.message}`, 'error');
-    }
-};
-
+    };
 
     cancelEditButton.addEventListener('click', resetForm);
 
     window.deleteProduct = async (id) => {
         if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
             try {
-                const response = await fetch(`${ADMIN_API_BASE_URL}/${id}`, {
+                const response = await fetch(${ADMIN_API_BASE_URL}/${id}, {
                     method: 'DELETE',
                     headers: {
-                        Authorization: `Bearer ${getToken()}`
+                        Authorization: Bearer ${getToken()}
                     }
                 });
 
@@ -160,15 +155,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     try {
                         const errorData = JSON.parse(text);
                         console.error('Gagal menghapus produk:', errorData);
-                        showNotification(`Gagal menghapus produk: ${errorData.error || response.statusText}`, 'error');
+                        showNotification(Gagal menghapus produk: ${errorData.error || response.statusText}, 'error');
                     } catch (e) {
                         console.error('Respon bukan JSON:', text);
-                        showNotification(`Terjadi kesalahan: ${text}`, 'error');
+                        showNotification(Terjadi kesalahan: ${text}, 'error');
                     }
                 }
             } catch (error) {
                 console.error('Error saat menghapus produk:', error);
-                showNotification(`Terjadi kesalahan saat menghapus: ${error.message}`, 'error');
+                showNotification(Terjadi kesalahan saat menghapus: ${error.message}, 'error');
             }
         }
     };
@@ -176,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function showNotification(message, type = 'info') {
         const notificationArea = document.getElementById('notification-area') || createNotificationArea();
         const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
+        notification.className = notification ${type};
         notification.textContent = message;
         notificationArea.appendChild(notification);
         setTimeout(() => {
@@ -204,6 +199,16 @@ document.addEventListener('DOMContentLoaded', () => {
         .notification.info { background-color: #2196F3; }
     `;
     document.head.appendChild(styleSheet);
+
+    // 🔐 Handler untuk logout
+    const logoutLink = document.querySelector('.nav-link[href="/home"]');
+    if (logoutLink) {
+        logoutLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token'); // Hapus token
+            window.location.href = '/home';   // Arahkan ke halaman login atau home
+        });
+    }
 
     fetchProducts();
 });
