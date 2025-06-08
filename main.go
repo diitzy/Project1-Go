@@ -26,6 +26,7 @@ func main() {
 	routes.ContactRoutes(router)
 	routes.ProductRoutes(router)
 	routes.ProductAdminRoutes(router)
+	routes.OrderRoutes(router)
 
 	// Jalankan server
 	log.Println("🚀 Server berjalan di http://localhost:8080")

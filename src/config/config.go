@@ -66,6 +66,8 @@ func ConnectDB() {
 		&models.Contact{},
 		&models.Product{},
 		&models.User{},
+		&models.Order{},
+		&models.OrderItem{},
 	)
 	if err != nil {
 		log.Fatal("❌ Gagal migrasi schema:", err)

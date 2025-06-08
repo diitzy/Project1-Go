@@ -9,7 +9,7 @@ type Order struct {
 	Address string
 	Payment string
 	Total   float64
-	Items   []OrderItem
+	Items   []OrderItem `gorm:"foreignKey:OrderID"`
 }
 
 type OrderItem struct {
