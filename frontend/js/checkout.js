@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-    const cartItemsList = document.getElementById("cart-items"); // Asumsikan ada <ul> dengan id ini di checkout.html
-    const totalPriceElem = document.getElementById("total-price"); // Asumsikan ada elemen ini
+    const cartItemsList = document.getElementById("cart-items");
+    const totalPriceElem = document.getElementById("total-price");
 
     let total = 0;
 
@@ -29,18 +29,31 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            const data = {
-                name: document.getElementById("name").value,
-                address: document.getElementById("address").value,
-                payment: document.getElementById("payment").value,
-                cart: cart
+            const name = document.getElementById("name").value;
+            const address = document.getElementById("address").value;
+            const payment = document.getElementById("payment").value;
+
+            const items = cart.map(item => ({
+                productID: parseInt(item.id),
+                name: item.name,
+                price: parseFloat(item.price),
+                quantity: item.quantity || 1
+            }));
+
+            const orderData = {
+                userID: 1, // Ganti dengan ID user yang login kalau tersedia dari token
+                name,
+                address,
+                payment,
+                total,
+                items
             };
 
             try {
-                const response = await fetch("/api/checkout", {
+                const response = await fetch("/checkout", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(orderData)
                 });
 
                 if (response.ok) {
