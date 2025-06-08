@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"project-1/src/models"
 	"project-1/src/services"
@@ -37,3 +38,29 @@ func Checkout(c *gin.Context) {
 }
 
 // TERBARU
+// GetAllOrdersHandler untuk endpoint admin melihat semua order
+func GetAllOrdersHandler(c *gin.Context) {
+	orders, err := services.GetAllOrders()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data orders"})
+		return
+	}
+	c.JSON(http.StatusOK, orders)
+}
+
+// GetOrderByIDHandler untuk endpoint user melihat order by ID
+func GetOrderByIDHandler(c *gin.Context) {
+	idParam := c.Param("id")
+	var id uint
+	if _, err := fmt.Sscan(idParam, &id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID tidak valid"})
+		return
+	}
+
+	order, err := services.GetOrderByID(id)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Order tidak ditemukan"})
+		return
+	}
+	c.JSON(http.StatusOK, order)
+}
