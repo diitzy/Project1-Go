@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				const product = {
 					id: button.dataset.id,
 					name: button.dataset.name,
-					price: button.dataset.price
+					price: button.dataset.price	
 				};
 
 				// Simpan ke localStorage
@@ -80,6 +80,9 @@ document.addEventListener('DOMContentLoaded', function () {
 		});
 	}
 
+
+
+	
 	// ===================== Highlight NavLink Aktif Saat Scroll =====================
 	const sections = document.querySelectorAll("section[id]");
 	const navLinks = document.querySelectorAll(".nav-link");
@@ -121,10 +124,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	`
 	);
 
-		// ===================== Register Form Handler =====================
-	const registerForm = document.querySelector(".register-container form"); // Menggunakan selector yang lebih spesifik
-	// Anda mungkin ingin menambahkan elemen untuk pesan registrasi, seperti loginMessage
-	// const registerMessage = document.getElementById("registerMessage");
+	// ===================== Register Form Handler =====================
+	const registerForm = document.querySelector(".register-container form");
 
 	if (registerForm) {
 		registerForm.addEventListener("submit", async function (e) {
@@ -132,15 +133,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
 			const email = document.getElementById("email").value;
 			const password = document.getElementById("password").value;
-			const confirmPassword = document.getElementById("confirm-password").value; // Pastikan ini ada
+			const confirmPassword = document.getElementById("confirm-password").value;
 
 			if (password !== confirmPassword) {
-				alert("Konfirmasi password tidak cocok!"); // Atau tampilkan pesan di UI
+				alert("Konfirmasi password tidak cocok!");
 				return;
 			}
 
 			try {
-				const response = await fetch("/api/register", { // Sesuaikan endpoint API registrasi Anda
+				const response = await fetch("/api/register", {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ email, password })
@@ -148,178 +149,258 @@ document.addEventListener('DOMContentLoaded', function () {
 
 				const data = await response.json();
 
-				if (response.status === 201 && data.message === "Registrasi berhasil") { // Sesuaikan status kode dan pesan
-					alert("Registrasi berhasil! Silakan login."); // Atau tampilkan pesan di UI
-					window.location.href = "/login"; // Alihkan ke halaman login
+				if (response.status === 201 && data.message === "Registrasi berhasil") {
+					alert("Registrasi berhasil! Silakan login.");
+					window.location.href = "/login";
 				} else {
-					alert(data.message || "Registrasi gagal."); // Tampilkan pesan error
+					alert(data.message || "Registrasi gagal.");
 				}
 			} catch (err) {
-				alert("Terjadi kesalahan koneksi saat registrasi."); // Tangani error koneksi
+				alert("Terjadi kesalahan koneksi saat registrasi.");
 			}
 		});
 	}
-
-
-
-	// ===================== Login Form Handler =====================
-	loginForm.addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-
-    try {
-        const response = await fetch("/api/login", { // Sesuaikan endpoint jika berbeda
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password })
+	
+	// ===================== Show Password =====================
+    const passwordInput = document.getElementById("password");
+    const showPasswordCheckbox = document.getElementById("show-password");
+    if (passwordInput && showPasswordCheckbox) {
+        showPasswordCheckbox.addEventListener("change", function () {
+            passwordInput.type = this.checked ? "text" : "password";
         });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // Simpan token ke localStorage
-            localStorage.setItem("token", data.token);
-
-            alert("Login berhasil!");
-
-            // LAKUKAN PENGARAHAN BERDASARKAN ROLE
-            if (data.role === "admin") {
-                window.location.href = "/admin"; // Arahkan admin ke halaman admin
-            } else {
-                window.location.href = "/shop"; // Arahkan user biasa ke halaman toko
-            }
-
-        } else {
-            alert(data.error || "Login gagal.");
-        }
-    } catch (err) {
-        alert("Terjadi kesalahan koneksi.");
     }
-});
+	// ===================== Login Form Handler =====================
+	const loginForm = document.querySelector(".login-container form, form"); // Selector yang lebih fleksibel
 
-	// ===================== Navigasi Login/Profile (Perbaikan) =====================
-	const user = JSON.parse(localStorage.getItem("user"));
-	const iconContainer = document.querySelector(".icon-container"); // Container utama ikon
-	const userLoginLink = document.querySelector(".icon-container .user-icon"); // Link login asli
+	if (loginForm) {
+		loginForm.addEventListener("submit", async function (e) {
+			e.preventDefault();
 
-	if (user && iconContainer && userLoginLink) {
-		// Hapus link login yang sudah ada
-		userLoginLink.style.display = "none"; // Sembunyikan link login
+			const email = document.getElementById("email").value;
+			const password = document.getElementById("password").value;
 
-		// Buat elemen dropdown profil
-		const profileDropdown = document.createElement("div");
-		profileDropdown.classList.add("dropdown");
-		profileDropdown.innerHTML = `
-			<button class="dropbtn"><i class="ri-user-line"></i> ${user.email}</button>
-			<div class="dropdown-content">
-				<a href="#" id="logoutBtn">Logout</a>
-			</div>
-		`;
-		iconContainer.appendChild(profileDropdown); // Tambahkan dropdown ke dalam icon-container
+			try {
+				const response = await fetch("/api/login", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ email, password })
+				});
 
-		// Tambahkan style dropdown (jika belum ada atau perlu disesuaikan)
-		const dropdownStyle = `
-			.dropdown { position: relative; display: inline-block; }
-			.dropbtn {
+				const data = await response.json();
+
+				if (response.ok) {
+					// Simpan token dan user data ke localStorage
+					localStorage.setItem("token", data.token);
+					localStorage.setItem("user", JSON.stringify({
+						email: email,
+						role: data.role || "user"
+					}));
+
+					alert("Login berhasil!");
+
+					// Arahkan berdasarkan role
+					if (data.role === "admin") {
+						window.location.href = "/admin";
+					} else {
+						window.location.href = "/shop";
+					}
+				} else {
+					alert(data.error || "Login gagal.");
+				}
+			} catch (err) {
+				alert("Terjadi kesalahan koneksi.");
+			}
+		});
+	}
+	
+
+	// ===================== Fungsi untuk Update UI Berdasarkan Status Login =====================
+	function updateUserInterface() {
+		const user = JSON.parse(localStorage.getItem("user"));
+		const userIconLink = document.querySelector(".user-icon-link");
+		
+		if (!userIconLink) return;
+
+		if (user) {
+			// User sudah login - tampilkan dropdown profile
+			userIconLink.innerHTML = `
+				<div class="user-dropdown">
+					<button class="user-button">
+						<i class="ri-user-line"></i>
+						<span class="user-email">${user.email}</span>
+						<i class="ri-arrow-down-s-line dropdown-arrow"></i>
+					</button>
+					<div class="dropdown-menu">
+						<a href="#" class="dropdown-item" id="profileBtn">
+							<i class="ri-user-settings-line"></i> Profile
+						</a>
+						<a href="#" class="dropdown-item" id="logoutBtn">
+							<i class="ri-logout-box-line"></i> Logout
+						</a>
+					</div>
+				</div>
+			`;
+
+			// Event listener untuk logout
+			document.getElementById("logoutBtn").addEventListener("click", (e) => {
+				e.preventDefault();
+				localStorage.removeItem("user");
+				localStorage.removeItem("token");
+				alert("Logout berhasil!");
+				window.location.href = "/home";
+			});
+
+			// Event listener untuk profile (opsional)
+			const profileBtn = document.getElementById("profileBtn");
+				if (profileBtn) {
+					profileBtn.addEventListener("click", (e) => {
+						e.preventDefault();
+						window.location.href = "/profil.html"; // Redirect ke profil.html
+					});
+				}
+
+		} else {
+			// User belum login - tampilkan link login
+			userIconLink.innerHTML = '<i class="ri-user-line"></i>';
+			userIconLink.href = "/login";
+		}
+	}
+
+	// ===================== Tambahkan CSS untuk Dropdown =====================
+	const dropdownStyles = `
+		<style>
+			.user-dropdown {
+				position: relative;
+				display: inline-block;
+			}
+			
+			.user-button {
 				background: none;
 				border: none;
-				color: var(--text-color-dark); /* Gunakan warna yang sesuai dengan tema Anda */
-				font-size: 1.2rem; /* Sesuaikan ukuran font */
+				color: inherit;
+				font-size: 1rem;
 				cursor: pointer;
-				padding: 0 10px;
+				padding: 8px 12px;
 				display: flex;
 				align-items: center;
-				gap: 5px;
+				gap: 8px;
+				border-radius: 6px;
+				transition: background-color 0.3s ease;
 			}
-			.dropbtn i {
-				font-size: 1.4rem;
+			
+			.user-button:hover {
+				background-color: rgba(255, 255, 255, 0.1);
 			}
-			.dropdown-content {
-				display: none;
-				position: absolute;
-				background-color: white;
-				min-width: 120px;
-				box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-				z-index: 100; /* Pastikan z-index cukup tinggi */
-				right: 0; /* Posisikan dropdown di kanan ikon */
-				top: 100%; /* Posisikan di bawah ikon */
-				border-radius: 5px;
+			
+			.user-email {
+				max-width: 150px;
 				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
 			}
-			.dropdown-content a {
-				color: black;
-				padding: 10px 16px;
+			
+			.dropdown-arrow {
+				font-size: 1.2rem;
+				transition: transform 0.3s ease;
+			}
+			
+			.user-dropdown:hover .dropdown-arrow {
+				transform: rotate(180deg);
+			}
+			
+			.dropdown-menu {
+				position: absolute;
+				top: 100%;
+				right: 0;
+				background: white;
+				border-radius: 8px;
+				box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+				min-width: 180px;
+				opacity: 0;
+				visibility: hidden;
+				transform: translateY(-10px);
+				transition: all 0.3s ease;
+				z-index: 1000;
+				border: 1px solid #e1e5e9;
+			}
+			
+			.user-dropdown:hover .dropdown-menu {
+				opacity: 1;
+				visibility: visible;
+				transform: translateY(0);
+			}
+			
+			.dropdown-item {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				padding: 12px 16px;
+				color: #333;
 				text-decoration: none;
-				display: block;
-				font-weight: normal;
+				transition: background-color 0.2s ease;
+				border-bottom: 1px solid #f0f0f0;
 			}
-			.dropdown-content a:hover {
-				background-color: #f1f1f1;
+			
+			.dropdown-item:last-child {
+				border-bottom: none;
 			}
-			.dropdown:hover .dropdown-content {
-				display: block;
+			
+			.dropdown-item:hover {
+				background-color: #f8f9fa;
 			}
+			
+			.dropdown-item i {
+				font-size: 1.1rem;
+				width: 16px;
+			}
+			
+			/* Responsive untuk mobile */
 			@media (max-width: 768px) {
-				.dropdown {
-					display: block; /* Agar dropdown tetap di daftar menu mobile */
-					width: 100%;
+				.user-email {
+					display: none;
 				}
-				.dropbtn {
-					width: 100%;
-					justify-content: center;
-					color: white; /* Sesuaikan warna untuk menu mobile */
-				}
-				.dropdown-content {
-					position: static; /* Hilangkan posisi absolut di mobile */
-					width: 100%;
-					box-shadow: none;
-					border-radius: 0;
-					background-color: #333; /* Sesuaikan warna latar belakang */
-				}
-				.dropdown-content a {
-					color: white; /* Sesuaikan warna teks untuk mobile */
+				
+				.dropdown-menu {
+					right: -20px;
+					min-width: 160px;
 				}
 			}
-		`;
+		</style>
+	`;
 
-			// Hanya tambahkan style jika belum ada
-			if (!document.getElementById("dropdown-style")) {
-				const styleTag = document.createElement("style");
-				styleTag.id = "dropdown-style";
-				styleTag.innerText = dropdownStyle;	
-				document.head.appendChild(styleTag);
-			}
+	// Tambahkan styles ke head
+	if (!document.getElementById("user-dropdown-styles")) {
+		const styleElement = document.createElement("div");
+		styleElement.id = "user-dropdown-styles";
+		styleElement.innerHTML = dropdownStyles;
+		document.head.appendChild(styleElement);
+	}
 
+	// ===================== Inisialisasi UI saat halaman dimuat =====================
+	updateUserInterface();
 
-			// Logout handler
-			document.getElementById("logoutBtn").addEventListener("click", (e) => {
-				e.preventDefault(); // Mencegah navigasi default
-				localStorage.removeItem("user");
-				window.location.href = "/home"; // Arahkan kembali ke home setelah logout
-			});
-		} else if (userLoginLink) {
-			// Arahkan ke login jika belum login dan userLoginLink ada
-			userLoginLink.addEventListener("click", (e) => {
-				e.preventDefault(); // Mencegah navigasi default
-				window.location.href = "/login";
-			});
-		}
+	// ===================== Navigasi ke Cart =====================
+	const cartIcon = document.querySelector(".ri-shopping-cart-line");
+	if (cartIcon && cartIcon.closest('a')) {
+		cartIcon.closest('a').addEventListener("click", (e) => {
+			e.preventDefault();
+			window.location.href = "/cart";
+		});
+	}
 
-		// ===================== Navigasi ke Cart =====================
-		const cartIcon = document.querySelector(".ri-shopping-cart-line");
-		if (cartIcon) {
-			cartIcon.addEventListener("click", () => {
-				window.location.href = "/cart";
-			});
-		}
-
-	// ===================== Contoh Fetch API Contact =====================
+	// ===================== Fetch API Contact =====================
 	fetch("/api/contact")
-		.then(res => res.json())
+		.then(res => {
+			if (res.ok) {
+				return res.json();
+			}
+			throw new Error('Network response was not ok');
+		})
 		.then(data => {
 			console.log(data);
 			// TODO: Tampilkan data kontak ke UI jika diperlukan
+		})
+		.catch(error => {
+			console.log('Fetch contact API error:', error);
 		});
 });
