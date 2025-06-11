@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil - Anto Frozen Food</title>
+    <link rel="stylesheet" href="/frontend/style/admin.css">
+    <link rel="stylesheet" href="/frontend/style/profil.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5/fonts/remixicon.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="sidebar">
+        <h2>Anto Frozen Food</h2>
+        <nav>
+            <ul>
+                <li><a href="#profile-section" class="active">Profil Saya</a></li>
+                <li><a href="/shop" class="nav-link">Belanja</a></li>
+                <li><a href="/cart" class="nav-link">Keranjang</a></li>
+                <li><a href="#" id="logout-btn" class="nav-link">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Profil Pengguna</h1>
+        </header>
+
+        <main id="profile-section">
+            <!-- Card Informasi Profil -->
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-avatar">
+                        <i class="ri-user-fill"></i>
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="profile-name">Loading...</h2>
+                        <p id="profile-email">Loading...</p>
+                        <span class="profile-status">Member Aktif</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Edit Profil -->
+            <div class="form-container">
+                <div class="section-header">
+                    <h2>Informasi Pribadi</h2>
+                    <button type="button" id="edit-toggle-btn" class="edit-btn">
+                        <i class="ri-edit-line"></i> Edit Profil
+                    </button>
+                </div>
+                
+                <form id="profile-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullname">Nama Lengkap</label>
+                            <input type="text" id="fullname" placeholder="Masukkan nama lengkap" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" placeholder="Masukkan email" disabled>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Nomor Telepon</label>
+                            <input type="tel" id="phone" placeholder="Masukkan nomor telepon" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthdate">Tanggal Lahir</label>
+                            <input type="date" id="birthdate" disabled>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address">Alamat Lengkap</label>
+                        <textarea id="address" rows="4" placeholder="Masukkan alamat lengkap" disabled></textarea>
+                    </div>
+                    
+                    <div class="form-actions" style="display: none;">
+                        <button type="submit" class="save-btn">
+                            <i class="ri-save-line"></i> Simpan Perubahan
+                        </button>
+                        <button type="button" id="cancel-btn" class="cancel-btn">
+                            <i class="ri-close-line"></i> Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Riwayat Pesanan -->
+            <div class="table-container">
+                <h2>Riwayat Pesanan Terakhir</h2>
+                <div class="order-history">
+                    <div class="order-empty">
+                        <i class="ri-shopping-bag-line"></i>
+                        <p>Belum ada riwayat pesanan</p>
+                        <a href="/shop" class="btn">Mulai Belanja</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pengaturan Akun -->
+            <div class="form-container">
+                <h2>Pengaturan Akun</h2>
+                <div class="settings-options">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Ubah Password</h3>
+                            <p>Perbarui password akun Anda untuk keamanan yang lebih baik</p>
+                        </div>
+                        <button type="button" id="change-password-btn" class="setting-btn">
+                            <i class="ri-lock-line"></i> Ubah Password
+                        </button>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Notifikasi Email</h3>
+                            <p>Terima pemberitahuan pesanan dan promosi melalui email</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="email-notifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Ubah Password -->
+    <div id="password-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ubah Password</h3>
+                <button type="button" class="close-modal">&times;</button>
+            </div>
+            <form id="password-form">
+                <div class="form-group">
+                    <label for="current-password">Password Saat Ini</label>
+                    <input type="password" id="current-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Password Baru</label>
+                    <input type="password" id="new-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">Konfirmasi Password Baru</label>
+                    <input type="password" id="confirm-password" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="save-btn">Ubah Password</button>
+                    <button type="button" class="cancel-btn close-modal">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/frontend/js/profil.js"></script>
+</body>
+
+</html>

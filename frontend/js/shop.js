@@ -2,7 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const productContainer = document.getElementById("product-container");
     const cartCountElement = document.querySelector(".cart-count");
 
-    // Fungsi untuk memperbarui jumlah item di ikon keranjang
+    // Cek login helper
+    function isUserLoggedIn() {
+        return !!localStorage.getItem("token");
+    }
+
+    // Update icon keranjang
     const updateCartCount = () => {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -11,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Ambil produk dari API dan tampilkan
+    // Ambil produk dan render
     const fetchProducts = async () => {
         try {
             const response = await fetch("/api/products");
@@ -22,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            productContainer.innerHTML = ""; // Kosongkan kontainer
+            productContainer.innerHTML = "";
             products.forEach((product) => {
                 const card = document.createElement("div");
                 card.className = "product-card";
@@ -53,9 +58,16 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Event listener untuk tombol "Tambah ke Keranjang"
+    // Tambah ke keranjang, wajib login!
     productContainer.addEventListener("click", async (e) => {
         if (e.target.classList.contains("add-to-cart")) {
+            // --- Cek login di sini ---
+            if (!isUserLoggedIn()) {
+                alert("Silakan login terlebih dahulu untuk menambah produk ke keranjang.");
+                window.location.href = "/login";
+                return;
+            }
+
             const button = e.target;
             const stock = parseInt(button.dataset.stock);
 
@@ -71,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 image: button.dataset.image
             };
 
-            // Panggil API untuk mengurangi stok di backend
+            // API stok (opsional, sesuai kode asli)
             const response = await fetch("/api/cart/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -83,7 +95,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Kelola keranjang di localStorage
+            // Local storage cart
             let cart = JSON.parse(localStorage.getItem("cart") || "[]");
             const existingItem = cart.find(item => item.id === product.id);
 
@@ -97,14 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
             localStorage.setItem("cart", JSON.stringify(cart));
             updateCartCount();
             alert(`${product.name} ditambahkan ke keranjang!`);
-            
-            // Perbarui stok di UI dan muat ulang produk
+
+            // Update UI stok
             button.dataset.stock = stock - 1;
             fetchProducts();
         }
     });
 
-    // Panggil fungsi saat halaman dimuat
     fetchProducts();
     updateCartCount();
 });

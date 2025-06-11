@@ -2,10 +2,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartItemsContainer = document.getElementById("cart-items-container");
     const totalPriceElem = document.querySelector(".total-price");
     const cartCountElement = document.querySelector(".cart-count");
+    const checkoutBtn = document.getElementById("checkout-btn");
 
     let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-    // Fungsi untuk memperbarui angka di ikon keranjang
+    // Fungsi untuk cek apakah user sudah login
+    function isUserLoggedIn() {
+        // Anda bisa sesuaikan token key di sini, misal 'token', 'accessToken', dsb.
+        return !!localStorage.getItem("token");
+    }
+
+    // Fungsi update ikon jumlah cart
     const updateCartCount = () => {
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
         if (cartCountElement) {
@@ -13,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Fungsi untuk menampilkan item keranjang di halaman
+    // Tampilkan cart
     const renderCart = () => {
         cartItemsContainer.innerHTML = "";
         let total = 0;
@@ -50,14 +57,13 @@ document.addEventListener("DOMContentLoaded", () => {
         totalPriceElem.textContent = `Rp ${total.toLocaleString("id-ID")}`;
     };
 
-    // Menambahkan event listener untuk tombol hapus
+    // Hapus item cart + update server
     cartItemsContainer.addEventListener("click", async (e) => {
         const removeButton = e.target.closest(".remove-btn");
         if (removeButton) {
             const index = parseInt(removeButton.dataset.index);
             const itemToRemove = cart[index];
 
-            // Panggil API untuk mengembalikan stok ke database
             const response = await fetch("/api/cart/restore", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -72,21 +78,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Hapus item dari array cart
             cart.splice(index, 1);
-            
-            // Perbarui localStorage
             localStorage.setItem("cart", JSON.stringify(cart));
-            
+
             alert(`"${itemToRemove.name}" telah dihapus dari keranjang.`);
-            
-            // Tampilkan ulang keranjang dan perbarui hitungan item
+
             renderCart();
             updateCartCount();
         }
     });
 
-    // Panggil fungsi-fungsi ini saat halaman dimuat
+    // ---- Tambahan: Handler tombol checkout ----
+    if (checkoutBtn) {
+        checkoutBtn.addEventListener("click", function (e) {
+            e.preventDefault();
+
+            if (!isUserLoggedIn()) {
+                alert("Anda harus login atau register terlebih dahulu untuk checkout!");
+                window.location.href = "/login"; // arahkan ke halaman login
+                return;
+            }
+
+            // Lanjutkan ke halaman checkout
+            window.location.href = "/checkout";
+        });
+    }
+
     renderCart();
     updateCartCount();
 });

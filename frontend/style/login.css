@@ -57,6 +57,57 @@
     border-radius: 50%;
 }
 
+
+.show-password-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 0.98em;
+    color: #444;
+    user-select: none;
+}
+
+.show-password-container input[type="checkbox"] {
+    accent-color: #ff6b6b;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin: 0;
+}
+.show-password-container label {
+    cursor: pointer;
+}
+
+/* INLINE SHOW PASSWORD */
+.password-row {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.password-row .form-control {
+    flex: 1 1 0;
+}
+
+.show-password-inline {
+    display: flex;
+    align-items: center;
+    margin-left: 12px;
+    user-select: none;
+}
+
+.show-password-inline input[type="checkbox"] {
+    accent-color: #ff6b6b;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+.show-password-inline label {
+    cursor: pointer;
+}
+
 /* LOGIN FORM */
 .login-container {
     max-width: 450px;
