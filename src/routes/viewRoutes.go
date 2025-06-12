@@ -58,4 +58,9 @@ func ViewRoutes(router *gin.Engine) {
 	router.GET("/admin", func(c *gin.Context) {
 		c.File("./frontend/admin.html")
 	})
+
+	router.GET("/profile", func(c *gin.Context) {
+		c.File("./frontend/profile.html")
+	})
+
 }

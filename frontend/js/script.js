@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
 				if (profileBtn) {
 					profileBtn.addEventListener("click", (e) => {
 						e.preventDefault();
-						window.location.href = "/profil.html"; // Redirect ke profil.html
+						window.location.href = "/profile"; // Redirect ke profile.html
 					});
 				}
 
