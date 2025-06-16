@@ -12,5 +12,6 @@ func AuthRoutes(router *gin.Engine) {
 	{
 		auth.POST("/register", controllers.Register) // Route untuk registrasi
 		auth.POST("/login", controllers.Login)       // Route untuk login
+		auth.POST("/logout", controllers.Logout)
 	}
 }

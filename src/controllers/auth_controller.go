@@ -45,3 +45,8 @@ func Login(c *gin.Context) {
 		"role":    userInDb.Role,
 	})
 }
+
+func Logout(c *gin.Context) {
+	// Di sistem JWT, logout di sisi server biasanya tidak melakukan apa-apa
+	c.JSON(http.StatusOK, gin.H{"message": "Logout berhasil"})
+}

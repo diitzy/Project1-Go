@@ -311,3 +311,10 @@ function printSingleOrder(order) {
     printWindow.document.close();
     printWindow.print();
 }
+
+document.getElementById("logout-btn").addEventListener("click", function() {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    // Jika pakai cookie, hapus juga cookie token-nya
+    window.location.href = "/";
+});

@@ -115,13 +115,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             `;
 
-            document.getElementById("logoutBtn").addEventListener("click", (e) => {
-                e.preventDefault();
-                localStorage.removeItem("user");
-                localStorage.removeItem("token");
-                alert("Logout berhasil!");
-                window.location.href = "/home";
-            });
+            const logoutBtn = document.getElementById("logoutBtn");
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("cart");
+                    alert("Logout berhasil!");
+                    window.location.href = "/home";
+                });
+            }
 
             const profileBtn = document.getElementById("profileBtn");
             if (profileBtn) {
@@ -130,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = "/profile";
                 });
             }
-
         } else {
             userIconLink.innerHTML = '<i class="ri-user-line"></i>';
             userIconLink.href = "/login";
