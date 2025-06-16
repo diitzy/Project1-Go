@@ -12,7 +12,7 @@ import (
 func Checkout(c *gin.Context) {
 	var order models.Order
 	if err := c.ShouldBindJSON(&order); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Format tidak valid"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -21,16 +21,18 @@ func Checkout(c *gin.Context) {
 		return
 	}
 
-	// Hitung total
 	var total float64 = 0
-	for _, item := range order.Items {
-		total += item.Price * float64(item.Quantity)
+	for i := range order.Items {
+		total += order.Items[i].Price * float64(order.Items[i].Quantity)
+		order.Items[i].ID = 0      // prevent ID collision
+		order.Items[i].OrderID = 0 // will be set after Order saved
 	}
 	order.Total = total
 
-	err := services.CreateOrder(&order)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal membuat order"})
+	fmt.Printf("RECEIVED ORDER: %+v\n", order)
+
+	if err := services.CreateOrder(&order); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

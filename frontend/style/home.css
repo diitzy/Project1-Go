@@ -170,7 +170,6 @@ ul {
 .banner-image {
     flex: 1;
     height: 400px;
-    background-image: url('bg.png'); /* Assuming 'bg.png' is in the same directory or accessible path */
     background-size: cover;
     background-position: center;
     border-radius: 10px;

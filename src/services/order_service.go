@@ -8,14 +8,17 @@ import (
 func CreateOrder(order *models.Order) error {
 	tx := config.DB.Begin()
 
+	// Simpan order terlebih dahulu
 	if err := tx.Create(order).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
 
-	for _, item := range order.Items {
-		item.OrderID = order.ID // penting: set manual foreign key
-		if err := tx.Create(&item).Error; err != nil {
+	// Set OrderID dan pastikan ID item diset ulang agar auto_increment
+	for i := range order.Items {
+		order.Items[i].OrderID = order.ID
+		order.Items[i].Model.ID = 0 // Reset ID agar DB generate otomatis
+		if err := tx.Create(&order.Items[i]).Error; err != nil {
 			tx.Rollback()
 			return err
 		}
