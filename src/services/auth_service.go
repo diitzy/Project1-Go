@@ -11,9 +11,10 @@ var jwtKey = []byte("kunci_rahasia_super_aman_milik_anda")
 
 // PERBAIKAN: Gunakan jwt.RegisteredClaims instead of jwt.StandardClaims
 type Claims struct {
-	Email                string `json:"email"`
-	Role                 string `json:"role"`
-	jwt.RegisteredClaims        // Mengganti jwt.StandardClaims
+	UserID uint   `json:"user_id"`
+	Email  string `json:"email"`
+	Role   string `json:"role"`
+	jwt.RegisteredClaims
 }
 
 // HashPassword mengenkripsi password menggunakan bcrypt
@@ -23,14 +24,14 @@ func HashPassword(password string) (string, error) {
 }
 
 // GenerateToken membuat token JWT baru untuk pengguna
-func GenerateToken(email string, role string) (string, error) {
+func GenerateToken(userID uint, email, role string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
-
 	claims := &Claims{
-		Email: email,
-		Role:  role,
+		UserID: userID,
+		Email:  email,
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(expirationTime), // Perbaikan format
+			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
 	}
 

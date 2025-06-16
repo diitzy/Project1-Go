@@ -41,3 +41,9 @@ func GetOrderByID(id uint) (models.Order, error) {
 	err := config.DB.Preload("Items").First(&order, id).Error
 	return order, err
 }
+
+func GetOrdersByUserID(userID uint) ([]models.Order, error) {
+	var orders []models.Order
+	err := config.DB.Preload("Items").Where("user_id = ?", userID).Find(&orders).Error
+	return orders, err
+}

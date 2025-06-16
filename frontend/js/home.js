@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (profileBtn) {
                 profileBtn.addEventListener("click", (e) => {
                     e.preventDefault();
-                    alert("Fitur profile belum tersedia.");
+                    window.location.href = "/profile";
                 });
             }
         } else {

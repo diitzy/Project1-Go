@@ -32,7 +32,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Buat token JWT yang berisi role
-	token, err := services.GenerateToken(userInDb.Email, userInDb.Role)
+	token, err := services.GenerateToken(userInDb.ID, userInDb.Email, userInDb.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal membuat token"})
 		return

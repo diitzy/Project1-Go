@@ -248,12 +248,66 @@ async function loadOrders() {
                 <td>${order.Name}</td>
                 <td>${order.Address}</td>
                 <td>${order.Payment}</td>
-                <td>${order.Total.toFixed(2)}</td>
-                <td>${items}</td>
+                <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
+                <td style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>
+                        ${order.Items.map(item => `${item.Name} (${item.Quantity} x ${item.Price})`).join("<br>")}
+                    </span>
+                    <button style="margin-left: 10px;" onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>
+                        🖨️ Print
+                    </button>
+                </td>
             `;
             tableBody.appendChild(row);
         });
     } catch (error) {
         console.error("Gagal mengambil data pesanan:", error);
     }
+}
+
+function printSingleOrder(order) {
+    const printWindow = window.open('', '', 'width=800,height=600');
+    const itemRows = order.Items.map(item => {
+        return `<tr>
+            <td>${item.Name}</td>
+            <td>${item.Quantity}</td>
+            <td>Rp ${item.Price.toLocaleString("id-ID")}</td>
+            <td>Rp ${(item.Price * item.Quantity).toLocaleString("id-ID")}</td>
+        </tr>`;
+    }).join('');
+
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Detail Pesanan</title>
+            <style>
+                body { font-family: Arial; padding: 20px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                th, td { padding: 8px; border: 1px solid #000; text-align: left; }
+            </style>
+        </head>
+        <body>
+            <h2>Pesanan ID: ${order.ID}</h2>
+            <p><strong>Nama:</strong> ${order.Name}</p>
+            <p><strong>Alamat:</strong> ${order.Address}</p>
+            <p><strong>Metode Pembayaran:</strong> ${order.Payment}</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produk</th>
+                        <th>Qty</th>
+                        <th>Harga</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${itemRows}
+                </tbody>
+            </table>
+            <h3>Total: Rp ${order.Total.toLocaleString("id-ID")}</h3>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
 }

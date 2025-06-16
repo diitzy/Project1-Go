@@ -66,3 +66,25 @@ func GetOrderByIDHandler(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, order)
 }
+
+func GetOrdersByUserIDHandler(c *gin.Context) {
+	userIDAny, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak dikenali"})
+		return
+	}
+
+	userID, ok := userIDAny.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Format userID tidak valid"})
+		return
+	}
+
+	orders, err := services.GetOrdersByUserID(userID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil pesanan"})
+		return
+	}
+
+	c.JSON(http.StatusOK, orders)
+}
