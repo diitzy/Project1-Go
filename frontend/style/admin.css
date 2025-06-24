@@ -60,6 +60,36 @@ body {
 }
 
 /* ===================================== */
+/* Header and Message Section            */
+#message-section {
+    background: #fff;
+    margin-top: 40px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#message-section h2 {
+    margin-bottom: 20px;
+}
+
+#message-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#message-table th,
+#message-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+}
+
+#message-table td {
+    white-space: pre-wrap;
+}
+/* ===================================== */
 /* Main Content Area                    */
 /* ===================================== */
 .main-content {

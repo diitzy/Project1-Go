@@ -9,11 +9,31 @@ document.addEventListener('DOMContentLoaded', () => {
     const imageInput = document.getElementById('image');
     const orderSection = document.getElementById("order-section");
     const productSection = document.getElementById("product-section");
+    const messageSection = document.getElementById("message-section");
 
     const PUBLIC_API_BASE_URL = '/api/products';
     const ADMIN_API_BASE_URL = '/admin/products';
 
     const getToken = () => localStorage.getItem('token');
+
+    // ✅ Perbaikan: Tambahkan fungsi untuk update navigation
+    function updateNavigation(activeSection) {
+        // Remove active class from all nav links
+        document.querySelectorAll('.sidebar nav a').forEach(link => {
+            link.classList.remove('active');
+        });
+        
+        // Add active class to current section
+        document.querySelector(`a[href="#${activeSection}"]`).classList.add('active');
+        
+        // Hide all sections
+        productSection.style.display = "none";
+        orderSection.style.display = "none";
+        messageSection.style.display = "none";
+        
+        // Show selected section
+        document.getElementById(activeSection).style.display = "block";
+    }
 
     const fetchProducts = async () => {
         try {
@@ -46,6 +66,25 @@ document.addEventListener('DOMContentLoaded', () => {
             tableBody.innerHTML = `<tr><td colspan="5">Gagal memuat produk: ${error.message}. Coba muat ulang halaman.</td></tr>`;
         }
     };
+
+    // ✅ Perbaikan: Navigation handlers
+    document.querySelector('a[href="#product-section"]').addEventListener("click", (e) => {
+        e.preventDefault();
+        updateNavigation("product-section");
+        fetchProducts();
+    });
+
+    document.querySelector('a[href="#order-section"]').addEventListener("click", (e) => {
+        e.preventDefault();
+        updateNavigation("order-section");
+        loadOrders();
+    });
+
+    document.querySelector('a[href="#message-section"]').addEventListener("click", (e) => {
+        e.preventDefault();
+        updateNavigation("message-section");
+        loadMessages();
+    });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -98,6 +137,71 @@ document.addEventListener('DOMContentLoaded', () => {
             showNotification(`Terjadi kesalahan: ${error.message}`, 'error');
         }
     });
+
+    // ✅ Perbaikan: Fungsi loadMessages dengan error handling yang lebih baik
+    async function loadMessages() {
+        const tableBody = document.querySelector("#message-table tbody");
+        
+        // Show loading state
+        tableBody.innerHTML = "<tr><td colspan='4'>Memuat pesan...</td></tr>";
+
+        try {
+            console.log("🔄 Memuat pesan...");
+            const response = await fetch("/admin/messages", {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}` // ✅ Tambahkan authorization
+                }
+            });
+
+            console.log("📡 Response status:", response.status);
+            console.log("📡 Response headers:", response.headers);
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await response.text();
+                console.error("❌ Response bukan JSON:", text);
+                throw new Error("Server mengembalikan response yang tidak valid");
+            }
+
+            const messages = await response.json();
+            console.log("✅ Messages loaded:", messages);
+
+            // Clear table
+            tableBody.innerHTML = "";
+
+            if (!messages || messages.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='4'>Tidak ada pesan.</td></tr>";
+                return;
+            }
+
+            // Populate table
+            messages.forEach(msg => {
+                const row = document.createElement("tr");
+                const createdAt = msg.CreatedAt ? new Date(msg.CreatedAt).toLocaleString("id-ID") : 'Tidak diketahui';
+                
+                row.innerHTML = `
+                    <td>${msg.Name || 'Tidak ada nama'}</td>
+                    <td>${msg.Email || 'Tidak ada email'}</td>
+                    <td style="max-width: 300px; word-wrap: break-word;">${msg.Message || 'Tidak ada pesan'}</td>
+                    <td>${createdAt}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+
+            showNotification(`${messages.length} pesan berhasil dimuat`, 'success');
+
+        } catch (error) {
+            console.error("❌ Error loading messages:", error);
+            tableBody.innerHTML = `<tr><td colspan='4'>Gagal memuat pesan: ${error.message}</td></tr>`;
+            showNotification(`Gagal memuat pesan: ${error.message}`, 'error');
+        }
+    }
 
     const resetForm = () => {
         form.reset();
@@ -207,114 +311,113 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutLink) {
         logoutLink.addEventListener('click', (e) => {
             e.preventDefault();
-            localStorage.removeItem('token'); // Hapus token
-            window.location.href = '/home';   // Arahkan ke halaman login atau home
+            localStorage.removeItem('token');
+            window.location.href = '/home';
         });
     }
 
-    document.querySelector('a[href="#order-section"]').addEventListener("click", (e) => {
-        e.preventDefault();
-        productSection.style.display = "none";
-        orderSection.style.display = "block";
-        loadOrders();
-    });
+    // ✅ Perbaikan: Fungsi loadOrders dengan URL yang konsisten
+    async function loadOrders() {
+        const tableBody = document.querySelector("#order-table tbody");
+        tableBody.innerHTML = "<tr><td colspan='6'>Memuat pesanan...</td></tr>";
 
-    document.querySelector('a[href="#product-section"]').addEventListener("click", (e) => {
-        e.preventDefault();
-        orderSection.style.display = "none";
-        productSection.style.display = "block";
-    });
+        try {
+            const response = await fetch("/admin/orders", {
+                headers: {
+                    'Authorization': `Bearer ${getToken()}`
+                }
+            });
 
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
+            const orders = await response.json();
+            tableBody.innerHTML = "";
+
+            if (!orders || orders.length === 0) {
+                tableBody.innerHTML = "<tr><td colspan='6'>Tidak ada pesanan.</td></tr>";
+                return;
+            }
+
+            orders.forEach(order => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${order.ID}</td>
+                    <td>${order.Name}</td>
+                    <td>${order.Address}</td>
+                    <td>${order.Payment}</td>
+                    <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
+                    <td style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>
+                            ${order.Items.map(item => `${item.Name} (${item.Quantity} x ${item.Price})`).join("<br>")}
+                        </span>
+                        <button style="margin-left: 10px;" onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>
+                            🖨️ Print
+                        </button>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        } catch (error) {
+            console.error("❌ Gagal mengambil data pesanan:", error);
+            tableBody.innerHTML = `<tr><td colspan='6'>Gagal memuat pesanan: ${error.message}</td></tr>`;
+        }
+    }
+
+    // Expose loadOrders globally for navigation
+    window.loadOrders = loadOrders;
+
+    function printSingleOrder(order) {
+        const printWindow = window.open('', '', 'width=800,height=600');
+        const itemRows = order.Items.map(item => {
+            return `<tr>
+                <td>${item.Name}</td>
+                <td>${item.Quantity}</td>
+                <td>Rp ${item.Price.toLocaleString("id-ID")}</td>
+                <td>Rp ${(item.Price * item.Quantity).toLocaleString("id-ID")}</td>
+            </tr>`;
+        }).join('');
+
+        printWindow.document.write(`
+            <html>
+            <head>
+                <title>Detail Pesanan</title>
+                <style>
+                    body { font-family: Arial; padding: 20px; }
+                    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                    th, td { padding: 8px; border: 1px solid #000; text-align: left; }
+                </style>
+            </head>
+            <body>
+                <h2>Pesanan ID: ${order.ID}</h2>
+                <p><strong>Nama:</strong> ${order.Name}</p>
+                <p><strong>Alamat:</strong> ${order.Address}</p>
+                <p><strong>Metode Pembayaran:</strong> ${order.Payment}</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produk</th>
+                            <th>Qty</th>
+                            <th>Harga</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemRows}
+                    </tbody>
+                </table>
+                <h3>Total: Rp ${order.Total.toLocaleString("id-ID")}</h3>
+            </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    // Expose printSingleOrder globally
+    window.printSingleOrder = printSingleOrder;
+
+    // Initialize with products section
     fetchProducts();
-});
-
-async function loadOrders() {
-    const tableBody = document.querySelector("#order-table tbody");
-    tableBody.innerHTML = ""; // Clear existing rows
-
-    try {
-        const res = await fetch("http://localhost:8080/admin/orders");
-        const orders = await res.json();
-
-        orders.forEach(order => {
-            const row = document.createElement("tr");
-
-            const items = order.Items.map(item =>
-                `${item.Name} (${item.Quantity} x ${item.Price})`
-            ).join("<br>");
-
-            row.innerHTML = `
-                <td>${order.ID}</td>
-                <td>${order.Name}</td>
-                <td>${order.Address}</td>
-                <td>${order.Payment}</td>
-                <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
-                <td style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>
-                        ${order.Items.map(item => `${item.Name} (${item.Quantity} x ${item.Price})`).join("<br>")}
-                    </span>
-                    <button style="margin-left: 10px;" onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>
-                        🖨️ Print
-                    </button>
-                </td>
-            `;
-            tableBody.appendChild(row);
-        });
-    } catch (error) {
-        console.error("Gagal mengambil data pesanan:", error);
-    }
-}
-
-function printSingleOrder(order) {
-    const printWindow = window.open('', '', 'width=800,height=600');
-    const itemRows = order.Items.map(item => {
-        return `<tr>
-            <td>${item.Name}</td>
-            <td>${item.Quantity}</td>
-            <td>Rp ${item.Price.toLocaleString("id-ID")}</td>
-            <td>Rp ${(item.Price * item.Quantity).toLocaleString("id-ID")}</td>
-        </tr>`;
-    }).join('');
-
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Detail Pesanan</title>
-            <style>
-                body { font-family: Arial; padding: 20px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                th, td { padding: 8px; border: 1px solid #000; text-align: left; }
-            </style>
-        </head>
-        <body>
-            <h2>Pesanan ID: ${order.ID}</h2>
-            <p><strong>Nama:</strong> ${order.Name}</p>
-            <p><strong>Alamat:</strong> ${order.Address}</p>
-            <p><strong>Metode Pembayaran:</strong> ${order.Payment}</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Produk</th>
-                        <th>Qty</th>
-                        <th>Harga</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${itemRows}
-                </tbody>
-            </table>
-            <h3>Total: Rp ${order.Total.toLocaleString("id-ID")}</h3>
-        </body>
-        </html>
-    `);
-    printWindow.document.close();
-    printWindow.print();
-}
-
-document.getElementById("logout-btn").addEventListener("click", function() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    // Jika pakai cookie, hapus juga cookie token-nya
-    window.location.href = "/";
 });

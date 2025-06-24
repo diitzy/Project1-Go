@@ -1,12 +1,16 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"time"
 
-// Contact merepresentasikan data dari form kontak yang dikirim oleh pengguna.
-// Struct ini otomatis memiliki kolom ID, CreatedAt, UpdatedAt, dan DeletedAt dari gorm.Model.
+	"gorm.io/gorm"
+)
+
 type Contact struct {
-	gorm.Model        // Menyediakan ID, timestamps, dan soft delete
-	Name       string // Nama pengirim pesan
-	Email      string // Email pengirim
-	Message    string // Isi pesan yang dikirim
+	gorm.Model           // Menambahkan model GORM untuk dukungan ORM
+	ID         uint      `json:"ID" gorm:"primaryKey"`
+	Name       string    `json:"Name"`
+	Email      string    `json:"Email"`
+	Message    string    `json:"Message"`
+	CreatedAt  time.Time `json:"CreatedAt"`
 }
