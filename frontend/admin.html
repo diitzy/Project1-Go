@@ -14,8 +14,8 @@
         <nav>
             <ul>
                 <li><a href="#product-section" class="active">Produk</a></li>
-                <li><a href="#order-section">Pesanan</a></li> <!-- BARU INI -->
-                <li><a href="#">Kontak</a></li>
+                <li><a href="#order-section">Pesanan</a></li>
+                <li><a href="#message-section">Pesan</a></li>
                 <li><a href="/home" id="logout-btn" class="nav-link">Logout</a></li>
             </ul>
         </nav>
@@ -23,9 +23,10 @@
 
     <div class="main-content">
         <header>
-            <h1>Manajemen Produk</h1>
+            <h1 id="page-title">Manajemen Produk</h1>
         </header>
 
+        <!-- Section Produk -->
         <main id="product-section">
             <div class="form-container">
                 <h2 id="form-title">Tambah Produk Baru</h2>
@@ -71,7 +72,8 @@
             </div>
         </main>
 
-        <main id="order-section" style="display:none;"> <!-- DISINI BARU -->
+        <!-- Section Pesanan -->
+        <main id="order-section" style="display:none;">
             <div class="table-container">
                 <h2>Daftar Pesanan</h2>
                 <table id="order-table">
@@ -90,10 +92,16 @@
             </div>
         </main>
 
+        <!-- Section Pesan (Diubah jadi "Stay Tuned") -->
+        <main id="message-section" style="display:none;">
+            <div class="table-container" style="text-align: center; padding: 40px;">
+                <h2>Stay Tuned</h2>
+                <p>Fitur ini sedang dalam pengembangan. Nantikan pembaruannya segera!</p>
+            </div>
+        </main>
     </div>
 
     <script src="/frontend/js/admin.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </body>
 
 </html>
