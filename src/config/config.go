@@ -7,6 +7,7 @@ import (
 	"project-1/src/models"
 	"time"
 
+	"github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -14,7 +15,16 @@ import (
 
 var DB *gorm.DB
 
+func loadEnv() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("⚠️  Gagal memuat .env file. Menggunakan nilai default atau ENV sistem.")
+	}
+}
+
 func getDSN() string {
+	loadEnv() // Pastikan file .env dimuat
+
 	user := getEnv("DB_USER", "root")
 	pass := getEnv("DB_PASS", "")
 	host := getEnv("DB_HOST", "127.0.0.1")
@@ -27,15 +37,13 @@ func getDSN() string {
 	)
 }
 
-// PERBAIKAN: Tambah retry mechanism untuk koneksi database
 func ConnectDB() {
 	dsn := getDSN()
 	var err error
 
-	// Retry connection up to 5 times
 	for i := 0; i < 5; i++ {
 		DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
-			Logger: logger.Default.LogMode(logger.Info), // Enable logging
+			Logger: logger.Default.LogMode(logger.Info),
 		})
 		if err == nil {
 			break
@@ -43,7 +51,7 @@ func ConnectDB() {
 
 		log.Printf("❌ Percobaan koneksi ke database gagal (%d/5): %v", i+1, err)
 		if i < 4 {
-			time.Sleep(time.Second * 2) // Wait 2 seconds before retry
+			time.Sleep(2 * time.Second)
 		}
 	}
 
@@ -51,17 +59,15 @@ func ConnectDB() {
 		log.Fatal("❌ Gagal koneksi ke database setelah 5 percobaan:", err)
 	}
 
-	// Test connection
 	sqlDB, err := DB.DB()
 	if err != nil {
-		log.Fatal("❌ Gagal mendapatkan database instance:", err)
+		log.Fatal("❌ Gagal mendapatkan instance database:", err)
 	}
 
 	if err := sqlDB.Ping(); err != nil {
-		log.Fatal("❌ Gagal ping database:", err)
+		log.Fatal("❌ Gagal ping ke database:", err)
 	}
 
-	// Auto migrate
 	err = DB.AutoMigrate(
 		&models.Contact{},
 		&models.Product{},

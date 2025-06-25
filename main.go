@@ -7,16 +7,23 @@ import (
 	"project-1/src/routes"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load file .env untuk koneksi database
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("⚠️  Gagal memuat file .env. Menggunakan default/env sistem.")
+	}
+
 	// Koneksi ke database
 	config.ConnectDB()
 
 	// Inisialisasi router Gin
 	router := gin.Default()
 
-	// Middleware CORS
+	// Middleware
 	router.Use(middlewares.CORSMiddleware())
 	router.Static("/uploads", "./uploads")
 
@@ -28,7 +35,7 @@ func main() {
 	routes.ProductAdminRoutes(router)
 	routes.OrderRoutes(router)
 
-	// Jalankan server
+	// Port server hardcoded di sini
 	log.Println("🚀 Server berjalan di http://localhost:8080")
 	if err := router.Run(":8080"); err != nil {
 		log.Fatal("❌ Gagal menjalankan server:", err)
