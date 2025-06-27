@@ -68,10 +68,27 @@ func UpdateOrderStatusHandler(c *gin.Context) {
 
 // TERBARU
 // GetAllOrdersHandler untuk endpoint admin melihat semua order
+// src/controllers/order_controller.go
+
 func GetAllOrdersHandler(c *gin.Context) {
-	orders, err := services.GetAllOrders()
+	// parse query params (format YYYY-MM-DD)
+	start := c.Query("startDate")
+	end := c.Query("endDate")
+
+	var (
+		orders []models.Order
+		err    error
+	)
+	if start != "" && end != "" {
+		// ambil dengan filter tanggal
+		orders, err = services.GetOrdersByDate(start, end)
+	} else {
+		// ambil semua tanpa filter
+		orders, err = services.GetAllOrders()
+	}
+
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil data orders"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal ambil pesanan"})
 		return
 	}
 	c.JSON(http.StatusOK, orders)

@@ -1,8 +1,10 @@
 package services
 
 import (
+	"fmt"
 	"project-1/src/config"
 	"project-1/src/models"
+	"time"
 )
 
 func CreateOrder(order *models.Order) error {
@@ -29,9 +31,30 @@ func CreateOrder(order *models.Order) error {
 
 // TERBARU
 // GetAllOrders mengambil seluruh data order dari database
+// ambil semua order
 func GetAllOrders() ([]models.Order, error) {
 	var orders []models.Order
 	err := config.DB.Preload("Items").Find(&orders).Error
+	return orders, err
+}
+
+// ambil order berdasarkan rentang tanggal
+func GetOrdersByDate(start, end string) ([]models.Order, error) {
+	var orders []models.Order
+	// parsing tanggal
+	s, err1 := time.Parse("2006-01-02", start)
+	e, err2 := time.Parse("2006-01-02", end)
+	if err1 != nil || err2 != nil {
+		return nil, fmt.Errorf("format tanggal salah")
+	}
+	// perlu set end ke akhir hari
+	e = e.Add(23*time.Hour + 59*time.Minute + 59*time.Second)
+
+	err := config.DB.
+		Preload("Items").
+		Where("created_at BETWEEN ? AND ?", s, e).
+		Find(&orders).
+		Error
 	return orders, err
 }
 

@@ -317,17 +317,25 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	// ✅ Perbaikan: Fungsi loadOrders dengan URL yang konsisten
-	async function loadOrders() {
+	// File: frontend/js/admin.js
+
+	// 1) Ubah signature loadOrders jadi terima startDate & endDate
+	async function loadOrders(startDate, endDate) {
 		const tableBody = document.querySelector("#order-table tbody");
 		tableBody.innerHTML = "<tr><td colspan='8'>Memuat pesanan...</td></tr>";
 
 		try {
-			const response = await fetch("/admin/orders", {
+			// bangun URL dengan query params jika ada filter
+			let url = "/admin/orders";
+			if (startDate && endDate) {
+				url += `?startDate=${startDate}&endDate=${endDate}`;
+			}
+
+			const response = await fetch(url, {
 				headers: {
 					'Authorization': `Bearer ${getToken()}`
 				}
 			});
-
 			if (!response.ok) {
 				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
 			}
@@ -336,49 +344,74 @@ document.addEventListener('DOMContentLoaded', () => {
 			tableBody.innerHTML = "";
 
 			if (!orders || orders.length === 0) {
-				tableBody.innerHTML = "<tr><td colspan='6'>Tidak ada pesanan.</td></tr>";
+				tableBody.innerHTML = "<tr><td colspan='8'>Tidak ada pesanan.</td></tr>";
 				return;
 			}
 
 			orders.forEach(order => {
 				const row = document.createElement("tr");
-				// file: frontend/js/admin.js, di dalam loadOrders(), ganti bagian row.innerHTML menjadi:
 				row.innerHTML = `
-    <td>${order.ID}</td>
-    <td>${order.Name}</td>
-    <td>${order.Address}</td>
-    <td>${order.Payment}</td>
-    <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
-    <td style="display: flex; justify-content: space-between; align-items: center;">
-        <span>
-            ${order.Items
-              .map(item => `${item.Name} (${item.Quantity} x ${item.Price.toLocaleString("id-ID")})`)
-              .join("<br>")}
-        </span>
-        <!-- tombol Print tetap dipertahankan -->
-        <button style="margin-left: 10px;"
-                onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>
-            🖨️ Print
-        </button>
-    </td>
-    <!-- kolom Status -->
-    <td>${order.Status}</td>
-    <!-- kolom Aksi: tombol Set Berhasil jika pending -->
-    <td>
-      ${order.Status === "pending"
-        ? `<button class="status-btn" data-id="${order.ID}" data-status="berhasil">Set Berhasil</button>`
-        : `<span>✔️</span>`}
-    </td>
-`;
+                <td>${order.ID}</td>
+                <td>${order.Name}</td>
+                <td>${order.Address}</td>
+                <td>${order.Payment}</td>
+                <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
+                <td style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>
+                        ${order.Items
+                          .map(item => `${item.Name} (${item.Quantity} x ${item.Price.toLocaleString("id-ID")})`)
+                          .join("<br>")}
+                    </span>
+                    <button style="margin-left: 10px;"
+                            onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>
+                        🖨️ Print
+                    </button>
+                </td>
+                <td>${order.status}</td>
+                <td>
+                  ${order.status === "pending"
+                    ? `<button class="status-btn"
+                               data-id="${order.ID}"
+                               data-status="berhasil">
+                         Set Berhasil
+                       </button>`
+                    : `<span>✔️</span>`}
+                </td>
+            `;
 				tableBody.appendChild(row);
 			});
 		} catch (error) {
 			console.error("❌ Gagal mengambil data pesanan:", error);
-			tableBody.innerHTML = `<tr><td colspan='6'>Gagal memuat pesanan: ${error.message}</td></tr>`;
+			tableBody.innerHTML = `<tr><td colspan='8'>Gagal memuat pesanan: ${error.message}</td></tr>`;
 		}
 	}
 
-	// Delegasi klik di tabel order
+	// 2) Event listener untuk tombol Filter
+	document.getElementById("filter-orders")
+		.addEventListener("click", () => {
+			const start = document.getElementById("start-date").value;
+			const end = document.getElementById("end-date").value;
+			if (!start || !end) {
+				alert("Silakan pilih tanggal mulai dan akhir terlebih dahulu.");
+				return;
+			}
+			loadOrders(start, end);
+		});
+
+	// 3) Event listener untuk tombol Refresh (hapus filter)
+	document.getElementById("refresh-orders")
+		.addEventListener("click", () => {
+			document.getElementById("start-date").value = "";
+			document.getElementById("end-date").value = "";
+			loadOrders(); // tanpa argumen = semua pesanan
+		});
+
+	// 4) Panggil loadOrders saat pertama kali halaman di-load
+	document.addEventListener("DOMContentLoaded", () => {
+		loadOrders();
+	});
+
+	// 5) Pastikan juga kamu punya listener click untuk .status-btn
 	document.querySelector("#order-table tbody")
 		.addEventListener("click", async e => {
 			const btn = e.target.closest(".status-btn");
@@ -389,20 +422,20 @@ document.addEventListener('DOMContentLoaded', () => {
 				const res = await fetch(`/admin/orders/${id}/status`, {
 					method: "PATCH",
 					headers: {
-						"Content-Type": "application/json"
+						"Content-Type": "application/json",
+						'Authorization': `Bearer ${getToken()}`
 					},
 					body: JSON.stringify({
 						status
 					})
 				});
 				if (!res.ok) throw new Error("Gagal update status");
-				loadOrders(); // refresh tabel
+				loadOrders(); // refresh setelah sukses
 			} catch (err) {
 				console.error(err);
 				alert("Error mengubah status");
 			}
 		});
-
 
 	// Expose loadOrders globally for navigation
 	window.loadOrders = loadOrders;
