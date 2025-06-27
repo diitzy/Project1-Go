@@ -307,14 +307,11 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.head.appendChild(styleSheet);
 
 	// 🔐 Handler untuk logout
-	const logoutLink = document.querySelector('.nav-link[href="/home"]');
-	if (logoutLink) {
-		logoutLink.addEventListener('click', (e) => {
-			e.preventDefault();
-			localStorage.removeItem('token');
-			window.location.href = '/home';
-		});
-	}
+	document.getElementById("logout-btn").addEventListener("click", function() {
+	    localStorage.removeItem("token");
+	    localStorage.removeItem("user");
+	    window.location.href = "/";
+    });
 
 	// ✅ Perbaikan: Fungsi loadOrders dengan URL yang konsisten
 	// File: frontend/js/admin.js
