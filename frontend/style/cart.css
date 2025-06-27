@@ -6,7 +6,8 @@
     padding: 2rem;
     max-width: 1000px;
     margin: auto;
-    padding-top: 100px; /* Adjust based on your header height */
+    padding-top: 100px;
+    /* Adjust based on your header height */
 }
 
 .cart-item {
@@ -78,4 +79,23 @@
     text-decoration: none;
     border-radius: 5px;
     margin-top: 1rem;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+}
+
+.quantity-control button {
+    width: 2rem;
+    height: 2rem;
+    font-size: 1.2rem;
+}
+
+.quantity-display {
+    display: inline-block;
+    width: 2rem;
+    text-align: center;
+    margin: 0 .5rem;
+    font-weight: bold;
 }
