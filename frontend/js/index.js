@@ -2,12 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const productContainer = document.getElementById("featured-product-container");
     const cartCountElement = document.querySelector(".cart-count");
 
-    // Fungsi cek login
+    // Cek apakah user sudah login berdasarkan token
     function isUserLoggedIn() {
         return !!localStorage.getItem("token");
     }
 
-    // Update jumlah item pada ikon keranjang
+    // Fungsi untuk memperbarui jumlah item di ikon keranjang
     const updateCartCount = () => {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Update UI user (tidak diubah)
+    // Fungsi untuk memperbarui UI user login/logout
     const updateUserInterface = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         const userIconLink = document.querySelector(".user-icon-link");
@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
             `;
+
             const logoutBtn = document.getElementById("logoutBtn");
             if (logoutBtn) {
                 logoutBtn.addEventListener("click", (e) => {
@@ -52,6 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = "/home";
                 });
             }
+
             const profileBtn = document.getElementById("profileBtn");
             if (profileBtn) {
                 profileBtn.addEventListener("click", (e) => {
@@ -65,7 +67,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Ambil produk unggulan (hanya 4 produk)
+    // Ambil dan tampilkan produk unggulan (maksimal 4)
     const fetchFeaturedProducts = async () => {
         try {
             const response = await fetch("/api/products");
@@ -82,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             productContainer.innerHTML = "";
-            const featuredProducts = products.slice(0, 4);
+            const featuredProducts = products.slice(0, 4); // Ambil 4 produk teratas
 
             featuredProducts.forEach((product) => {
                 const card = document.createElement("div");
@@ -114,10 +116,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Event listener untuk tombol "Tambah ke Keranjang" dengan validasi login
+    // Event listener untuk tombol "Tambah ke Keranjang"
     productContainer.addEventListener("click", async (e) => {
         if (e.target.classList.contains("add-to-cart") || e.target.closest(".add-to-cart")) {
-            // Validasi login di sini
+
+            // Cek login terlebih dahulu
             if (!isUserLoggedIn()) {
                 alert("Silakan login terlebih dahulu untuk menambah produk ke keranjang!");
                 window.location.href = "/login";
@@ -143,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
             };
 
             try {
-                // Update stok di server
+                // Kirim request penambahan ke server
                 const response = await fetch("/api/cart/add", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -154,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     throw new Error("Gagal memperbarui stok");
                 }
 
-                // Update cart di localStorage
+                // Update cart lokal
                 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
                 const existingItem = cart.find(item => item.id === product.id);
 
@@ -168,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("cart", JSON.stringify(cart));
                 updateCartCount();
 
-                // Update UI
+                // Update stok yang tampil di UI
                 const newStock = stock - 1;
                 button.dataset.stock = newStock;
                 const stockElement = button.previousElementSibling;
@@ -176,11 +179,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     stockElement.textContent = `Stok: ${newStock}`;
                 }
 
+                // Update tampilan tombol
                 if (newStock === 0) {
                     button.disabled = true;
                     button.innerHTML = '<i class="ri-shopping-cart-line"></i> Stok Habis';
                 } else {
-                    // Feedback visual
                     const originalHTML = button.innerHTML;
                     button.innerHTML = '<i class="ri-check-line"></i> Ditambahkan';
                     button.style.backgroundColor = "#51cf66";
@@ -199,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Inisialisasi halaman
+    // Jalankan fungsi inisialisasi saat halaman dimuat
     fetchFeaturedProducts();
     updateCartCount();
     updateUserInterface();

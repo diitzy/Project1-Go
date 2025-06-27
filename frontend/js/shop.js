@@ -2,12 +2,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const productContainer = document.getElementById("product-container");
     const cartCountElement = document.querySelector(".cart-count");
 
-    // Cek login helper
+    // ===================== Helper: Cek Login =====================
     function isUserLoggedIn() {
         return !!localStorage.getItem("token");
     }
 
-    // Update icon keranjang
+    // ===================== Update Jumlah Item Keranjang =====================
     const updateCartCount = () => {
         const cart = JSON.parse(localStorage.getItem("cart") || "[]");
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Ambil produk dan render
+    // ===================== Ambil dan Tampilkan Produk =====================
     const fetchProducts = async () => {
         try {
             const response = await fetch("/api/products");
@@ -58,10 +58,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Tambah ke keranjang, wajib login!
+    // ===================== Tambah Produk ke Keranjang =====================
     productContainer.addEventListener("click", async (e) => {
         if (e.target.classList.contains("add-to-cart")) {
-            // --- Cek login di sini ---
             if (!isUserLoggedIn()) {
                 alert("Silakan login terlebih dahulu untuk menambah produk ke keranjang.");
                 window.location.href = "/login";
@@ -83,11 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 image: button.dataset.image
             };
 
-            // API stok (opsional, sesuai kode asli)
+            // Kirim request ke backend untuk update stok
             const response = await fetch("/api/cart/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ productId: product.id, quantity: 1 }),
+                body: JSON.stringify({ productId: product.id, quantity: 1 })
             });
 
             if (!response.ok) {
@@ -95,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return;
             }
 
-            // Local storage cart
+            // Simpan ke localStorage
             let cart = JSON.parse(localStorage.getItem("cart") || "[]");
             const existingItem = cart.find(item => item.id === product.id);
 
@@ -110,13 +109,13 @@ document.addEventListener("DOMContentLoaded", () => {
             updateCartCount();
             alert(`${product.name} ditambahkan ke keranjang!`);
 
-            // Update UI stok
+            // Perbarui UI stok produk
             button.dataset.stock = stock - 1;
             fetchProducts();
         }
     });
 
-    // Update UI user (tidak diubah)
+    // ===================== Update UI User Login =====================
     const updateUserInterface = () => {
         const user = JSON.parse(localStorage.getItem("user"));
         const userIconLink = document.querySelector(".user-icon-link");
@@ -141,6 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
             `;
+
             const logoutBtn = document.getElementById("logoutBtn");
             if (logoutBtn) {
                 logoutBtn.addEventListener("click", (e) => {
@@ -152,6 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     window.location.href = "/home";
                 });
             }
+
             const profileBtn = document.getElementById("profileBtn");
             if (profileBtn) {
                 profileBtn.addEventListener("click", (e) => {
@@ -165,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    // ===================== Inisialisasi =====================
     fetchProducts();
     updateCartCount();
     updateUserInterface();

@@ -6,16 +6,19 @@ document.addEventListener("DOMContentLoaded", () => {
         registerForm.addEventListener("submit", async function (e) {
             e.preventDefault();
 
+            // Ambil data dari form
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
             const confirmPassword = document.getElementById("confirm-password").value;
 
+            // Validasi password cocok
             if (password !== confirmPassword) {
                 alert("Konfirmasi password tidak cocok!");
                 return;
             }
 
             try {
+                // Kirim request ke endpoint registrasi
                 const response = await fetch("/api/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -24,6 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 const data = await response.json();
 
+                // Berhasil registrasi
                 if (response.status === 201 && data.message === "Registrasi berhasil") {
                     alert("Registrasi berhasil! Silakan login.");
                     window.location.href = "/login";
@@ -36,11 +40,13 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ===================== Show Password =====================
+    // ===================== Show/Hide Password =====================
     const passwordInput = document.getElementById("password");
     const showPasswordCheckbox = document.getElementById("show-password");
+
     if (passwordInput && showPasswordCheckbox) {
         showPasswordCheckbox.addEventListener("change", function () {
+            // Tampilkan atau sembunyikan password
             passwordInput.type = this.checked ? "text" : "password";
         });
     }
@@ -52,10 +58,12 @@ document.addEventListener("DOMContentLoaded", () => {
         loginForm.addEventListener("submit", async function (e) {
             e.preventDefault();
 
+            // Ambil data dari form login
             const email = document.getElementById("email").value;
             const password = document.getElementById("password").value;
 
             try {
+                // Kirim request ke endpoint login
                 const response = await fetch("/api/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -65,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Simpan token dan user data ke localStorage
+                    // Simpan data token dan user ke localStorage
                     localStorage.setItem("token", data.token);
                     localStorage.setItem("user", JSON.stringify({
                         email: email,
@@ -89,7 +97,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ===================== Fungsi untuk Update UI Berdasarkan Status Login =====================
+    // ===================== Update UI Berdasarkan Status Login =====================
     function updateUserInterface() {
         const user = JSON.parse(localStorage.getItem("user"));
         const userIconLink = document.querySelector(".user-icon-link");
@@ -97,6 +105,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!userIconLink) return;
 
         if (user) {
+            // Jika user login, tampilkan dropdown dengan email, profil, dan logout
             userIconLink.innerHTML = `
                 <div class="user-dropdown">
                     <button class="user-button">
@@ -115,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>
             `;
 
+            // Logout handler
             const logoutBtn = document.getElementById("logoutBtn");
             if (logoutBtn) {
                 logoutBtn.addEventListener("click", (e) => {
@@ -127,6 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
+            // Profile redirect
             const profileBtn = document.getElementById("profileBtn");
             if (profileBtn) {
                 profileBtn.addEventListener("click", (e) => {
@@ -135,10 +146,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
         } else {
+            // Jika tidak login, tampilkan ikon default
             userIconLink.innerHTML = '<i class="ri-user-line"></i>';
             userIconLink.href = "/login";
         }
     }
 
+    // Jalankan saat halaman selesai dimuat
     updateUserInterface();
 });
