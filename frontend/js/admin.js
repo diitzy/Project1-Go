@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const PUBLIC_API_BASE_URL = '/api/products';
 	const ADMIN_API_BASE_URL = '/admin/products';
 
-	const getToken = () => localStorage.getItem('token');
+	const getToken = () => localStorage.getItem('token'); 
 
 	// ✅ Perbaikan: Tambahkan fungsi untuk update navigation
 	function updateNavigation(activeSection) {

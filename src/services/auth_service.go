@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt" // Import bcrypt
+	"golang.org/x/crypto/bcrypt"
 )
 
 var jwtKey = []byte("kunci_rahasia_super_aman_milik_anda")
