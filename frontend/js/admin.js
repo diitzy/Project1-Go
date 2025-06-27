@@ -320,86 +320,147 @@ document.addEventListener('DOMContentLoaded', () => {
 	// File: frontend/js/admin.js
 
 	// 1) Ubah signature loadOrders jadi terima startDate & endDate
-	async function loadOrders(startDate, endDate) {
-		const tableBody = document.querySelector("#order-table tbody");
-		tableBody.innerHTML = "<tr><td colspan='8'>Memuat pesanan...</td></tr>";
+async function loadOrders(startDate, endDate) {
+  const tableBody = document.querySelector("#order-table tbody");
+  // Tampilkan loading placeholder
+  tableBody.innerHTML = "<tr><td colspan='8'>Memuat pesanan...</td></tr>";
 
-		try {
-			// bangun URL dengan query params jika ada filter
-			let url = "/admin/orders";
-			if (startDate && endDate) {
-				url += `?startDate=${startDate}&endDate=${endDate}`;
-			}
+  try {
+    // 1) Bangun URL dengan query params jika ada filter
+    let url = "/admin/orders";
+    if (startDate && endDate) {
+      url += `?startDate=${startDate}&endDate=${endDate}`;
+    }
 
-			const response = await fetch(url, {
-				headers: {
-					'Authorization': `Bearer ${getToken()}`
-				}
-			});
-			if (!response.ok) {
-				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-			}
+    // 2) Fetch data dari backend, sertakan token untuk autentikasi
+    const response = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${getToken()}` }
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
 
-			const orders = await response.json();
-			tableBody.innerHTML = "";
+    // 3) Parsing JSON dan reset isi tabel
+    const orders = await response.json();
+    tableBody.innerHTML = "";
 
-			if (!orders || orders.length === 0) {
-				tableBody.innerHTML = "<tr><td colspan='8'>Tidak ada pesanan.</td></tr>";
-				return;
-			}
+    // 4) Jika tidak ada data, tampilkan placeholder
+    if (!orders || orders.length === 0) {
+      tableBody.innerHTML = "<tr><td colspan='8'>Tidak ada pesanan.</td></tr>";
+      return;
+    }
 
-orders.forEach(order => {
-  // ==== 1) Kumpulkan item dan jumlahnya ====
-  const groupedItems = [];
-  order.Items.forEach(item => {
-    // cari di groupedItems yang namanya sama
-    const found = groupedItems.find(i => i.Name === item.Name && i.Price === item.Price);
-    if (found) {
-      // kalau sudah ada, tambahkan quantity-nya
-      found.Quantity += item.Quantity;
-    } else {
-      // kalau belum ada, clone dan masukkan
-      groupedItems.push({ Name: item.Name, Price: item.Price, Quantity: item.Quantity });
+    // 5) Untuk setiap order, lakukan grouping items + render row
+    orders.forEach(order => {
+      // 5a) Grouping item agar duplikat dijumlahkan
+      const groupedItems = [];
+      order.Items.forEach(item => {
+        const found = groupedItems.find(i =>
+          i.Name === item.Name && i.Price === item.Price
+        );
+        if (found) {
+          // jika sudah ada, jumlahkan kuantitasnya
+          found.Quantity += item.Quantity;
+        } else {
+          // jika belum ada, clone object dan masukkan
+          groupedItems.push({
+            Name:     item.Name,
+            Price:    item.Price,
+            Quantity: item.Quantity
+          });
+        }
+      });
+
+      // 5b) Bangun HTML string untuk kolom Item (dipisah <br>)
+      const itemsHtml = groupedItems
+        .map(i => `${i.Name} (${i.Quantity} x ${i.Price.toLocaleString("id-ID")})`)
+        .join("<br>");
+
+      // 5c) Karena JSON dari Go bisa mengirim field 'status' atau 'Status',
+      //     gunakan nullish-coalescing untuk membaca yang tersedia
+      const currentStatus = order.status ?? order.Status;
+
+      // 5d) Render satu baris <tr> dengan 8 kolom:
+      //     ID, Nama, Alamat, Payment, Total, Item(+Print), Status, Aksi
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${order.ID}</td>
+        <td>${order.Name}</td>
+        <td>${order.Address}</td>
+        <td>${order.Payment}</td>
+        <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
+        <td style="display:flex;justify-content:space-between;align-items:center;">
+          <span>${itemsHtml}</span>
+          <!-- tombol Print -->
+          <button
+            style="margin-left:10px;"
+            onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g,"\\'")})'
+            title="Print Order"
+          >
+            🖨️
+          </button>
+        </td>
+        <!-- kolom Status -->
+        <td>${currentStatus}</td>
+        <!-- kolom Aksi: hanya tampilkan tombol jika status pending -->
+        <td>
+          ${currentStatus === "pending"
+            ? `<button
+                 class="status-btn"
+                 data-id="${order.ID}"
+                 data-status="berhasil"
+               >
+                 Set Berhasil
+               </button>`
+            : `<span>✔️</span>`
+          }
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+
+  } catch (error) {
+    console.error("❌ Gagal mengambil data pesanan:", error);
+    tableBody.innerHTML = `
+      <tr>
+        <td colspan='8'>
+          Gagal memuat pesanan: ${error.message}
+        </td>
+      </tr>`;
+  }
+}
+
+// Pastikan juga Anda sudah mendaftarkan listener untuk tombol `.status-btn`:
+document.querySelector("#order-table tbody")
+  .addEventListener("click", async e => {
+    const btn = e.target.closest(".status-btn");
+    if (!btn) return;
+
+    const id     = btn.dataset.id;
+    const status = btn.dataset.status;
+    try {
+      // Panggil API untuk update status
+      const res = await fetch(`/admin/orders/${id}/status`, {
+        method:  "PATCH",
+        headers: {
+          "Content-Type":  "application/json",
+          "Authorization": `Bearer ${getToken()}`
+        },
+        body: JSON.stringify({ status })
+      });
+      if (!res.ok) throw new Error("Status update gagal");
+      // Refresh tabel setelah sukses
+      await loadOrders();
+    } catch (err) {
+      console.error(err);
+      alert("Gagal mengubah status: " + err.message);
     }
   });
 
-  // ==== 2) Buat string HTML dari groupedItems ====
-  // e.g. "Siomay Ayam (2 x 25000)<br>Tahu (1 x 15000)"
-  const itemsHtml = groupedItems
-    .map(i => `${i.Name} (${i.Quantity} x ${i.Price.toLocaleString("id-ID")})`)
-    .join("<br>");
-
-  // ==== 3) Render baris tabel pakai itemsHtml ini ====
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${order.ID}</td>
-    <td>${order.Name}</td>
-    <td>${order.Address}</td>
-    <td>${order.Payment}</td>
-    <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
-    <td style="display:flex;justify-content:space-between;align-items:center;">
-      <span>${itemsHtml}</span>
-      <button style="margin-left:10px;"
-              onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g,"\\'")})'>
-        🖨️ Print
-      </button>
-    </td>
-    <td>${order.status}</td>
-    <td>
-      ${order.status === "pending"
-        ? `<button class="status-btn" data-id="${order.ID}" data-status="berhasil">
-             Set Berhasil
-           </button>`
-        : `<span>✔️</span>`}
-    </td>
-  `;
-  tableBody.appendChild(row);
+// Panggil loadOrders saat pertama kali halaman siap
+document.addEventListener("DOMContentLoaded", () => {
+  loadOrders();
 });
-		} catch (error) {
-			console.error("❌ Gagal mengambil data pesanan:", error);
-			tableBody.innerHTML = `<tr><td colspan='8'>Gagal memuat pesanan: ${error.message}</td></tr>`;
-		}
-	}
 
 	// 2) Event listener untuk tombol Filter
 	document.getElementById("filter-orders")

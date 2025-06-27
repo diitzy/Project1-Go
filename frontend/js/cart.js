@@ -36,22 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
 			itemElement.className = "cart-item";
 			const subtotal = item.price * item.quantity;
 			total += subtotal;
-
-			// itemElement.innerHTML = `
-			//     <img src="${item.image}" alt="${item.name}">
-			//     <div class="item-details">
-			//         <h3>${item.name}</h3>
-			//         <p>Rp ${item.price.toLocaleString("id-ID")}</p>
-			//         <div class="quantity-control">
-			//             <span>Jumlah: ${item.quantity}</span>
-			//         </div>
-			//         <p class="subtotal">Subtotal: Rp ${subtotal.toLocaleString("id-ID")}</p>
-			//     </div>
-			//     <button class="remove-btn" data-index="${index}" title="Hapus item">
-			//         <i class="ri-delete-bin-line"></i>
-			//     </button>
-			// `;
-			// ── patch di dalam renderCart ──
 			itemElement.innerHTML = `
     <img src="${item.image}" alt="${item.name}">
     <div class="item-details">

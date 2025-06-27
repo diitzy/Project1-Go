@@ -10,34 +10,67 @@ import (
 )
 
 func Checkout(c *gin.Context) {
+	// 1) Bind incoming JSON
 	var order models.Order
 	if err := c.ShouldBindJSON(&order); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
 	if len(order.Items) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Tidak ada item dalam pesanan"})
 		return
 	}
 
-	var total float64 = 0
+	// 2) Attach the logged-in user
+	uidAny, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak terautentikasi"})
+		return
+	}
+	userID, ok := uidAny.(uint)
+	if !ok {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Format userID tidak valid"})
+		return
+	}
+	order.UserID = userID
+
+	// 3) **Deduplicate** order.Items by ProductID
+	grouped := make(map[uint]*models.OrderItem)
+	for _, it := range order.Items {
+		// Each incoming `it` has ProductID now set correctly by JSON tag.
+		if ex, found := grouped[it.ProductID]; found {
+			ex.Quantity += it.Quantity
+		} else {
+			tmp := it
+			tmp.ID = 0      // clear any bound ID
+			tmp.OrderID = 0 // will be set by GORM
+			grouped[it.ProductID] = &tmp
+		}
+	}
+	// rebuild the slice
+	order.Items = make([]models.OrderItem, 0, len(grouped))
+	for _, v := range grouped {
+		order.Items = append(order.Items, *v)
+	}
+
+	// 4) Compute total & set status
+	var total float64
 	for i := range order.Items {
 		total += order.Items[i].Price * float64(order.Items[i].Quantity)
-		order.Items[i].ID = 0      // prevent ID collision
-		order.Items[i].OrderID = 0 // will be set after Order saved
 	}
 	order.Total = total
 	order.Status = "pending"
 
-	fmt.Printf("RECEIVED ORDER: %+v\n", order)
+	fmt.Printf("CHECKOUT => %+v\n", order)
 
+	// 5) Save it all in one go
 	if err := services.CreateOrder(&order); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Order sukses"})
+	// 6) Return the created order
+	c.JSON(http.StatusCreated, order)
 }
 
 // UpdateOrderStatusHandler untuk admin mengubah status pesanan
@@ -111,24 +144,25 @@ func GetOrderByIDHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, order)
 }
 
+// GetOrdersByUserIDHandler untuk endpoint user melihat riwayat pesanan sendiri
 func GetOrdersByUserIDHandler(c *gin.Context) {
-	userIDAny, exists := c.Get("userID")
+	// Ambil userID dari context (middleware AuthUserMiddleware harusnya sudah menyimpannya)
+	uid, exists := c.Get("userID")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak dikenali"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak terautentikasi"})
 		return
 	}
 
-	userID, ok := userIDAny.(uint)
+	userID, ok := uid.(uint)
 	if !ok {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Format userID tidak valid"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid userID"})
 		return
 	}
 
 	orders, err := services.GetOrdersByUserID(userID)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal mengambil pesanan"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal ambil riwayat pesanan"})
 		return
 	}
-
 	c.JSON(http.StatusOK, orders)
 }

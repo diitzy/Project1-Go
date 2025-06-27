@@ -8,12 +8,12 @@ import (
 )
 
 func OrderRoutes(router *gin.Engine) {
-	router.POST("/checkout", controllers.Checkout)
+	router.POST("/checkout", middlewares.AuthUserMiddleware(), controllers.Checkout)
+
 	router.GET("/admin/orders", controllers.GetAllOrdersHandler)
-	// untuk admin update status pesanan
 	router.PATCH("/admin/orders/:id/status", controllers.UpdateOrderStatusHandler)
 
 	userGroup := router.Group("/user")
-	userGroup.Use(middlewares.AuthUserMiddleware()) // Tambahkan ini
+	userGroup.Use(middlewares.AuthUserMiddleware())
 	userGroup.GET("/orders", controllers.GetOrdersByUserIDHandler)
 }

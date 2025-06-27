@@ -65,9 +65,15 @@ func GetOrderByID(id uint) (models.Order, error) {
 	return order, err
 }
 
+// GetOrdersByUserID mengembalikan semua orders milik user tertentu
 func GetOrdersByUserID(userID uint) ([]models.Order, error) {
 	var orders []models.Order
-	err := config.DB.Preload("Items").Where("user_id = ?", userID).Find(&orders).Error
+	err := config.DB.
+		Preload("Items").
+		Where("user_id = ?", userID).
+		Order("created_at DESC").
+		Find(&orders).
+		Error
 	return orders, err
 }
 

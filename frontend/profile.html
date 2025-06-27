@@ -51,7 +51,7 @@
                         <i class="ri-edit-line"></i> Edit Profil
                     </button>
                 </div>
-                
+
                 <form id="profile-form">
                     <div class="form-row">
                         <div class="form-group">
@@ -63,7 +63,7 @@
                             <input type="email" id="email" placeholder="Masukkan email" disabled>
                         </div>
                     </div>
-                    
+
                     <div class="form-row">
                         <div class="form-group">
                             <label for="phone">Nomor Telepon</label>
@@ -74,12 +74,12 @@
                             <input type="date" id="birthdate" disabled>
                         </div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="address">Alamat Lengkap</label>
                         <textarea id="address" rows="4" placeholder="Masukkan alamat lengkap" disabled></textarea>
                     </div>
-                    
+
                     <div class="form-actions" style="display: none;">
                         <button type="submit" class="save-btn">
                             <i class="ri-save-line"></i> Simpan Perubahan
@@ -92,16 +92,23 @@
             </div>
 
             <!-- Riwayat Pesanan -->
-            <div class="table-container">
-                <h2>Riwayat Pesanan Terakhir</h2>
-                <div class="order-history">
-                    <div class="order-empty">
-                        <i class="ri-shopping-bag-line"></i>
-                        <p>Belum ada riwayat pesanan</p>
-                        <a href="/shop" class="btn">Mulai Belanja</a>
-                    </div>
-                </div>
-            </div>
+            <section id="history-section">
+                <h2>Riwayat Pesanan</h2>
+                <table id="user-order-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tanggal</th>
+                            <th>Item</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- diisi oleh JS -->
+                    </tbody>
+                </table>
+            </section>
 
             <!-- Pengaturan Akun -->
             <div class="form-container">
@@ -116,7 +123,7 @@
                             <i class="ri-lock-line"></i> Ubah Password
                         </button>
                     </div>
-                    
+
                     <div class="setting-item">
                         <div class="setting-info">
                             <h3>Notifikasi Email</h3>
