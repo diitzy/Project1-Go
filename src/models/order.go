@@ -8,6 +8,7 @@ type Order struct {
 	Name    string
 	Address string
 	Payment string
+	Status  string `gorm:"type:varchar(20);default:'pending'" json:"Status"`
 	Total   float64
 	Items   []OrderItem `gorm:"foreignKey:OrderID"`
 }

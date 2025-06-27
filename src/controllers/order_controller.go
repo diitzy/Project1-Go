@@ -28,6 +28,7 @@ func Checkout(c *gin.Context) {
 		order.Items[i].OrderID = 0 // will be set after Order saved
 	}
 	order.Total = total
+	order.Status = "pending"
 
 	fmt.Printf("RECEIVED ORDER: %+v\n", order)
 
@@ -37,6 +38,32 @@ func Checkout(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Order sukses"})
+}
+
+// UpdateOrderStatusHandler untuk admin mengubah status pesanan
+func UpdateOrderStatusHandler(c *gin.Context) {
+	// parse ID
+	var id uint
+	if _, err := fmt.Sscan(c.Param("id"), &id); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "ID tidak valid"})
+		return
+	}
+
+	// parse body { status: "berhasil" }
+	var req struct {
+		Status string `json:"status"`
+	}
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// update
+	if err := services.UpdateOrderStatus(id, req.Status); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal update status"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Status diperbarui"})
 }
 
 // TERBARU

@@ -1,52 +1,52 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('product-form');
-    const tableBody = document.querySelector('#product-table tbody');
-    const formTitle = document.getElementById('form-title');
-    const submitButton = document.getElementById('submit-button');
-    const cancelEditButton = document.getElementById('cancel-edit');
-    const hiddenId = document.getElementById('product-id');
-    const imagePreview = document.getElementById('image-preview');
-    const imageInput = document.getElementById('image');
-    const orderSection = document.getElementById("order-section");
-    const productSection = document.getElementById("product-section");
-    const messageSection = document.getElementById("message-section");
+	const form = document.getElementById('product-form');
+	const tableBody = document.querySelector('#product-table tbody');
+	const formTitle = document.getElementById('form-title');
+	const submitButton = document.getElementById('submit-button');
+	const cancelEditButton = document.getElementById('cancel-edit');
+	const hiddenId = document.getElementById('product-id');
+	const imagePreview = document.getElementById('image-preview');
+	const imageInput = document.getElementById('image');
+	const orderSection = document.getElementById("order-section");
+	const productSection = document.getElementById("product-section");
+	const messageSection = document.getElementById("message-section");
 
-    const PUBLIC_API_BASE_URL = '/api/products';
-    const ADMIN_API_BASE_URL = '/admin/products';
+	const PUBLIC_API_BASE_URL = '/api/products';
+	const ADMIN_API_BASE_URL = '/admin/products';
 
-    const getToken = () => localStorage.getItem('token');
+	const getToken = () => localStorage.getItem('token');
 
-    // ✅ Perbaikan: Tambahkan fungsi untuk update navigation
-    function updateNavigation(activeSection) {
-        // Remove active class from all nav links
-        document.querySelectorAll('.sidebar nav a').forEach(link => {
-            link.classList.remove('active');
-        });
-        
-        // Add active class to current section
-        document.querySelector(`a[href="#${activeSection}"]`).classList.add('active');
-        
-        // Hide all sections
-        productSection.style.display = "none";
-        orderSection.style.display = "none";
-        messageSection.style.display = "none";
-        
-        // Show selected section
-        document.getElementById(activeSection).style.display = "block";
-    }
+	// ✅ Perbaikan: Tambahkan fungsi untuk update navigation
+	function updateNavigation(activeSection) {
+		// Remove active class from all nav links
+		document.querySelectorAll('.sidebar nav a').forEach(link => {
+			link.classList.remove('active');
+		});
 
-    const fetchProducts = async () => {
-        try {
-            const response = await fetch(PUBLIC_API_BASE_URL);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const products = await response.json();
+		// Add active class to current section
+		document.querySelector(`a[href="#${activeSection}"]`).classList.add('active');
 
-            tableBody.innerHTML = '';
-            if (products && products.length > 0) {
-                products.forEach(product => {
-                    const productId = product.ID || product.id;
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
+		// Hide all sections
+		productSection.style.display = "none";
+		orderSection.style.display = "none";
+		messageSection.style.display = "none";
+
+		// Show selected section
+		document.getElementById(activeSection).style.display = "block";
+	}
+
+	const fetchProducts = async () => {
+		try {
+			const response = await fetch(PUBLIC_API_BASE_URL);
+			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			const products = await response.json();
+
+			tableBody.innerHTML = '';
+			if (products && products.length > 0) {
+				products.forEach(product => {
+					const productId = product.ID || product.id;
+					const row = document.createElement('tr');
+					row.innerHTML = `
                         <td>${product.name}</td>
                         <td>Rp ${product.price ? product.price.toLocaleString('id-ID') : '0'}</td>
                         <td>${product.stock !== undefined ? product.stock : '0'}</td>
@@ -56,330 +56,369 @@ document.addEventListener('DOMContentLoaded', () => {
                             <button class="action-btn delete-btn" onclick="deleteProduct(${productId})">Hapus</button>
                         </td>
                     `;
-                    tableBody.appendChild(row);
-                });
-            } else {
-                tableBody.innerHTML = '<tr><td colspan="5">Tidak ada produk.</td></tr>';
-            }
-        } catch (error) {
-            console.error('Gagal mengambil produk:', error);
-            tableBody.innerHTML = `<tr><td colspan="5">Gagal memuat produk: ${error.message}. Coba muat ulang halaman.</td></tr>`;
-        }
-    };
+					tableBody.appendChild(row);
+				});
+			} else {
+				tableBody.innerHTML = '<tr><td colspan="5">Tidak ada produk.</td></tr>';
+			}
+		} catch (error) {
+			console.error('Gagal mengambil produk:', error);
+			tableBody.innerHTML = `<tr><td colspan="5">Gagal memuat produk: ${error.message}. Coba muat ulang halaman.</td></tr>`;
+		}
+	};
 
-    // ✅ Perbaikan: Navigation handlers
-    document.querySelector('a[href="#product-section"]').addEventListener("click", (e) => {
-        e.preventDefault();
-        updateNavigation("product-section");
-        fetchProducts();
-    });
+	// ✅ Perbaikan: Navigation handlers
+	document.querySelector('a[href="#product-section"]').addEventListener("click", (e) => {
+		e.preventDefault();
+		updateNavigation("product-section");
+		fetchProducts();
+	});
 
-    document.querySelector('a[href="#order-section"]').addEventListener("click", (e) => {
-        e.preventDefault();
-        updateNavigation("order-section");
-        loadOrders();
-    });
+	document.querySelector('a[href="#order-section"]').addEventListener("click", (e) => {
+		e.preventDefault();
+		updateNavigation("order-section");
+		loadOrders();
+	});
 
-    document.querySelector('a[href="#message-section"]').addEventListener("click", (e) => {
-        e.preventDefault();
-        updateNavigation("message-section");
-        loadMessages();
-    });
+	document.querySelector('a[href="#message-section"]').addEventListener("click", (e) => {
+		e.preventDefault();
+		updateNavigation("message-section");
+		loadMessages();
+	});
 
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+	form.addEventListener('submit', async (e) => {
+		e.preventDefault();
 
-        const formData = new FormData();
-        formData.append('name', document.getElementById('name').value);
-        formData.append('price', parseFloat(document.getElementById('price').value));
-        formData.append('stock', parseInt(document.getElementById('stock').value));
+		const formData = new FormData();
+		formData.append('name', document.getElementById('name').value);
+		formData.append('price', parseFloat(document.getElementById('price').value));
+		formData.append('stock', parseInt(document.getElementById('stock').value));
 
-        const imageFile = imageInput.files[0];
-        if (imageFile) {
-            formData.append('image', imageFile);
-        }
+		const imageFile = imageInput.files[0];
+		if (imageFile) {
+			formData.append('image', imageFile);
+		}
 
-        const id = hiddenId.value;
-        let url = ADMIN_API_BASE_URL;
-        let method = 'POST';
+		const id = hiddenId.value;
+		let url = ADMIN_API_BASE_URL;
+		let method = 'POST';
 
-        if (id) {
-            url = `${ADMIN_API_BASE_URL}/${id}`;
-            method = 'PUT';
-        }
+		if (id) {
+			url = `${ADMIN_API_BASE_URL}/${id}`;
+			method = 'PUT';
+		}
 
-        try {
-            const response = await fetch(url, {
-                method: method,
-                headers: {
-                    Authorization: `Bearer ${getToken()}`
-                },
-                body: formData,
-            });
+		try {
+			const response = await fetch(url, {
+				method: method,
+				headers: {
+					Authorization: `Bearer ${getToken()}`
+				},
+				body: formData,
+			});
 
-            if (response.ok) {
-                resetForm();
-                fetchProducts();
-                showNotification(id ? 'Produk berhasil diperbarui!' : 'Produk berhasil ditambahkan!', 'success');
-            } else {
-                const text = await response.text();
-                try {
-                    const errorData = JSON.parse(text);
-                    console.error('Gagal menyimpan produk:', errorData);
-                    showNotification(`Gagal menyimpan produk: ${errorData.error || response.statusText}`, 'error');
-                } catch (e) {
-                    console.error('Respon bukan JSON:', text);
-                    showNotification(`Terjadi kesalahan: ${text}`, 'error');
-                }
-            }
-        } catch (error) {
-            console.error('Error saat submit form:', error);
-            showNotification(`Terjadi kesalahan: ${error.message}`, 'error');
-        }
-    });
+			if (response.ok) {
+				resetForm();
+				fetchProducts();
+				showNotification(id ? 'Produk berhasil diperbarui!' : 'Produk berhasil ditambahkan!', 'success');
+			} else {
+				const text = await response.text();
+				try {
+					const errorData = JSON.parse(text);
+					console.error('Gagal menyimpan produk:', errorData);
+					showNotification(`Gagal menyimpan produk: ${errorData.error || response.statusText}`, 'error');
+				} catch (e) {
+					console.error('Respon bukan JSON:', text);
+					showNotification(`Terjadi kesalahan: ${text}`, 'error');
+				}
+			}
+		} catch (error) {
+			console.error('Error saat submit form:', error);
+			showNotification(`Terjadi kesalahan: ${error.message}`, 'error');
+		}
+	});
 
-    // ✅ Perbaikan: Fungsi loadMessages dengan error handling yang lebih baik
-    async function loadMessages() {
-        const tableBody = document.querySelector("#message-table tbody");
-        
-        // Show loading state
-        tableBody.innerHTML = "<tr><td colspan='4'>Memuat pesan...</td></tr>";
+	// ✅ Perbaikan: Fungsi loadMessages dengan error handling yang lebih baik
+	async function loadMessages() {
+		const tableBody = document.querySelector("#message-table tbody");
 
-        try {
-            console.log("🔄 Memuat pesan...");
-            const response = await fetch("/admin/messages", {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getToken()}` // ✅ Tambahkan authorization
-                }
-            });
+		// Show loading state
+		tableBody.innerHTML = "<tr><td colspan='4'>Memuat pesan...</td></tr>";
 
-            console.log("📡 Response status:", response.status);
-            console.log("📡 Response headers:", response.headers);
+		try {
+			console.log("🔄 Memuat pesan...");
+			const response = await fetch("/admin/messages", {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': `Bearer ${getToken()}` // ✅ Tambahkan authorization
+				}
+			});
 
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
+			console.log("📡 Response status:", response.status);
+			console.log("📡 Response headers:", response.headers);
 
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                const text = await response.text();
-                console.error("❌ Response bukan JSON:", text);
-                throw new Error("Server mengembalikan response yang tidak valid");
-            }
+			if (!response.ok) {
+				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+			}
 
-            const messages = await response.json();
-            console.log("✅ Messages loaded:", messages);
+			const contentType = response.headers.get('content-type');
+			if (!contentType || !contentType.includes('application/json')) {
+				const text = await response.text();
+				console.error("❌ Response bukan JSON:", text);
+				throw new Error("Server mengembalikan response yang tidak valid");
+			}
 
-            // Clear table
-            tableBody.innerHTML = "";
+			const messages = await response.json();
+			console.log("✅ Messages loaded:", messages);
 
-            if (!messages || messages.length === 0) {
-                tableBody.innerHTML = "<tr><td colspan='4'>Tidak ada pesan.</td></tr>";
-                return;
-            }
+			// Clear table
+			tableBody.innerHTML = "";
 
-            // Populate table
-            messages.forEach(msg => {
-                const row = document.createElement("tr");
-                const createdAt = msg.CreatedAt ? new Date(msg.CreatedAt).toLocaleString("id-ID") : 'Tidak diketahui';
-                
-                row.innerHTML = `
+			if (!messages || messages.length === 0) {
+				tableBody.innerHTML = "<tr><td colspan='4'>Tidak ada pesan.</td></tr>";
+				return;
+			}
+
+			// Populate table
+			messages.forEach(msg => {
+				const row = document.createElement("tr");
+				const createdAt = msg.CreatedAt ? new Date(msg.CreatedAt).toLocaleString("id-ID") : 'Tidak diketahui';
+
+				row.innerHTML = `
                     <td>${msg.Name || 'Tidak ada nama'}</td>
                     <td>${msg.Email || 'Tidak ada email'}</td>
                     <td style="max-width: 300px; word-wrap: break-word;">${msg.Message || 'Tidak ada pesan'}</td>
                     <td>${createdAt}</td>
                 `;
-                tableBody.appendChild(row);
-            });
+				tableBody.appendChild(row);
+			});
 
-            showNotification(`${messages.length} pesan berhasil dimuat`, 'success');
+			showNotification(`${messages.length} pesan berhasil dimuat`, 'success');
 
-        } catch (error) {
-            console.error("❌ Error loading messages:", error);
-            tableBody.innerHTML = `<tr><td colspan='4'>Gagal memuat pesan: ${error.message}</td></tr>`;
-            showNotification(`Gagal memuat pesan: ${error.message}`, 'error');
-        }
-    }
+		} catch (error) {
+			console.error("❌ Error loading messages:", error);
+			tableBody.innerHTML = `<tr><td colspan='4'>Gagal memuat pesan: ${error.message}</td></tr>`;
+			showNotification(`Gagal memuat pesan: ${error.message}`, 'error');
+		}
+	}
 
-    const resetForm = () => {
-        form.reset();
-        hiddenId.value = '';
-        imageInput.value = '';
-        formTitle.textContent = 'Tambah Produk Baru';
-        submitButton.textContent = 'Simpan Produk';
-        cancelEditButton.style.display = 'none';
-        imagePreview.src = '';
-        imagePreview.style.display = 'none';
-    };
+	const resetForm = () => {
+		form.reset();
+		hiddenId.value = '';
+		imageInput.value = '';
+		formTitle.textContent = 'Tambah Produk Baru';
+		submitButton.textContent = 'Simpan Produk';
+		cancelEditButton.style.display = 'none';
+		imagePreview.src = '';
+		imagePreview.style.display = 'none';
+	};
 
-    window.editProduct = async (id) => {
-        try {
-            const response = await fetch(`${PUBLIC_API_BASE_URL}/${id}`);
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const product = await response.json();
+	window.editProduct = async (id) => {
+		try {
+			const response = await fetch(`${PUBLIC_API_BASE_URL}/${id}`);
+			if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+			const product = await response.json();
 
-            hiddenId.value = product.ID || product.id;
-            document.getElementById('name').value = product.name;
-            document.getElementById('price').value = product.price;
-            document.getElementById('stock').value = product.stock;
+			hiddenId.value = product.ID || product.id;
+			document.getElementById('name').value = product.name;
+			document.getElementById('price').value = product.price;
+			document.getElementById('stock').value = product.stock;
 
-            if (product.image) {
-                imagePreview.src = product.image;
-                imagePreview.style.display = 'block';
-            } else {
-                imagePreview.style.display = 'none';
-            }
+			if (product.image) {
+				imagePreview.src = product.image;
+				imagePreview.style.display = 'block';
+			} else {
+				imagePreview.style.display = 'none';
+			}
 
-            formTitle.textContent = 'Edit Produk';
-            submitButton.textContent = 'Update Produk';
-            cancelEditButton.style.display = 'inline-block';
-        } catch (error) {
-            console.error('Gagal mengambil detail produk untuk diedit:', error);
-            showNotification(`Gagal mengambil detail produk: ${error.message}`, 'error');
-        }
-    };
+			formTitle.textContent = 'Edit Produk';
+			submitButton.textContent = 'Update Produk';
+			cancelEditButton.style.display = 'inline-block';
+		} catch (error) {
+			console.error('Gagal mengambil detail produk untuk diedit:', error);
+			showNotification(`Gagal mengambil detail produk: ${error.message}`, 'error');
+		}
+	};
 
-    cancelEditButton.addEventListener('click', resetForm);
+	cancelEditButton.addEventListener('click', resetForm);
 
-    window.deleteProduct = async (id) => {
-        if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
-            try {
-                const response = await fetch(`${ADMIN_API_BASE_URL}/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        Authorization: `Bearer ${getToken()}`
-                    }
-                });
+	window.deleteProduct = async (id) => {
+		if (confirm('Apakah Anda yakin ingin menghapus produk ini?')) {
+			try {
+				const response = await fetch(`${ADMIN_API_BASE_URL}/${id}`, {
+					method: 'DELETE',
+					headers: {
+						Authorization: `Bearer ${getToken()}`
+					}
+				});
 
-                if (response.ok) {
-                    fetchProducts();
-                    showNotification('Produk berhasil dihapus!', 'success');
-                } else {
-                    const text = await response.text();
-                    try {
-                        const errorData = JSON.parse(text);
-                        console.error('Gagal menghapus produk:', errorData);
-                        showNotification(`Gagal menghapus produk: ${errorData.error || response.statusText}`, 'error');
-                    } catch (e) {
-                        console.error('Respon bukan JSON:', text);
-                        showNotification(`Terjadi kesalahan: ${text}`, 'error');
-                    }
-                }
-            } catch (error) {
-                console.error('Error saat menghapus produk:', error);
-                showNotification(`Terjadi kesalahan saat menghapus: ${error.message}`, 'error');
-            }
-        }
-    };
+				if (response.ok) {
+					fetchProducts();
+					showNotification('Produk berhasil dihapus!', 'success');
+				} else {
+					const text = await response.text();
+					try {
+						const errorData = JSON.parse(text);
+						console.error('Gagal menghapus produk:', errorData);
+						showNotification(`Gagal menghapus produk: ${errorData.error || response.statusText}`, 'error');
+					} catch (e) {
+						console.error('Respon bukan JSON:', text);
+						showNotification(`Terjadi kesalahan: ${text}`, 'error');
+					}
+				}
+			} catch (error) {
+				console.error('Error saat menghapus produk:', error);
+				showNotification(`Terjadi kesalahan saat menghapus: ${error.message}`, 'error');
+			}
+		}
+	};
 
-    function showNotification(message, type = 'info') {
-        const notificationArea = document.getElementById('notification-area') || createNotificationArea();
-        const notification = document.createElement('div');
-        notification.className = `notification ${type}`;
-        notification.textContent = message;
-        notificationArea.appendChild(notification);
-        setTimeout(() => {
-            notification.remove();
-        }, 3000);
-    }
+	function showNotification(message, type = 'info') {
+		const notificationArea = document.getElementById('notification-area') || createNotificationArea();
+		const notification = document.createElement('div');
+		notification.className = `notification ${type}`;
+		notification.textContent = message;
+		notificationArea.appendChild(notification);
+		setTimeout(() => {
+			notification.remove();
+		}, 3000);
+	}
 
-    function createNotificationArea() {
-        const area = document.createElement('div');
-        area.id = 'notification-area';
-        area.style.position = 'fixed';
-        area.style.top = '20px';
-        area.style.right = '20px';
-        area.style.zIndex = '1000';
-        document.body.appendChild(area);
-        return area;
-    }
+	function createNotificationArea() {
+		const area = document.createElement('div');
+		area.id = 'notification-area';
+		area.style.position = 'fixed';
+		area.style.top = '20px';
+		area.style.right = '20px';
+		area.style.zIndex = '1000';
+		document.body.appendChild(area);
+		return area;
+	}
 
-    const styleSheet = document.createElement("style")
-    styleSheet.type = "text/css"
-    styleSheet.innerText = `
+	const styleSheet = document.createElement("style")
+	styleSheet.type = "text/css"
+	styleSheet.innerText = `
         .notification { padding: 10px 20px; margin-bottom: 10px; border-radius: 5px; color: white; }
         .notification.success { background-color: #4CAF50; }
         .notification.error { background-color: #f44336; }
         .notification.info { background-color: #2196F3; }
     `;
-    document.head.appendChild(styleSheet);
+	document.head.appendChild(styleSheet);
 
-    // 🔐 Handler untuk logout
-    const logoutLink = document.querySelector('.nav-link[href="/home"]');
-    if (logoutLink) {
-        logoutLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('token');
-            window.location.href = '/home';
-        });
-    }
+	// 🔐 Handler untuk logout
+	const logoutLink = document.querySelector('.nav-link[href="/home"]');
+	if (logoutLink) {
+		logoutLink.addEventListener('click', (e) => {
+			e.preventDefault();
+			localStorage.removeItem('token');
+			window.location.href = '/home';
+		});
+	}
 
-    // ✅ Perbaikan: Fungsi loadOrders dengan URL yang konsisten
-    async function loadOrders() {
-        const tableBody = document.querySelector("#order-table tbody");
-        tableBody.innerHTML = "<tr><td colspan='6'>Memuat pesanan...</td></tr>";
+	// ✅ Perbaikan: Fungsi loadOrders dengan URL yang konsisten
+	async function loadOrders() {
+		const tableBody = document.querySelector("#order-table tbody");
+		tableBody.innerHTML = "<tr><td colspan='8'>Memuat pesanan...</td></tr>";
 
-        try {
-            const response = await fetch("/admin/orders", {
-                headers: {
-                    'Authorization': `Bearer ${getToken()}`
-                }
-            });
+		try {
+			const response = await fetch("/admin/orders", {
+				headers: {
+					'Authorization': `Bearer ${getToken()}`
+				}
+			});
 
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-            }
+			if (!response.ok) {
+				throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+			}
 
-            const orders = await response.json();
-            tableBody.innerHTML = "";
+			const orders = await response.json();
+			tableBody.innerHTML = "";
 
-            if (!orders || orders.length === 0) {
-                tableBody.innerHTML = "<tr><td colspan='6'>Tidak ada pesanan.</td></tr>";
-                return;
-            }
+			if (!orders || orders.length === 0) {
+				tableBody.innerHTML = "<tr><td colspan='6'>Tidak ada pesanan.</td></tr>";
+				return;
+			}
 
-            orders.forEach(order => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${order.ID}</td>
-                    <td>${order.Name}</td>
-                    <td>${order.Address}</td>
-                    <td>${order.Payment}</td>
-                    <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
-                    <td style="display: flex; justify-content: space-between; align-items: center;">
-                        <span>
-                            ${order.Items.map(item => `${item.Name} (${item.Quantity} x ${item.Price})`).join("<br>")}
-                        </span>
-                        <button style="margin-left: 10px;" onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>
-                            🖨️ Print
-                        </button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-            });
-        } catch (error) {
-            console.error("❌ Gagal mengambil data pesanan:", error);
-            tableBody.innerHTML = `<tr><td colspan='6'>Gagal memuat pesanan: ${error.message}</td></tr>`;
-        }
-    }
+			orders.forEach(order => {
+				const row = document.createElement("tr");
+				// file: frontend/js/admin.js, di dalam loadOrders(), ganti bagian row.innerHTML menjadi:
+				row.innerHTML = `
+    <td>${order.ID}</td>
+    <td>${order.Name}</td>
+    <td>${order.Address}</td>
+    <td>${order.Payment}</td>
+    <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
+    <td style="display: flex; justify-content: space-between; align-items: center;">
+        <span>
+            ${order.Items
+              .map(item => `${item.Name} (${item.Quantity} x ${item.Price.toLocaleString("id-ID")})`)
+              .join("<br>")}
+        </span>
+        <!-- tombol Print tetap dipertahankan -->
+        <button style="margin-left: 10px;"
+                onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>
+            🖨️ Print
+        </button>
+    </td>
+    <!-- kolom Status -->
+    <td>${order.Status}</td>
+    <!-- kolom Aksi: tombol Set Berhasil jika pending -->
+    <td>
+      ${order.Status === "pending"
+        ? `<button class="status-btn" data-id="${order.ID}" data-status="berhasil">Set Berhasil</button>`
+        : `<span>✔️</span>`}
+    </td>
+`;
+				tableBody.appendChild(row);
+			});
+		} catch (error) {
+			console.error("❌ Gagal mengambil data pesanan:", error);
+			tableBody.innerHTML = `<tr><td colspan='6'>Gagal memuat pesanan: ${error.message}</td></tr>`;
+		}
+	}
 
-    // Expose loadOrders globally for navigation
-    window.loadOrders = loadOrders;
+	// Delegasi klik di tabel order
+	document.querySelector("#order-table tbody")
+		.addEventListener("click", async e => {
+			const btn = e.target.closest(".status-btn");
+			if (!btn) return;
+			const id = btn.dataset.id;
+			const status = btn.dataset.status;
+			try {
+				const res = await fetch(`/admin/orders/${id}/status`, {
+					method: "PATCH",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify({
+						status
+					})
+				});
+				if (!res.ok) throw new Error("Gagal update status");
+				loadOrders(); // refresh tabel
+			} catch (err) {
+				console.error(err);
+				alert("Error mengubah status");
+			}
+		});
 
-    function printSingleOrder(order) {
-        const printWindow = window.open('', '', 'width=800,height=600');
-        const itemRows = order.Items.map(item => {
-            return `<tr>
+
+	// Expose loadOrders globally for navigation
+	window.loadOrders = loadOrders;
+
+	function printSingleOrder(order) {
+		const printWindow = window.open('', '', 'width=800,height=600');
+		const itemRows = order.Items.map(item => {
+			return `<tr>
                 <td>${item.Name}</td>
                 <td>${item.Quantity}</td>
                 <td>Rp ${item.Price.toLocaleString("id-ID")}</td>
                 <td>Rp ${(item.Price * item.Quantity).toLocaleString("id-ID")}</td>
             </tr>`;
-        }).join('');
+		}).join('');
 
-        printWindow.document.write(`
+		printWindow.document.write(`
             <html>
             <head>
                 <title>Detail Pesanan</title>
@@ -411,13 +450,13 @@ document.addEventListener('DOMContentLoaded', () => {
             </body>
             </html>
         `);
-        printWindow.document.close();
-        printWindow.print();
-    }
+		printWindow.document.close();
+		printWindow.print();
+	}
 
-    // Expose printSingleOrder globally
-    window.printSingleOrder = printSingleOrder;
+	// Expose printSingleOrder globally
+	window.printSingleOrder = printSingleOrder;
 
-    // Initialize with products section
-    fetchProducts();
+	// Initialize with products section
+	fetchProducts();
 });

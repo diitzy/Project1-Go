@@ -47,3 +47,12 @@ func GetOrdersByUserID(userID uint) ([]models.Order, error) {
 	err := config.DB.Preload("Items").Where("user_id = ?", userID).Find(&orders).Error
 	return orders, err
 }
+
+// UpdateOrderStatus mengubah status order (e.g. pending → berhasil)
+func UpdateOrderStatus(id uint, status string) error {
+	return config.DB.
+		Model(&models.Order{}).
+		Where("id = ?", id).
+		Update("status", status).
+		Error
+}
