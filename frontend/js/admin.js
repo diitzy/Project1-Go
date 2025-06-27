@@ -348,38 +348,53 @@ document.addEventListener('DOMContentLoaded', () => {
 				return;
 			}
 
-			orders.forEach(order => {
-				const row = document.createElement("tr");
-				row.innerHTML = `
-                <td>${order.ID}</td>
-                <td>${order.Name}</td>
-                <td>${order.Address}</td>
-                <td>${order.Payment}</td>
-                <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
-                <td style="display: flex; justify-content: space-between; align-items: center;">
-                    <span>
-                        ${order.Items
-                          .map(item => `${item.Name} (${item.Quantity} x ${item.Price.toLocaleString("id-ID")})`)
-                          .join("<br>")}
-                    </span>
-                    <button style="margin-left: 10px;"
-                            onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>
-                        🖨️ Print
-                    </button>
-                </td>
-                <td>${order.status}</td>
-                <td>
-                  ${order.status === "pending"
-                    ? `<button class="status-btn"
-                               data-id="${order.ID}"
-                               data-status="berhasil">
-                         Set Berhasil
-                       </button>`
-                    : `<span>✔️</span>`}
-                </td>
-            `;
-				tableBody.appendChild(row);
-			});
+orders.forEach(order => {
+  // ==== 1) Kumpulkan item dan jumlahnya ====
+  const groupedItems = [];
+  order.Items.forEach(item => {
+    // cari di groupedItems yang namanya sama
+    const found = groupedItems.find(i => i.Name === item.Name && i.Price === item.Price);
+    if (found) {
+      // kalau sudah ada, tambahkan quantity-nya
+      found.Quantity += item.Quantity;
+    } else {
+      // kalau belum ada, clone dan masukkan
+      groupedItems.push({ Name: item.Name, Price: item.Price, Quantity: item.Quantity });
+    }
+  });
+
+  // ==== 2) Buat string HTML dari groupedItems ====
+  // e.g. "Siomay Ayam (2 x 25000)<br>Tahu (1 x 15000)"
+  const itemsHtml = groupedItems
+    .map(i => `${i.Name} (${i.Quantity} x ${i.Price.toLocaleString("id-ID")})`)
+    .join("<br>");
+
+  // ==== 3) Render baris tabel pakai itemsHtml ini ====
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${order.ID}</td>
+    <td>${order.Name}</td>
+    <td>${order.Address}</td>
+    <td>${order.Payment}</td>
+    <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
+    <td style="display:flex;justify-content:space-between;align-items:center;">
+      <span>${itemsHtml}</span>
+      <button style="margin-left:10px;"
+              onclick='printSingleOrder(${JSON.stringify(order).replace(/'/g,"\\'")})'>
+        🖨️ Print
+      </button>
+    </td>
+    <td>${order.status}</td>
+    <td>
+      ${order.status === "pending"
+        ? `<button class="status-btn" data-id="${order.ID}" data-status="berhasil">
+             Set Berhasil
+           </button>`
+        : `<span>✔️</span>`}
+    </td>
+  `;
+  tableBody.appendChild(row);
+});
 		} catch (error) {
 			console.error("❌ Gagal mengambil data pesanan:", error);
 			tableBody.innerHTML = `<tr><td colspan='8'>Gagal memuat pesanan: ${error.message}</td></tr>`;
