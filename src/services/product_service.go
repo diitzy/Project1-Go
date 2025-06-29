@@ -6,14 +6,12 @@ import (
 	"project-1/src/models"
 )
 
-// GetAllProducts - Service untuk mendapatkan semua produk (HILANG)
 func GetAllProducts() ([]models.Product, error) {
 	var products []models.Product
 	result := config.DB.Find(&products)
 	return products, result.Error
 }
 
-// GetProductByID - Service untuk mendapatkan produk berdasarkan ID (HILANG)
 func GetProductByID(id uint) (models.Product, error) {
 	var product models.Product
 	result := config.DB.First(&product, id)
@@ -23,7 +21,6 @@ func GetProductByID(id uint) (models.Product, error) {
 	return product, nil
 }
 
-// DeleteProduct - Service untuk menghapus produk (HILANG)
 func DeleteProduct(id uint) error {
 	var product models.Product
 	if err := config.DB.First(&product, id).Error; err != nil {
@@ -32,7 +29,6 @@ func DeleteProduct(id uint) error {
 	return config.DB.Delete(&product).Error
 }
 
-// UpdateStock - Service untuk mengupdate stok produk (HILANG)
 func UpdateStock(productID uint, quantityChange int) error {
 	var product models.Product
 	if err := config.DB.First(&product, productID).Error; err != nil {
@@ -49,7 +45,7 @@ func UpdateStock(productID uint, quantityChange int) error {
 }
 
 func CreateProduct(product models.Product) (models.Product, error) {
-	// PERBAIKAN: Tambah validasi
+
 	if product.Name == "" {
 		return models.Product{}, errors.New("nama produk tidak boleh kosong")
 	}
@@ -70,7 +66,6 @@ func UpdateProduct(id uint, productData models.Product) (models.Product, error) 
 		return models.Product{}, errors.New("produk tidak ditemukan")
 	}
 
-	// PERBAIKAN: Tambah validasi
 	if productData.Name == "" {
 		return models.Product{}, errors.New("nama produk tidak boleh kosong")
 	}

@@ -7,7 +7,7 @@ import (
 	"project-1/src/services"
 
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt" // Import bcrypt
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Login(c *gin.Context) {
@@ -19,26 +19,22 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Cari user berdasarkan email
 	if err := config.DB.Where("email = ?", loginData.Email).First(&userInDb).Error; err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Email atau password salah"})
 		return
 	}
 
-	// PERBAIKAN: Verifikasi password dengan bcrypt
 	if err := bcrypt.CompareHashAndPassword([]byte(userInDb.Password), []byte(loginData.Password)); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Email atau password salah"})
 		return
 	}
 
-	// Buat token JWT yang berisi role
 	token, err := services.GenerateToken(userInDb.ID, userInDb.Email, userInDb.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal membuat token"})
 		return
 	}
 
-	// Kirim token DAN role ke frontend
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login berhasil",
 		"token":   token,
@@ -47,6 +43,5 @@ func Login(c *gin.Context) {
 }
 
 func Logout(c *gin.Context) {
-	// Di sistem JWT, logout di sisi server biasanya tidak melakukan apa-apa
 	c.JSON(http.StatusOK, gin.H{"message": "Logout berhasil"})
 }

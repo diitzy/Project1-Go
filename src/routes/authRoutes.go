@@ -6,12 +6,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// AuthRoutes mengatur semua rute terkait autentikasi
 func AuthRoutes(router *gin.Engine) {
 	auth := router.Group("/api")
 	{
-		auth.POST("/register", controllers.Register) // Route untuk registrasi
-		auth.POST("/login", controllers.Login)       // Route untuk login
+		auth.POST("/register", controllers.Register)
+		auth.POST("/login", controllers.Login)
 		auth.POST("/logout", controllers.Logout)
 	}
 }

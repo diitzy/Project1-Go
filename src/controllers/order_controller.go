@@ -10,7 +10,7 @@ import (
 )
 
 func Checkout(c *gin.Context) {
-	// 1) Bind incoming JSON
+
 	var order models.Order
 	if err := c.ShouldBindJSON(&order); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -21,7 +21,6 @@ func Checkout(c *gin.Context) {
 		return
 	}
 
-	// 2) Attach the logged-in user
 	uidAny, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak terautentikasi"})
@@ -34,26 +33,24 @@ func Checkout(c *gin.Context) {
 	}
 	order.UserID = userID
 
-	// 3) **Deduplicate** order.Items by ProductID
 	grouped := make(map[uint]*models.OrderItem)
 	for _, it := range order.Items {
-		// Each incoming `it` has ProductID now set correctly by JSON tag.
+
 		if ex, found := grouped[it.ProductID]; found {
 			ex.Quantity += it.Quantity
 		} else {
 			tmp := it
-			tmp.ID = 0      // clear any bound ID
-			tmp.OrderID = 0 // will be set by GORM
+			tmp.ID = 0
+			tmp.OrderID = 0
 			grouped[it.ProductID] = &tmp
 		}
 	}
-	// rebuild the slice
+
 	order.Items = make([]models.OrderItem, 0, len(grouped))
 	for _, v := range grouped {
 		order.Items = append(order.Items, *v)
 	}
 
-	// 4) Compute total & set status
 	var total float64
 	for i := range order.Items {
 		total += order.Items[i].Price * float64(order.Items[i].Quantity)
@@ -63,26 +60,22 @@ func Checkout(c *gin.Context) {
 
 	fmt.Printf("CHECKOUT => %+v\n", order)
 
-	// 5) Save it all in one go
 	if err := services.CreateOrder(&order); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	// 6) Return the created order
 	c.JSON(http.StatusCreated, order)
 }
 
-// UpdateOrderStatusHandler untuk admin mengubah status pesanan
 func UpdateOrderStatusHandler(c *gin.Context) {
-	// parse ID
+
 	var id uint
 	if _, err := fmt.Sscan(c.Param("id"), &id); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID tidak valid"})
 		return
 	}
 
-	// parse body { status: "berhasil" }
 	var req struct {
 		Status string `json:"status"`
 	}
@@ -91,7 +84,6 @@ func UpdateOrderStatusHandler(c *gin.Context) {
 		return
 	}
 
-	// update
 	if err := services.UpdateOrderStatus(id, req.Status); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal update status"})
 		return
@@ -99,12 +91,8 @@ func UpdateOrderStatusHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Status diperbarui"})
 }
 
-// TERBARU
-// GetAllOrdersHandler untuk endpoint admin melihat semua order
-// src/controllers/order_controller.go
-
 func GetAllOrdersHandler(c *gin.Context) {
-	// parse query params (format YYYY-MM-DD)
+
 	start := c.Query("startDate")
 	end := c.Query("endDate")
 
@@ -113,10 +101,10 @@ func GetAllOrdersHandler(c *gin.Context) {
 		err    error
 	)
 	if start != "" && end != "" {
-		// ambil dengan filter tanggal
+
 		orders, err = services.GetOrdersByDate(start, end)
 	} else {
-		// ambil semua tanpa filter
+
 		orders, err = services.GetAllOrders()
 	}
 
@@ -127,7 +115,6 @@ func GetAllOrdersHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, orders)
 }
 
-// GetOrderByIDHandler untuk endpoint user melihat order by ID
 func GetOrderByIDHandler(c *gin.Context) {
 	idParam := c.Param("id")
 	var id uint
@@ -144,9 +131,8 @@ func GetOrderByIDHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, order)
 }
 
-// GetOrdersByUserIDHandler untuk endpoint user melihat riwayat pesanan sendiri
 func GetOrdersByUserIDHandler(c *gin.Context) {
-	// Ambil userID dari context (middleware AuthUserMiddleware harusnya sudah menyimpannya)
+
 	uid, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User tidak terautentikasi"})
