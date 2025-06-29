@@ -1,22 +1,28 @@
-/* ===================================== */
-/* Products Section                     */
-/* ===================================== */
-.section-title {
-    padding-top: 100px; /* Added padding-top for content below fixed header */
-}
-
+/* ============================= */
+/* Produk - Section & Layout    */
+/* ============================= */
 .products-section {
     padding: 80px 20px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
+.section-title {
+    padding-top: 100px;
+}
+
+/* ============================= */
+/* Kartu Produk Grid Layout     */
+/* ============================= */
 .product-container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 30px;
 }
 
+/* ============================= */
+/* Tampilan Kartu Produk        */
+/* ============================= */
 .product-card {
     background-color: #fff;
     border-radius: 10px;
@@ -30,6 +36,9 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
+/* ============================= */
+/* Gambar Produk                */
+/* ============================= */
 .product-image {
     position: relative;
     height: 200px;
@@ -47,6 +56,9 @@
     transform: scale(1.05);
 }
 
+/* ============================= */
+/* Label Produk (New, Best)     */
+/* ============================= */
 .product-tags {
     position: absolute;
     top: 10px;
@@ -72,6 +84,9 @@
     background-color: #ff922b;
 }
 
+/* ============================= */
+/* Info dan Tombol Produk       */
+/* ============================= */
 .product-info {
     padding: 15px;
 }
@@ -108,6 +123,9 @@
     background-color: #fd5252;
 }
 
+/* ============================= */
+/* Tombol Lihat Lainnya         */
+/* ============================= */
 .view-more {
     margin-top: 40px;
     text-align: center;
