@@ -1,65 +1,141 @@
-document.addEventListener("DOMContentLoaded", () => {
 
-    // Fungsi untuk memperbarui tampilan UI user (ikon, email, menu dropdown)
-    const updateUserInterface = () => {
-        const user = JSON.parse(localStorage.getItem("user"));  // Ambil data user dari localStorage
-        const userIconLink = document.querySelector(".user-icon-link");  // Dapatkan elemen untuk ikon user
+document.addEventListener('DOMContentLoaded', initContactModule);
 
-        // Jika elemen tidak ditemukan, hentikan fungsi
-        if (!userIconLink) return;
+function initContactModule() {
+    setupUserInterface();
+    setupLogoutHandler();
+}
 
-        // Jika user login (data user tersedia)
-        if (user) {
-            // Tampilkan dropdown user dengan email, profile, dan logout
-            userIconLink.innerHTML = `
-                <div class="user-dropdown">
-                    <button class="user-button">
-                        <i class="ri-user-line"></i>
-                        <span class="user-email">${user.email}</span>
-                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item" id="profileBtn">
-                            <i class="ri-user-settings-line"></i> Profile
-                        </a>
-                        <a href="#" class="dropdown-item" id="logoutBtn">
-                            <i class="ri-logout-box-line"></i> Logout
-                        </a>
-                    </div>
-                </div>
-            `;
+// ----------------------------------------------
+// BAGIAN USER INTERFACE: Menampilkan Data User
+// ----------------------------------------------
 
-            // Tambahkan event listener untuk tombol logout
-            const logoutBtn = document.getElementById("logoutBtn");
-            if (logoutBtn) {
-                logoutBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    // Hapus data user dari localStorage dan arahkan ke halaman home
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("cart");
-                    alert("Logout berhasil!");
-                    window.location.href = "/home";
-                });
-            }
+/**
+ * Setup tampilan ikon user: dropdown jika login, atau tautan login
+ */
+function setupUserInterface() {
+    const userIconLink = document.querySelector('.user-icon-link');
+    if (!userIconLink) {
+        console.warn('Elemen .user-icon-link tidak ditemukan.');
+        return;
+    }
 
-            // Tambahkan event listener untuk tombol profile
-            const profileBtn = document.getElementById("profileBtn");
-            if (profileBtn) {
-                profileBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    // Arahkan ke halaman profil user
-                    window.location.href = "/profile";
-                });
-            }
+    const user = getUserFromLocalStorage();
+    if (user && typeof user.email === 'string' && user.email.trim()) {
+        renderUserDropdown(userIconLink, user.email);
+    } else {
+        showDefaultUserIcon(userIconLink);
+    }
+}
 
-        } else {
-            // Jika belum login, tampilkan ikon default dan arahkan ke halaman login
-            userIconLink.innerHTML = '<i class="ri-user-line"></i>';
-            userIconLink.href = "/login";
-        }
-    };
+/**
+ * Tampilkan ikon default dan arahkan ke login
+ * @param {HTMLElement} container
+ */
+function showDefaultUserIcon(container) {
+    container.textContent = '';
+    const icon = document.createElement('i');
+    icon.className = 'ri-user-line';
+    container.appendChild(icon);
+    container.setAttribute('href', '/login');
+}
 
-    // Jalankan fungsi saat halaman dimuat
-    updateUserInterface();
-});
+/**
+ * Ambil dan parse data user di localStorage dengan validasi
+ * @returns {Object}
+ */
+function getUserFromLocalStorage() {
+    let raw;
+    try {
+        raw = localStorage.getItem('user');
+        if (!raw) return {};
+        const parsed = JSON.parse(raw);
+        return (parsed && typeof parsed === 'object') ? parsed : {};
+    } catch (err) {
+        console.error('Gagal membaca atau parse data user:', err);
+        return {};
+    }
+}
+
+/**
+ * Render dropdown user dengan email
+ * @param {HTMLElement} container
+ * @param {string} email
+ */
+function renderUserDropdown(container, email) {
+    // Reset kontainer
+    container.textContent = '';
+
+    // Struktur dropdown
+    const dropdown = document.createElement('div');
+    dropdown.className = 'user-dropdown';
+
+    const button = document.createElement('button');
+    button.className = 'user-button';
+
+    // Ikon dan email
+    const icon = document.createElement('i');
+    icon.className = 'ri-user-line';
+
+    const spanEmail = document.createElement('span');
+    spanEmail.className = 'user-email';
+    spanEmail.textContent = email;
+
+    const arrow = document.createElement('i');
+    arrow.className = 'ri-arrow-down-s-line dropdown-arrow';
+
+    button.append(icon, spanEmail, arrow);
+    dropdown.append(button);
+
+    // Menu dropdown
+    const menu = document.createElement('div');
+    menu.className = 'dropdown-menu';
+
+    const logoutItem = document.createElement('a');
+    logoutItem.className = 'dropdown-item';
+    logoutItem.id = 'logoutBtn';
+    logoutItem.href = '#';
+    logoutItem.innerHTML = '<i class="ri-logout-box-line"></i> Logout';
+
+    menu.append(logoutItem);
+    dropdown.append(menu);
+    container.append(dropdown);
+}
+
+// ----------------------------------------------
+// HANDLER LOGOUT
+// ----------------------------------------------
+
+/**
+ * Pasang listener untuk tombol logout
+ */
+function setupLogoutHandler() {
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (!logoutBtn) {
+        // Logout belum dirender
+        return;
+    }
+
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        handleLogout();
+    });
+}
+
+/**
+ * Proses logout user dengan validasi dan notifikasi
+ */
+function handleLogout() {
+    try {
+        // Hapus data sensitif
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('cart');
+
+        alert('Logout berhasil!');
+        window.location.href = '/home';
+    } catch (err) {
+        console.error('Gagal logout:', err);
+        alert('Terjadi kesalahan saat logout. Silakan coba lagi.');
+    }
+}

@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', initProfileModule);
 
-function init() {
+function initProfileModule() {
     initProfileSection();
     initEditToggle();
     initPasswordModal();

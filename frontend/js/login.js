@@ -1,6 +1,6 @@
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', initLoginModule);
 
-function init() {
+function initLoginModule() {
     initShowPasswordToggle();
     initLoginForm();
 }
