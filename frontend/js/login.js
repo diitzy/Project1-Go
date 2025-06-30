@@ -1,157 +1,133 @@
-document.addEventListener("DOMContentLoaded", () => {
-    // ===================== Register Form Handler =====================
-    const registerForm = document.querySelector(".register-container form");
+document.addEventListener('DOMContentLoaded', init);
 
-    if (registerForm) {
-        registerForm.addEventListener("submit", async function (e) {
-            e.preventDefault();
+function init() {
+    initShowPasswordToggle();
+    initLoginForm();
+}
 
-            // Ambil data dari form
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirm-password").value;
+// --------------------------------------
+// SHOW/HIDE PASSWORD
+// --------------------------------------
+function initShowPasswordToggle() {
+    const passwordInput = document.getElementById('password');
+    const toggleCheckbox = document.getElementById('show-password');
 
-            // Validasi password cocok
-            if (password !== confirmPassword) {
-                alert("Konfirmasi password tidak cocok!");
-                return;
-            }
+    if (!passwordInput || !toggleCheckbox) return;
 
-            try {
-                // Kirim request ke endpoint registrasi
-                const response = await fetch("/api/register", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
-                });
+    // Saat checkbox berubah, ubah tipe input password
+    toggleCheckbox.addEventListener('change', () => {
+        passwordInput.type = toggleCheckbox.checked ? 'text' : 'password';
+    });
+}
 
-                const data = await response.json();
+// --------------------------------------
+// LOGIN FORM: Validasi & Submit
+// --------------------------------------
+function initLoginForm() {
+    const form = document.getElementById('loginForm');
+    const messageContainer = document.getElementById('loginMessage');
 
-                // Berhasil registrasi
-                if (response.status === 201 && data.message === "Registrasi berhasil") {
-                    alert("Registrasi berhasil! Silakan login.");
-                    window.location.href = "/login";
-                } else {
-                    alert(data.message || "Registrasi gagal.");
-                }
-            } catch (err) {
-                alert("Terjadi kesalahan koneksi saat registrasi.");
-            }
-        });
-    }
+    if (!form) return;
 
-    // ===================== Show/Hide Password =====================
-    const passwordInput = document.getElementById("password");
-    const showPasswordCheckbox = document.getElementById("show-password");
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearMessage();
 
-    if (passwordInput && showPasswordCheckbox) {
-        showPasswordCheckbox.addEventListener("change", function () {
-            // Tampilkan atau sembunyikan password
-            passwordInput.type = this.checked ? "text" : "password";
-        });
-    }
+        // Ambil dan trim nilai input
+        const emailInput = document.getElementById('email');
+        const passInput  = document.getElementById('password');
+        const email      = emailInput.value.trim();
+        const password   = passInput.value;
 
-    // ===================== Login Form Handler =====================
-    const loginForm = document.querySelector(".login-container form, form");
+        let valid = true;
 
-    if (loginForm) {
-        loginForm.addEventListener("submit", async function (e) {
-            e.preventDefault();
+        // Reset style error
+        [emailInput, passInput].forEach(el => el.classList.remove('input-error'));
 
-            // Ambil data dari form login
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-
-            try {
-                // Kirim request ke endpoint login
-                const response = await fetch("/api/login", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ email, password })
-                });
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    // Simpan data token dan user ke localStorage
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("user", JSON.stringify({
-                        email: email,
-                        role: data.role || "user"
-                    }));
-
-                    alert("Login berhasil!");
-
-                    // Arahkan berdasarkan role
-                    if (data.role === "admin") {
-                        window.location.href = "/admin";
-                    } else {
-                        window.location.href = "/shop";
-                    }
-                } else {
-                    alert(data.error || "Login gagal.");
-                }
-            } catch (err) {
-                alert("Terjadi kesalahan koneksi.");
-            }
-        });
-    }
-
-    // ===================== Update UI Berdasarkan Status Login =====================
-    function updateUserInterface() {
-        const user = JSON.parse(localStorage.getItem("user"));
-        const userIconLink = document.querySelector(".user-icon-link");
-
-        if (!userIconLink) return;
-
-        if (user) {
-            // Jika user login, tampilkan dropdown dengan email, profil, dan logout
-            userIconLink.innerHTML = `
-                <div class="user-dropdown">
-                    <button class="user-button">
-                        <i class="ri-user-line"></i>
-                        <span class="user-email">${user.email}</span>
-                        <i class="ri-arrow-down-s-line dropdown-arrow"></i>
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="#" class="dropdown-item" id="profileBtn">
-                            <i class="ri-user-settings-line"></i> Profile
-                        </a>
-                        <a href="#" class="dropdown-item" id="logoutBtn">
-                            <i class="ri-logout-box-line"></i> Logout
-                        </a>
-                    </div>
-                </div>
-            `;
-
-            // Logout handler
-            const logoutBtn = document.getElementById("logoutBtn");
-            if (logoutBtn) {
-                logoutBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    localStorage.removeItem("user");
-                    localStorage.removeItem("token");
-                    localStorage.removeItem("cart");
-                    alert("Logout berhasil!");
-                    window.location.href = "/home";
-                });
-            }
-
-            // Profile redirect
-            const profileBtn = document.getElementById("profileBtn");
-            if (profileBtn) {
-                profileBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    window.location.href = "/profile";
-                });
-            }
-        } else {
-            // Jika tidak login, tampilkan ikon default
-            userIconLink.innerHTML = '<i class="ri-user-line"></i>';
-            userIconLink.href = "/login";
+        // Validasi: email wajib dan format benar
+        if (!email) {
+            showError('loginMessage', 'Email harus diisi.', true);
+            emailInput.classList.add('input-error');
+            valid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            showError('loginMessage', 'Format email tidak valid.', true);
+            emailInput.classList.add('input-error');
+            valid = false;
         }
-    }
 
-    // Jalankan saat halaman selesai dimuat
-    updateUserInterface();
-});
+        // Validasi: password wajib dan minimal 6 karakter
+        if (!password) {
+            showError('loginMessage', 'Password harus diisi.', true);
+            passInput.classList.add('input-error');
+            valid = false;
+        } else if (password.length < 6) {
+            showError('loginMessage', 'Password minimal 6 karakter.', true);
+            passInput.classList.add('input-error');
+            valid = false;
+        }
+
+        if (!valid) return;
+
+        // Kirim request login
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Simpan token & user
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify({
+                    email: email,
+                    role: data.role || 'user'
+                }));
+
+                alert('Login berhasil!');
+                
+                showError('loginMessage', 'Login berhasil! Mengarahkan...', false);
+                // Arahkan sesuai role
+                setTimeout(() => {
+                    if (data.role === 'admin') {
+                        window.location.href = '/admin';
+                    } else {
+                        window.location.href = '/shop';
+                    }
+                }, 800);
+            } else {
+                // Gagal login: tampilkan pesan server
+                showError('loginMessage', data.error || 'Login gagal. Periksa kredensial.', true);
+            }
+        } catch (err) {
+            console.error('Error koneksi saat login:', err);
+            showError('loginMessage', 'Terjadi kesalahan koneksi.', true);
+        }
+    });
+}
+
+// --------------------------------------
+// HELPERS: Tampilkan & Bersihkan Pesan
+// --------------------------------------
+/**
+ * showError:
+ * @param {string} containerId - ID elemen untuk menampilkan pesan
+ * @param {string} msg - Teks pesan
+ * @param {boolean} isError - true=merah, false=hijau
+ */
+function showError(containerId, msg, isError) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.color = isError ? '#dc3545' : '#28a745';
+}
+
+/** clearMessage: Hapus pesan login sebelumnya */
+function clearMessage() {
+    const el = document.getElementById('loginMessage');
+    if (el) {
+        el.textContent = '';
+    }
+}

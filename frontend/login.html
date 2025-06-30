@@ -6,17 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Anto Frozen Food</title>
 
-    <!-- Google Fonts & Remixicon -->
+    <!-- CSS Utama -->
+    <link rel="stylesheet" href="/frontend/style/login.css">
+    <link rel="stylesheet" href="/frontend/style/home.css">
+
+    <!-- Fonts & Icon -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="/frontend/style/login.css">
-    <link rel="stylesheet" href="/frontend/style/home.css">
 </head>
 
 <body>
-    <!-- HEADER -->
+    <!-- Header Navigasi -->
     <header class="header">
         <div class="header-content">
             <a href="/home" class="logo">Anto Frozen Food</a>
@@ -41,28 +43,30 @@
         </div>
     </header>
 
-    <!-- LOGIN FORM -->
+    <!-- Form Login -->
     <main>
         <div class="login-container">
             <div class="login-header">
                 <h2>Masuk ke Akun Anda</h2>
                 <p>Masukkan email dan password Anda untuk login</p>
             </div>
-            <!-- FORM DIEDIT: hapus action dan method -->
             <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email Anda"
                         required>
                 </div>
-               <div class="form-group">
+
+                <div class="form-group">
                     <label for="password">Password</label>
                     <div class="password-row">
                         <input type="password" id="password" name="password" class="form-control"
                             placeholder="Masukkan password Anda" required>
                         <div class="show-password-inline">
                             <input type="checkbox" id="show-password">
-                            <label for="show-password" style="font-size:0.96em; cursor:pointer;">Tampilkan</label>
+                            <label for="show-password" style="font-size:0.96em; cursor:pointer;">
+                                Tampilkan
+                            </label>
                         </div>
                     </div>
                     <a href="/forgot-password" class="forgot-password">Lupa password?</a>
@@ -70,6 +74,7 @@
 
                 <button type="submit" class="btn-login">Masuk</button>
                 <div id="loginMessage" style="margin-top:10px;"></div>
+
                 <div class="register-link">
                     <p>Belum memiliki akun? <a href="/register">Daftar sekarang</a></p>
                 </div>
@@ -77,7 +82,7 @@
         </div>
     </main>
 
-    <!-- FOOTER -->
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-logo">
@@ -96,7 +101,7 @@
             <div class="footer-contact">
                 <h4>Kontak</h4>
                 <p><i class="ri-map-pin-line"></i> Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004, Sukaasih,
-                    Tanggerang, Kota Tangerang, Banten 15111</p>
+                    Tangerang</p>
                 <p><i class="ri-phone-line"></i> 081223656546</p>
                 <p><i class="ri-mail-line"></i> antofrozenfood@gmail.com</p>
             </div>
@@ -115,7 +120,7 @@
         </div>
     </footer>
 
-    <!-- SCRIPT -->
+    <!-- JavaScript -->
     <script src="/frontend/js/login.js"></script>
 </body>
 

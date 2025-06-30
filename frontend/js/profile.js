@@ -1,9 +1,3 @@
-// ======================================
-// profile.js
-// Modular, terkomentar, dengan validasi
-// ======================================
-
-// Entry point: jalankan init() saat DOM siap
 document.addEventListener('DOMContentLoaded', init);
 
 function init() {
