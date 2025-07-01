@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', initContactModule);
 
 function initContactModule() {

@@ -40,7 +40,6 @@
 .about-image {
     flex: 1;
     height: 400px;
-    background-image: url('2025-04-12.webp');
     background-size: cover;
     background-position: center;
     border-radius: 10px;
