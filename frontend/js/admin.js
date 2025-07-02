@@ -580,6 +580,41 @@ document.addEventListener("DOMContentLoaded", () => {
   printWindow.document.close();
   printWindow.print();
 }
+// Helper: Generasi HTML untuk tiap order (dipanggil di printAllOrders)
+function generateOrderHTML(order) {
+  const totalItems = order.Items.reduce((sum, i) => sum + i.Quantity, 0);
+  const totalPrice = order.Total;
+  const itemRows = order.Items.map(item => `
+    <tr>
+      <td>${item.Name}</td>
+      <td>${item.Quantity}</td>
+      <td>Rp ${item.Price.toLocaleString('id-ID')}</td>
+      <td>Rp ${(item.Price * item.Quantity).toLocaleString('id-ID')}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="order-page">
+      <h2>Pesanan ID: ${order.ID}</h2>
+      <p><strong>Nama:</strong> ${order.Name}</p>
+      <p><strong>Alamat:</strong> ${order.Address}</p>
+      <p><strong>Metode Pembayaran:</strong> ${order.Payment}</p>
+      <table>
+        <thead>
+          <tr><th>Produk</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr>
+        </thead>
+        <tbody>
+          ${itemRows}
+        </tbody>
+      </table>
+      <div class="totals">
+        <p><strong>Total Items:</strong> ${totalItems}</p>
+        <p><strong>Total Harga:</strong> Rp ${totalPrice.toLocaleString('id-ID')}</p>
+      </div>
+    </div>
+    <div style="page-break-after: always;"></div>
+  `;
+}
 
 	// Expose printSingleOrder globally
 	window.printSingleOrder = printSingleOrder;
@@ -606,20 +641,38 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    const startFormatted = new Date(start).toLocaleDateString("id-ID");
+    const endFormatted = new Date(end).toLocaleDateString("id-ID");
+
     const win = window.open("", "_blank");
     win.document.write(`
       <html>
       <head>
-        <title>Laporan Pesanan (${start} - ${end})</title>
+        <title>Laporan Pesanan (${startFormatted} - ${endFormatted})</title>
         <style>
-          body { font-family: sans-serif; padding: 20px; }
+          body { font-family: Arial; padding: 20px; }
+          .kop-surat { text-align: center; margin-bottom: 20px; }
+          .kop-surat h1 { margin: 0; font-size: 24px; }
+          .kop-surat p { margin: 2px 0; }
+          hr { margin-bottom: 20px; }
+          h2 { text-align: center; margin: 20px 0; }
           table { width: 100%; border-collapse: collapse; margin-top: 20px; }
           th, td { border: 1px solid #000; padding: 8px; text-align: left; }
-          h2 { text-align: center; }
+          th { background-color: #f5f5f5; font-weight: bold; }
+          .periode-info { text-align: center; margin: 20px 0; font-size: 16px; }
         </style>
       </head>
       <body>
-        <h2>Laporan Pesanan<br>Periode ${start} s/d ${end}</h2>
+        <div class="kop-surat">
+          <h1>PT. Anto Frozen Food</h1>
+          <p>Jl. Raya Gatot Soebroto, Pd. Jaya, Kec. Sepatan, Kabupaten Tangerang, Banten 15520</p>
+          <p>Telp: 0812-8359-8079  | Email: mr.rafreaks@gmail.com</p>
+          <hr />
+        </div>
+        <h2>Laporan Pesanan</h2>
+        <div class="periode-info">
+          <strong>Periode: ${startFormatted} s/d ${endFormatted}</strong>
+        </div>
         ${table.outerHTML}
       </body>
       </html>
