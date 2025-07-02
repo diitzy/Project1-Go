@@ -82,9 +82,36 @@ function renderCartSummary(cartItems) {
  * Pasang listener pada form checkout
  * @param {Array<Object>} cartItems
  */
+async function validateStockBeforeCheckout(cartItems) {
+    for (const item of cartItems) {
+        // Gunakan 'item.id' jika tidak ada 'product_id'
+        const productId = item.product_id || item.id;
+        if (!productId) {
+            alert("ID produk tidak ditemukan untuk item keranjang.");
+            throw new Error("ID produk undefined");
+        }
+
+        const res = await fetch(`/api/products/${productId}`);
+        if (!res.ok) {
+            alert(`Gagal mengambil data produk untuk ID ${productId}`);
+            throw new Error("Gagal mengambil data produk");
+        }
+
+        const product = await res.json();
+
+        // Validasi stok
+        if (item.quantity > product.stock) {
+            alert(`Stok tidak mencukupi untuk produk "${product.name}".\n\n` +
+                  `Jumlah diminta: ${item.quantity}\nStok tersedia: ${product.stock}`);
+            throw new Error(`Stok tidak mencukupi untuk ${product.name}`);
+        }
+    }
+}
+
 function attachFormListener(cartItems) {
     const form = document.getElementById('checkout-form');
     if (!form) return;
+
 
     form.addEventListener('submit', async event => {
         event.preventDefault();
@@ -107,6 +134,7 @@ function attachFormListener(cartItems) {
             }) => rest)
         };
 
+        await validateStockBeforeCheckout(cartItems);
         await submitOrder(orderData);
     });
 }
@@ -131,27 +159,50 @@ function validateForm(name, address, payment, cartItems) {
  * Kirim data order ke server dan tangani respons
  * @param {Object} orderData
  */
-async function submitOrder(orderData) {
-    try {
-        const response = await fetch('/checkout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
-            },
-            body: JSON.stringify(orderData)
-        });
+async function submitOrder(cartItemsRaw) {
+    const token = localStorage.getItem("token");
 
-        if (!response.ok) {
-            const errorBody = await response.json();
-            throw new Error(errorBody.error || 'Gagal melakukan pemesanan.');
-        }
+    // Konversi data mentah jadi array
+    const cartItems = Array.isArray(cartItemsRaw)
+        ? cartItemsRaw
+        : (typeof cartItemsRaw === 'string'
+            ? JSON.parse(cartItemsRaw)
+            : []);
 
-        alert('Pemesanan berhasil!');
-        localStorage.removeItem('cart');
-        window.location.href = '/home';
-    } catch (err) {
-        console.error('Checkout error:', err);
-        alert(`Checkout gagal: ${err.message}`);
+    if (cartItems.length === 0) {
+        alert("Keranjang kosong atau gagal terbaca.");
+        return;
     }
+
+    const payload = {
+        items: cartItems.map(item => ({
+            product_id: item.product_id || item.id,
+            quantity: item.quantity,
+            price: item.price
+        }))
+    };
+
+    // validasi tambahan
+    if (payload.items.some(item => !item.product_id || item.product_id === 0)) {
+        alert("Terdapat item dengan Product ID tidak valid!");
+        return;
+    }
+
+    const res = await fetch("/checkout", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+        const errMsg = await res.text();
+        throw new Error("Checkout error: " + errMsg);
+    }
+
+    const result = await res.json();
+    alert("Checkout berhasil!");
+    console.log(result);
 }

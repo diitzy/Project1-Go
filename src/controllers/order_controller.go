@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"project-1/src/config"
 	"project-1/src/models"
 	"project-1/src/services"
 
@@ -43,6 +44,22 @@ func Checkout(c *gin.Context) {
 			tmp.ID = 0
 			tmp.OrderID = 0
 			grouped[it.ProductID] = &tmp
+		}
+	}
+
+	// Validasi stok tersedia
+	for _, item := range grouped {
+		var product models.Product
+		if err := config.DB.First(&product, item.ProductID).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": fmt.Sprintf("Produk ID %d tidak ditemukan", item.ProductID)})
+			return
+		}
+
+		if item.Quantity > product.Stock {
+			c.JSON(http.StatusBadRequest, gin.H{
+				"error": fmt.Sprintf("Stok tidak mencukupi untuk produk '%s'. Tersedia: %d, diminta: %d", product.Name, product.Stock, item.Quantity),
+			})
+			return
 		}
 	}
 
