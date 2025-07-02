@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const PUBLIC_API_BASE_URL = '/api/products';
 	const ADMIN_API_BASE_URL = '/admin/products';
 
-	const getToken = () => localStorage.getItem('token');
+	const getToken = () => localStorage.getItem('token'); 
 
 	// ✅ Perbaikan: Tambahkan fungsi untuk update navigation
 	function updateNavigation(activeSection) {
@@ -586,4 +586,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
 	// Initialize with products section
 	fetchProducts();
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const printBtn = document.getElementById("printBtn");
+
+  printBtn.addEventListener("click", () => {
+    const start = document.getElementById("start-date").value;
+    const end = document.getElementById("end-date").value;
+
+    if (!start || !end) {
+      alert("Silakan pilih tanggal mulai dan tanggal akhir terlebih dahulu.");
+      return;
+    }
+
+    const table = document.getElementById("order-table");
+    if (!table) {
+      alert("Tabel pesanan tidak ditemukan.");
+      return;
+    }
+
+    const win = window.open("", "_blank");
+    win.document.write(`
+      <html>
+      <head>
+        <title>Laporan Pesanan (${start} - ${end})</title>
+        <style>
+          body { font-family: sans-serif; padding: 20px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+          h2 { text-align: center; }
+        </style>
+      </head>
+      <body>
+        <h2>Laporan Pesanan<br>Periode ${start} s/d ${end}</h2>
+        ${table.outerHTML}
+      </body>
+      </html>
+    `);
+    win.document.close();
+    win.print();
+  });
 });

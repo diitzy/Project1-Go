@@ -1,15 +1,19 @@
-/* ===================================== */
-/* Checkout Page Specific Styles        */
-/* ===================================== */
+/* ==========================================================
+   Styles for Checkout Page
+   ========================================================== */
+
+/* Container Utama */
 .checkout-container {
     max-width: 800px;
-    margin: 120px auto 50px; /* Adjusted margin to clear fixed header */
+    margin: 120px auto 50px;
+    /* Top margin untuk menghindari fixed header */
     padding: 30px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Judul Halaman */
 .checkout-container h1 {
     text-align: center;
     font-size: 32px;
@@ -17,6 +21,7 @@
     color: #333;
 }
 
+/* Ringkasan Belanja */
 .checkout-summary {
     margin-bottom: 30px;
     padding: 20px;
@@ -28,7 +33,6 @@
 .checkout-summary h2 {
     font-size: 24px;
     margin-bottom: 15px;
-    color: #333;
 }
 
 .checkout-summary ul {
@@ -38,23 +42,16 @@
 }
 
 .checkout-summary ul li {
-    padding: 8px 0;
-    border-bottom: 1px dashed #ddd;
     display: flex;
     justify-content: space-between;
-    font-size: 16px;
-    color: #555;
-}
-
-.checkout-summary ul li:last-child {
-    border-bottom: none;
+    padding: 8px 0;
+    border-bottom: 1px dashed #ddd;
 }
 
 .checkout-summary p {
     text-align: right;
     font-size: 18px;
     margin-top: 20px;
-    color: #333;
 }
 
 #total-price {
@@ -62,158 +59,62 @@
     font-size: 20px;
 }
 
-/* Form Styling */
-#checkout-form h2 {
-    font-size: 24px;
+/* Form Pemesan */
+.checkout-form-section {
+    margin-top: 50px;
+}
+
+#checkout-form .form-group {
     margin-bottom: 20px;
-    color: #333;
 }
 
 #checkout-form label {
     display: block;
     margin-bottom: 8px;
     font-weight: 600;
-    color: #444;
 }
 
-#checkout-form input[type="text"],
+#checkout-form input,
 #checkout-form textarea,
 #checkout-form select {
     width: 100%;
     padding: 12px 15px;
-    margin-bottom: 20px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 16px;
     transition: border-color 0.3s;
 }
 
-#checkout-form input[type="text"]:focus,
+#checkout-form input:focus,
 #checkout-form textarea:focus,
 #checkout-form select:focus {
-    border-color: #ff6b6b;
     outline: none;
+    border-color: #ff6b6b;
 }
 
-#checkout-form textarea {
-    resize: vertical; /* Allows vertical resizing */
-    min-height: 80px;
-}
-
-.btn { /* General button style, reused for "Lakukan Pemesanan" */
+.btn-submit {
     display: block;
     width: 100%;
+    padding: 15px;
     background-color: #ff6b6b;
     color: #fff;
     border: none;
-    padding: 15px;
     border-radius: 5px;
     font-size: 18px;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
-.btn:hover {
-    background-color: #ff5252;
+.btn-submit:hover {
+    background-color: #fd5252;
 }
 
-/* ============================== */
-/* Cart Page Styles (from previous context, kept here for completeness) */
-/* ============================== */
-.cart-section .container {
-    padding: 2rem;
-    max-width: 1000px;
-    margin: auto;
-    padding-top: 100px;
-}
-
-.cart-item {
-    display: flex;
-    align-items: flex-start;
-    border-bottom: 1px solid #ccc;
-    padding: 1rem 0;
-    position: relative;
-}
-
-.cart-item img {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 0.5rem;
-    margin-right: 1rem;
-}
-
-.item-details {
-    flex: 1;
-}
-
-.quantity-control {
-    display: flex;
-    align-items: center;
-    margin-top: 0.5rem;
-}
-
-.qty-btn {
-    background: #eee;
-    border: none;
-    padding: 0.3rem 0.8rem;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.qty-input {
-    width: 50px;
-    text-align: center;
-    margin: 0 0.5rem;
-}
-
-.subtotal {
-    margin-top: 0.5rem;
-    font-weight: bold;
-}
-
-.remove-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: transparent;
-    border: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
-.cart-summary { /* This `.cart-summary` might conflict with the new one above, check your HTML structure carefully */
-    text-align: right;
-    margin-top: 2rem;
-}
-
-.btn-checkout { /* This was a specific button style in your previous `checkout.css`, merged into generic `.btn` now */
-    display: inline-block;
-    padding: 0.7rem 1.5rem;
-    background-color: #ff5722;
-    color: white;
-    border: none;
-    text-decoration: none;
-    border-radius: 5px;
-    margin-top: 1rem;
-}
-
-/* Responsive adjustments if needed for checkout form specifically */
+/* Responsive */
 @media (max-width: 768px) {
     .checkout-container {
-        margin-left: 20px;
-        margin-right: 20px;
+        margin: 100px 20px 30px;
         padding: 20px;
-    }
-
-    .checkout-container h1 {
-        font-size: 28px;
-    }
-
-    .checkout-summary h2,
-    #checkout-form h2 {
-        font-size: 22px;
     }
 }

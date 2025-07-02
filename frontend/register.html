@@ -2,18 +2,23 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar - Anto Frozen Food</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="/frontend/style/home.css">
-    <link rel="stylesheet" href="/frontend/style/register.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - Anto Frozen Food</title>
+
+    <!-- CSS Utama -->
+    <link rel="stylesheet" href="/frontend/style/home.css" />
+    <link rel="stylesheet" href="/frontend/style/register.css" />
+
+    <!-- Fonts dan Icon -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5/fonts/remixicon.css" rel="stylesheet" />
 </head>
 
 <body>
+    <!-- Header Navigasi -->
     <header class="header">
         <div class="header-content">
             <a href="/home" class="logo">Anto Frozen Food</a>
@@ -38,26 +43,32 @@
         </div>
     </header>
 
+    <!-- Formulir Registrasi -->
     <main>
         <div class="register-container">
             <div class="register-header">
                 <h2>Daftar Akun Baru</h2>
                 <p>Buat akun Anda untuk mulai berbelanja</p>
             </div>
-            <form action="/api/register" method="post">
+
+            <form id="register-form" novalidate>
                 <div class="form-group">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email Anda" required>
+                    <input type="email" id="email" name="email" class="form-control" placeholder="Masukkan email Anda" required />
                 </div>
+
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password Anda" required>
+                    <input type="password" id="password" name="password" class="form-control" placeholder="Masukkan password Anda" required />
                 </div>
+
                 <div class="form-group">
                     <label for="confirm-password">Konfirmasi Password</label>
-                    <input type="password" id="confirm-password" name="confirm-password" class="form-control" placeholder="Konfirmasi password Anda" required>
+                    <input type="password" id="confirm-password" name="confirm-password" class="form-control" placeholder="Konfirmasi password Anda" required />
                 </div>
+
                 <button type="submit" class="btn-register">Daftar</button>
+
                 <div class="login-link">
                     <p>Sudah memiliki akun? <a href="/login">Masuk sekarang</a></p>
                 </div>
@@ -65,12 +76,16 @@
         </div>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
+            <!-- Logo & Description -->
             <div class="footer-logo">
                 <h3>Anto Frozen Food</h3>
                 <p>Frozen Food Berkualitas</p>
             </div>
+
+            <!-- Quick Links -->
             <div class="footer-links">
                 <h4>Tautan Cepat</h4>
                 <ul>
@@ -80,13 +95,17 @@
                     <li><a href="/contact">Contact</a></li>
                 </ul>
             </div>
+
+            <!-- Contact Info -->
             <div class="footer-contact">
                 <h4>Kontak</h4>
-                <p><i class="ri-map-pin-line"></i> Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004, Sukaasih,
-                    Tanggerang, Kota Tangerang, Banten 15111</p>
-                <p><i class="ri-phone-line"></i> 081223656546</p>
+                <p><i class="ri-map-pin-line"></i>Jl.Raya Gatot Soebroto,Pd. Jaya.Kec.Sepatan.Kabupaten Tangerang, 
+                Banten 15520</p>
+                <p><i class="ri-phone-line"></i> 0812-8359-8079</p>
                 <p><i class="ri-mail-line"></i> antofrozenfood@gmail.com</p>
             </div>
+
+            <!-- Social Media Icons -->
             <div class="footer-social">
                 <h4>Ikuti Kami</h4>
                 <div class="social-icons">
@@ -102,6 +121,8 @@
         </div>
     </footer>
 
+    <!-- JavaScript -->
+    <script src="/frontend/js/register.js"></script>
     <script src="/frontend/js/script.js"></script>
 </body>
 

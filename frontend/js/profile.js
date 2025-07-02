@@ -1,207 +1,270 @@
-document.addEventListener('DOMContentLoaded', function () {
-    // Ambil data user dari localStorage
-    const user = JSON.parse(localStorage.getItem('user')) || {};
+document.addEventListener('DOMContentLoaded', initProfileModule);
 
-    // Isi data profil ke elemen HTML
-    document.getElementById('profile-name').textContent = user.nama || 'Nama User';
-    document.getElementById('profile-email').textContent = user.email || 'user@email.com';
+function initProfileModule() {
+    initProfileSection();
+    initEditToggle();
+    initPasswordModal();
+    initLogout();
+    loadUserOrdersTable();
+}
 
-    // Isi form input dengan data user
-    document.getElementById('fullname').value = user.nama || '';
-    document.getElementById('email').value = user.email || '';
-    document.getElementById('phone').value = user.phone || '';
-    document.getElementById('birthdate').value = user.birthdate || '';
-    document.getElementById('address').value = user.address || '';
+// --------------------------------------
+// PROFILE SECTION: render & populate
+// --------------------------------------
+function initProfileSection() {
+    const user = getUserFromStorage();
+    renderProfileCard(user);
+    populateProfileForm(user);
+}
 
-    // Toggle untuk mengaktifkan edit profil
-    const editBtn = document.getElementById('edit-toggle-btn');
-    const form = document.getElementById('profile-form');
-    const formActions = form.querySelector('.form-actions');
-
-    editBtn.addEventListener('click', function () {
-        Array.from(form.elements).forEach(input => input.disabled = false);
-        formActions.style.display = 'flex';
-    });
-
-    // Tombol batal edit
-    document.getElementById('cancel-btn').addEventListener('click', function () {
-        Array.from(form.elements).forEach(input => input.disabled = true);
-        formActions.style.display = 'none';
-    });
-
-    // Simpan perubahan profil ke localStorage (simulasi)
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const updatedUser = {
-            ...user,
-            nama: document.getElementById('fullname').value,
-            email: document.getElementById('email').value,
-            phone: document.getElementById('phone').value,
-            birthdate: document.getElementById('birthdate').value,
-            address: document.getElementById('address').value
-        };
-        localStorage.setItem('user', JSON.stringify(updatedUser));
-        alert('Profil berhasil diperbarui!');
-        location.reload();
-    });
-});
-
-// Fungsi untuk memuat riwayat pesanan user
-async function loadUserOrders() {
-    const token = localStorage.getItem("token");
-    const orderContainer = document.querySelector(".order-history");
-
+/** Baca objek user dari localStorage dengan safe-parse */
+function getUserFromStorage() {
     try {
-        const res = await fetch("/user/orders", {
-            headers: {
-                "Authorization": "Bearer " + token
-            }
-        });
-
-        if (!res.ok) throw new Error("Gagal memuat riwayat pesanan.");
-
-        const orders = await res.json();
-        if (!orders.length) return;
-
-        orderContainer.innerHTML = "";
-
-        orders.forEach(order => {
-            const items = order.Items.map(item =>
-                `<li>${item.Name} (${item.Quantity} x Rp ${item.Price.toLocaleString("id-ID")})</li>`
-            ).join("");
-
-            const card = document.createElement("div");
-            card.className = "order-card";
-            card.innerHTML = `
-                <h4>ID Pesanan: ${order.ID}</h4>
-                <p><strong>Tanggal:</strong> ${new Date(order.CreatedAt).toLocaleString("id-ID")}</p>
-                <p><strong>Alamat:</strong> ${order.Address}</p>
-                <p><strong>Total:</strong> Rp ${order.Total.toLocaleString("id-ID")}</p>
-                <ul>${items}</ul>
-                <button onclick='printOrder(${JSON.stringify(order).replace(/'/g, "\\'")})'>🖨️ Cetak Pesanan Ini</button>
-            `;
-            orderContainer.appendChild(card);
-        });
+        const raw = localStorage.getItem('user');
+        return raw ? JSON.parse(raw) : {};
     } catch (err) {
-        console.error(err);
-        orderContainer.innerHTML = `<p>Gagal memuat riwayat pesanan. Silakan coba lagi nanti.</p>`;
+        console.error('JSON parse error pada user:', err);
+        return {};
     }
 }
 
-// Cetak pesanan
-function printOrder(order) {
-    const printWindow = window.open('', '', 'width=800,height=600');
-    const itemsHtml = order.Items.map(item => `
-        <tr>
-            <td>${item.Name}</td>
-            <td>${item.Quantity}</td>
-            <td>Rp ${item.Price.toLocaleString("id-ID")}</td>
-            <td>Rp ${(item.Price * item.Quantity).toLocaleString("id-ID")}</td>
-        </tr>
-    `).join('');
-
-    printWindow.document.write(`
-        <html>
-        <head>
-            <title>Pesanan #${order.ID}</title>
-            <style>
-                body { font-family: Arial; padding: 20px; }
-                table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                th, td { padding: 8px; border: 1px solid #000; text-align: left; }
-            </style>
-        </head>
-        <body>
-            <h2>Detail Pesanan</h2>
-            <p><strong>ID Pesanan:</strong> ${order.ID}</p>
-            <p><strong>Tanggal:</strong> ${new Date(order.CreatedAt).toLocaleString("id-ID")}</p>
-            <p><strong>Alamat:</strong> ${order.Address}</p>
-            <p><strong>Total:</strong> Rp ${order.Total.toLocaleString("id-ID")}</p>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Produk</th>
-                        <th>Qty</th>
-                        <th>Harga</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>${itemsHtml}</tbody>
-            </table>
-        </body>
-        </html>
-    `);
-
-    printWindow.document.close();
-    printWindow.print();
+/** Tampilkan nama & email di kartu profil */
+function renderProfileCard(user) {
+    document.getElementById('profile-name').textContent = user.nama || 'Nama User';
+    document.getElementById('profile-email').textContent = user.email || 'email@contoh.com';
 }
 
-// Logout button
-const logoutBtn = document.getElementById("logout-btn");
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", function () {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        window.location.href = "/";
-    });
-}
-
-// ===================== Helper & Table View Riwayat =====================
-function getToken() {
-    return localStorage.getItem("token");
-}
-
-function buildItemsHtml(items) {
-    const map = {};
-    items.forEach(it => {
-        const key = it.ProductID;
-        if (map[key]) {
-            map[key].Quantity += it.Quantity;
-        } else {
-            map[key] = { ...it };
+/** Isi nilai form sesuai data user, default readonly */
+function populateProfileForm(user) {
+    ['fullname', 'email', 'phone', 'birthdate', 'address'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.value = user[id] || '';
+            el.disabled = true;
         }
     });
-    return Object.values(map)
-        .map(i => `${i.Name} (${i.Quantity} x Rp ${i.Price.toLocaleString("id-ID")})`)
-        .join("<br>");
 }
 
-function renderUserOrder(order) {
-    const date = new Date(order.CreatedAt).toLocaleString("id-ID", {
-        day: "2-digit", month: "2-digit", year: "numeric",
-        hour: "2-digit", minute: "2-digit"
-    });
-    const itemsHtml = buildItemsHtml(order.Items);
-    return `
-        <tr>
-            <td>${order.ID}</td>
-            <td>${date}</td>
-            <td>${itemsHtml}</td>
-            <td>Rp ${order.Total.toLocaleString("id-ID")}</td>
-            <td>${order.status}</td>
-        </tr>
-    `;
-}
+// --------------------------------------
+// EDIT TOGGLE: enable/disable & save
+// --------------------------------------
+function initEditToggle() {
+    const form = document.getElementById('profile-form');
+    const formActions = form.querySelector('.form-actions');
 
-async function loadUserOrdersTable() {
-    const tbody = document.querySelector("#user-order-table tbody");
-    tbody.innerHTML = `<tr><td colspan="5">Memuat riwayat...</td></tr>`;
-    try {
-        const res = await fetch("/user/orders", {
-            headers: { "Authorization": `Bearer ${getToken()}` }
+    // Tombol Edit: aktifkan semua input, tampilkan tombol simpan/batal
+    document.getElementById('edit-toggle-btn')
+        .addEventListener('click', () => {
+            toggleFormEditable(form, true);
+            formActions.style.display = 'flex';
         });
-        if (!res.ok) throw new Error(res.statusText);
+
+    // Tombol Batal: kembalikan form ke state readonly & clear errors
+    document.getElementById('cancel-btn')
+        .addEventListener('click', () => {
+            toggleFormEditable(form, false);
+            formActions.style.display = 'none';
+            const user = getUserFromStorage();
+            populateProfileForm(user);
+            clearErrors();
+        });
+
+    // Submit: validasi & simpan
+    form.addEventListener('submit', handleProfileSave);
+}
+
+/** Toggle semua input (kecuali button) pada form */
+function toggleFormEditable(form, editable) {
+    Array.from(form.elements).forEach(el => {
+        if (el.tagName !== 'BUTTON') el.disabled = !editable;
+    });
+}
+
+/** Validasi & simpan data profil */
+function handleProfileSave(event) {
+    event.preventDefault();
+    clearErrors();
+
+    const fullname = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const birthdate = document.getElementById('birthdate').value;
+    const address = document.getElementById('address').value.trim();
+
+    let valid = true;
+    // Validasi Nama
+    if (fullname.length < 3) {
+        showError('error-fullname', 'Nama minimal 3 karakter.');
+        valid = false;
+    }
+    // Validasi Email
+    if (!validateEmail(email)) {
+        showError('error-email', 'Format email tidak valid.');
+        valid = false;
+    }
+    // Validasi Telepon (9–15 digit angka)
+    if (!/^\d{9,15}$/.test(phone)) {
+        showError('error-phone', 'Nomor telepon 9–15 digit angka.');
+        valid = false;
+    }
+    // Validasi Tanggal Lahir
+    if (!birthdate) {
+        showError('error-birthdate', 'Tanggal lahir wajib diisi.');
+        valid = false;
+    }
+    // Validasi Alamat
+    if (address.length < 5) {
+        showError('error-address', 'Alamat minimal 5 karakter.');
+        valid = false;
+    }
+    if (!valid) return; // batalkan jika ada error
+
+    // Simpan perubahan ke localStorage
+    try {
+        const user = getUserFromStorage();
+        const updated = {
+            ...user,
+            nama: fullname,
+            email,
+            phone,
+            birthdate,
+            address
+        };
+        localStorage.setItem('user', JSON.stringify(updated));
+        alert('Profil berhasil diperbarui!');
+        renderProfileCard(updated);
+        populateProfileForm(updated);
+        toggleFormEditable(event.target, false);
+        document.querySelector('.form-actions').style.display = 'none';
+    } catch (err) {
+        console.error('Error saving profile:', err);
+        alert('Gagal menyimpan profil. Silakan coba lagi.');
+    }
+}
+
+/** Tampilkan pesan error di bawah input */
+function showError(elementId, message) {
+    const el = document.getElementById(elementId);
+    if (el) el.textContent = message;
+}
+
+/** Clear semua pesan error */
+function clearErrors() {
+    document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+}
+
+// --------------------------------------
+// PASSWORD MODAL
+// --------------------------------------
+function initPasswordModal() {
+    const modal = document.getElementById('password-modal');
+    const openBtn = document.getElementById('change-password-btn');
+    const closeBtns = modal.querySelectorAll('.close-modal');
+
+    // Buka modal
+    openBtn?.addEventListener('click', () => modal.style.display = 'flex');
+    // Tutup modal
+    closeBtns.forEach(btn => btn.addEventListener('click', () => modal.style.display = 'none'));
+    // Submit ganti password
+    document.getElementById('password-form').addEventListener('submit', handleChangePassword);
+}
+
+function handleChangePassword(event) {
+    event.preventDefault();
+    clearPasswordErrors();
+
+    const current = document.getElementById('current-password').value;
+    const neu = document.getElementById('new-password').value;
+    const confirm = document.getElementById('confirm-password').value;
+
+    let valid = true;
+    if (current.length < 6) {
+        showError('error-current-password', 'Password minimal 6 karakter.');
+        valid = false;
+    }
+    if (neu.length < 6) {
+        showError('error-new-password', 'Password baru minimal 6 karakter.');
+        valid = false;
+    }
+    if (neu !== confirm) {
+        showError('error-confirm-password', 'Konfirmasi password tidak cocok.');
+        valid = false;
+    }
+    if (!valid) return;
+
+    // Simulasi perubahan password
+    alert('Password berhasil diubah!');
+    document.getElementById('password-modal').style.display = 'none';
+}
+
+function clearPasswordErrors() {
+    ['error-current-password', 'error-new-password', 'error-confirm-password'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '';
+    });
+}
+
+// --------------------------------------
+// LOGOUT
+// --------------------------------------
+function initLogout() {
+    const btn = document.getElementById('logout-btn');
+    btn?.addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/';
+    });
+}
+
+// --------------------------------------
+// ORDER HISTORY: fetch & render table
+// --------------------------------------
+async function loadUserOrdersTable() {
+    const tbody = document.querySelector('#user-order-table tbody');
+    tbody.innerHTML = '<tr><td colspan="5">Memuat riwayat...</td></tr>';
+
+    try {
+        const res = await fetch('/user/orders', {
+            headers: {
+                'Authorization': `Bearer ${getToken()}`
+            }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
         const orders = await res.json();
-        if (!orders.length) {
-            tbody.innerHTML = `<tr><td colspan="5">Belum ada pesanan.</td></tr>`;
+        if (!Array.isArray(orders) || orders.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5">Belum ada pesanan.</td></tr>';
             return;
         }
-        tbody.innerHTML = orders.map(renderUserOrder).join("");
+        tbody.innerHTML = orders.map(renderOrderRow).join('');
     } catch (err) {
-        console.error(err);
+        console.error('Error loading orders:', err);
         tbody.innerHTML = `<tr><td colspan="5">Gagal memuat: ${err.message}</td></tr>`;
     }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadUserOrdersTable();
-});
+function renderOrderRow(order) {
+    const date = new Date(order.CreatedAt).toLocaleString('id-ID');
+    const items = order.Items.map(i =>
+        `${i.Name} (${i.Quantity}×Rp${i.Price.toLocaleString('id-ID')})`
+    ).join('<br>');
+    return `
+    <tr>
+        <td>${order.ID}</td>
+        <td>${date}</td>
+        <td>${items}</td>
+        <td>Rp ${order.Total.toLocaleString('id-ID')}</td>
+        <td>${order.status}</td>
+    </tr>`;
+}
+
+// --------------------------------------
+// HELPERS
+// --------------------------------------
+function getToken() {
+    return localStorage.getItem('token') || '';
+}
+
+function validateEmail(email) {
+    return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email);
+}

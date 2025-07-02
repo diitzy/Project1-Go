@@ -23,7 +23,7 @@ func loadEnv() {
 }
 
 func getDSN() string {
-	loadEnv() // Pastikan file .env dimuat
+	loadEnv()
 
 	user := getEnv("DB_USER", "root")
 	pass := getEnv("DB_PASS", "")

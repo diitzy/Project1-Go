@@ -1,28 +1,30 @@
-/* ============================== */
-/* Contact Section Specific Styles */
-/* ============================== */
+/* ==========================================================
+   Styles for Contact Page
+   ========================================================== */
+
+/* Contact Section */
 .contact-section {
-    padding: 100px 20px 80px; /* Adjusted padding-top to account for fixed header */
+    padding: 100px 20px 80px;
+    /* Top padding to avoid fixed header overlap */
     background-color: #f8f9fa;
 }
 
+/* Container for form only */
 .contact-container {
-    max-width: 600px; /* Reduced max-width since only form is here */
+    max-width: 600px;
     margin: 0 auto;
-    /* Removed flex properties as there's only one child now */
 }
 
+/* Contact Form */
 .contact-form {
-    width: 100%; /* Ensure form takes full width of its container */
+    width: 100%;
     background-color: #fff;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-/* Removed .contact-info styles as it's no longer in the main content */
-/* .contact-info { ... } */
-
+/* Form Groups */
 .form-group {
     margin-bottom: 20px;
 }
@@ -51,6 +53,7 @@
     box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
 }
 
+/* Submit Button */
 .btn-submit {
     display: block;
     width: 100%;
@@ -70,13 +73,12 @@
     transform: translateY(-2px);
 }
 
-/* Responsive adjustments for contact section */
+/* Responsive Adjustments */
 @media (max-width: 768px) {
-    .contact-container {
-        /* No need for flex-direction: column anymore as there's only one main child */
-        gap: 0; /* Remove gap */
-    }
+
+    .contact-container,
     .contact-form {
         width: 100%;
+        margin: 0 auto;
     }
 }

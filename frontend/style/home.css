@@ -169,11 +169,20 @@ ul {
 
 .banner-image {
     flex: 1;
-    height: 400px;
-    background-size: cover;
-    background-position: center;
+    height: 400px; /* Ganti dari 50px agar terlihat penuh */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
     border-radius: 10px;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.banner-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Pastikan gambar menutupi area */
+    object-position: center; /* Fokus di tengah gambar */
 }
 
 

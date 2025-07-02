@@ -1,4 +1,6 @@
-/* REGISTER FORM */
+/* ======================== */
+/* Kontainer Utama Form    */
+/* ======================== */
 .register-container {
     max-width: 450px;
     margin: 120px auto 50px;
@@ -8,6 +10,9 @@
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* ======================== */
+/* Header Formulir         */
+/* ======================== */
 .register-header {
     text-align: center;
     margin-bottom: 30px;
@@ -23,6 +28,9 @@
     color: #666;
 }
 
+/* ======================== */
+/* Input Form              */
+/* ======================== */
 .form-group {
     margin-bottom: 20px;
 }
@@ -48,6 +56,9 @@
     outline: none;
 }
 
+/* ======================== */
+/* Tombol Daftar           */
+/* ======================== */
 .btn-register {
     width: 100%;
     background-color: #ff6b6b;
@@ -65,6 +76,9 @@
     background-color: #ff5252;
 }
 
+/* ======================== */
+/* Link ke Login           */
+/* ======================== */
 .login-link {
     text-align: center;
     margin-top: 20px;

@@ -11,7 +11,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetProducts - Controller untuk mendapatkan semua produk
 func GetProducts(c *gin.Context) {
 	products, err := services.GetAllProducts()
 	if err != nil {
@@ -21,11 +20,9 @@ func GetProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, products)
 }
 
-// AddProduct - Controller untuk menambah produk
 func AddProduct(c *gin.Context) {
 	var product models.Product
 
-	// Parse form fields
 	product.Name = c.PostForm("name")
 	priceStr := c.PostForm("price")
 	stockStr := c.PostForm("stock")
@@ -44,10 +41,9 @@ func AddProduct(c *gin.Context) {
 	}
 	product.Stock = stock
 
-	// Handle file upload
 	file, err := c.FormFile("image")
-	if err == nil { // Jika ada file yang diunggah
-		// Buat direktori 'uploads' jika belum ada
+	if err == nil {
+
 		uploadDir := "./uploads"
 		if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
 			if mkDirErr := os.MkdirAll(uploadDir, os.ModePerm); mkDirErr != nil {
@@ -56,10 +52,8 @@ func AddProduct(c *gin.Context) {
 			}
 		}
 
-		// Gunakan nama file asli atau generate nama unik
-		filename := filepath.Base(file.Filename) // Hindari path traversal
-		// filePath := filepath.Join(uploadDir, filename) // Seharusnya seperti ini
-		// Untuk sementara, agar bisa diakses dari frontend jika diserve dari root /uploads
+		filename := filepath.Base(file.Filename)
+
 		filePathForDB := "/uploads/" + filename
 		actualFilePath := filepath.Join(uploadDir, filename)
 
@@ -67,17 +61,16 @@ func AddProduct(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan gambar: " + err.Error()})
 			return
 		}
-		product.Image = filePathForDB // Simpan path yang bisa diakses web
+		product.Image = filePathForDB
 	} else if err != http.ErrMissingFile {
-		// Jika ada error selain file tidak ada
+
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Gagal memproses gambar: " + err.Error()})
 		return
 	}
-	// Jika err == http.ErrMissingFile, product.Image akan kosong, service harus validasi jika gambar wajib
 
 	newProduct, errService := services.CreateProduct(product)
 	if errService != nil {
-		// Error dari service sudah termasuk validasi model (misal nama kosong, harga <= 0)
+
 		c.JSON(http.StatusBadRequest, gin.H{"error": errService.Error()})
 		return
 	}
@@ -94,7 +87,7 @@ func GetProductByID(c *gin.Context) {
 
 	product, err := services.GetProductByID(uint(id))
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Produk tidak ditemukan"}) // services.GetProductByID sudah mengembalikan error ini
+		c.JSON(http.StatusNotFound, gin.H{"error": "Produk tidak ditemukan"})
 		return
 	}
 	c.JSON(http.StatusOK, product)
@@ -108,14 +101,12 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	// Ambil produk yang ada dari database
 	existingProduct, errService := services.GetProductByID(uint(id))
 	if errService != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "Produk tidak ditemukan untuk diperbarui"})
 		return
 	}
 
-	// Update field dari form data
 	existingProduct.Name = c.PostForm("name")
 	priceStr := c.PostForm("price")
 	stockStr := c.PostForm("stock")
@@ -138,9 +129,8 @@ func UpdateProduct(c *gin.Context) {
 		existingProduct.Stock = stock
 	}
 
-	// Handle file upload jika ada file baru
 	file, err := c.FormFile("image")
-	if err == nil { // File baru diunggah
+	if err == nil {
 		uploadDir := "./uploads"
 		if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
 			if mkDirErr := os.MkdirAll(uploadDir, os.ModePerm); mkDirErr != nil {
@@ -152,12 +142,6 @@ func UpdateProduct(c *gin.Context) {
 		filePathForDB := "/uploads/" + filename
 		actualFilePath := filepath.Join(uploadDir, filename)
 
-		// Hapus gambar lama jika ada dan berbeda (opsional, tergantung kebutuhan)
-		// if existingProduct.Image != "" && existingProduct.Image != filePathForDB {
-		// 	 oldImagePath := strings.Replace(existingProduct.Image, "/uploads/", uploadDir+"/", 1)
-		//	 os.Remove(oldImagePath)
-		// }
-
 		if err := c.SaveUploadedFile(file, actualFilePath); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan gambar baru: " + err.Error()})
 			return
@@ -167,7 +151,6 @@ func UpdateProduct(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Gagal memproses gambar: " + err.Error()})
 		return
 	}
-	// Jika err == http.ErrMissingFile, existingProduct.Image tidak diubah (mempertahankan gambar lama)
 
 	updatedProduct, errService := services.UpdateProduct(uint(id), existingProduct)
 	if errService != nil {
@@ -185,15 +168,8 @@ func DeleteProduct(c *gin.Context) {
 		return
 	}
 
-	// Opsional: Hapus file gambar terkait saat produk dihapus
-	// product, err := services.GetProductByID(uint(id))
-	// if err == nil && product.Image != "" {
-	// 	 imagePath := strings.Replace(product.Image, "/uploads/", "./uploads/", 1)
-	//	 os.Remove(imagePath)
-	// }
-
 	if err := services.DeleteProduct(uint(id)); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menghapus produk: " + err.Error()}) // services.DeleteProduct sudah mengembalikan error jika tidak ditemukan
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menghapus produk: " + err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Produk berhasil dihapus"})

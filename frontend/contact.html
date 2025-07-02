@@ -6,16 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Contact - Anto Frozen Food</title>
 
+    <!-- CSS Utama -->
+    <link rel="stylesheet" href="/frontend/style/home.css" />
+    <link rel="stylesheet" href="/frontend/style/contact.css" />
+
+    <!-- Fonts dan Icon -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5/fonts/remixicon.css" rel="stylesheet" />
-
-    <link rel="stylesheet" href="/frontend/style/home.css" />
-    <link rel="stylesheet" href="/frontend/style/contact.css" />
 </head>
 
 <body>
+    <!-- Header Navigation -->
     <header class="header">
         <div class="header-content">
             <a href="/home" class="logo">Anto Frozen Food</a>
@@ -40,10 +43,14 @@
                     </li>
                 </ul>
             </nav>
-            <div class="mobile-menu-btn"> <i class="ri-menu-line"></i></div>
+            <!-- Mobile menu toggle -->
+            <button class="mobile-menu-btn" aria-label="Toggle navigation">
+                <i class="ri-menu-line"></i>
+            </button>
         </div>
     </header>
 
+    <!-- Main Content: Contact Section -->
     <main>
         <section class="contact-section">
             <div class="section-title">
@@ -53,13 +60,16 @@
         </section>
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
+            <!-- Logo & Description -->
             <div class="footer-logo">
                 <h3>Anto Frozen Food</h3>
                 <p>Frozen Food Berkualitas</p>
             </div>
 
+            <!-- Quick Links -->
             <div class="footer-links">
                 <h4>Tautan Cepat</h4>
                 <ul>
@@ -70,29 +80,32 @@
                 </ul>
             </div>
 
+            <!-- Contact Info -->
             <div class="footer-contact">
                 <h4>Kontak</h4>
-                <p><i class="ri-map-pin-line"></i> Pasar Anyar Blok AB1 No. 44, JL A Yani, RT.002/RW.004, Sukaasih, Kota Tangerang, Banten 15111</p>
-                <p><i class="ri-phone-line"></i> 081223656546</p>
-                <p><i class="ri-mail-line"></i> Mr.rafreaks@gmail.com adityaproduction011@gmail.com </p>
+                <p><i class="ri-map-pin-line"></i>Jl.Raya Gatot Soebroto,Pd. Jaya.Kec.Sepatan.Kabupaten Tangerang, 
+                Banten 15520</p>
+                <p><i class="ri-phone-line"></i> 0812-8359-8079</p>
+                <p><i class="ri-mail-line"></i> antofrozenfood@gmail.com</p>
             </div>
 
+            <!-- Social Media Icons -->
             <div class="footer-social">
                 <h4>Ikuti Kami</h4>
                 <div class="social-icons">
-                    <a href="#"><i class="ri-instagram-line"></i></a>
-                    <a href="#"><i class="ri-facebook-fill"></i></a>
-                    <a href="#"><i class="ri-twitter-x-line"></i></a>
-                    <a href="#"><i class="ri-whatsapp-line"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+                    <a href="#" aria-label="Facebook"><i class="ri-facebook-fill"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="ri-twitter-x-line"></i></a>
+                    <a href="#" aria-label="WhatsApp"><i class="ri-whatsapp-line"></i></a>
                 </div>
             </div>
         </div>
-
         <div class="footer-bottom">
             <p>&copy; 2025 Anto Frozen Food. Hak Cipta Dilindungi.</p>
         </div>
     </footer>
 
+    <!-- JavaScript -->
     <script src="/frontend/js/contact.js"></script>
     <script src="/frontend/js/script.js"></script>
 </body>
