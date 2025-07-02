@@ -580,6 +580,78 @@ document.addEventListener("DOMContentLoaded", () => {
   printWindow.document.close();
   printWindow.print();
 }
+// Helper: Generasi HTML untuk tiap order (dipanggil di printAllOrders)
+function generateOrderHTML(order) {
+  const totalItems = order.Items.reduce((sum, i) => sum + i.Quantity, 0);
+  const totalPrice = order.Total;
+  const itemRows = order.Items.map(item => `
+    <tr>
+      <td>${item.Name}</td>
+      <td>${item.Quantity}</td>
+      <td>Rp ${item.Price.toLocaleString('id-ID')}</td>
+      <td>Rp ${(item.Price * item.Quantity).toLocaleString('id-ID')}</td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="order-page">
+      <h2>Pesanan ID: ${order.ID}</h2>
+      <p><strong>Nama:</strong> ${order.Name}</p>
+      <p><strong>Alamat:</strong> ${order.Address}</p>
+      <p><strong>Metode Pembayaran:</strong> ${order.Payment}</p>
+      <table>
+        <thead>
+          <tr><th>Produk</th><th>Qty</th><th>Harga</th><th>Subtotal</th></tr>
+        </thead>
+        <tbody>
+          ${itemRows}
+        </tbody>
+      </table>
+      <div class="totals">
+        <p><strong>Total Items:</strong> ${totalItems}</p>
+        <p><strong>Total Harga:</strong> Rp ${totalPrice.toLocaleString('id-ID')}</p>
+      </div>
+    </div>
+    <div style="page-break-after: always;"></div>
+  `;
+}
+
+// Fungsi utama: mencetak semua orders sekaligus
+function printAllOrders(orders) {
+  const win = window.open('', '', 'width=800,height=600');
+  win.document.write(`
+    <html>
+    <head>
+      <title>Daftar Pesanan</title>
+      <style>
+        body { font-family: Arial; padding: 20px; }
+        .kop-surat { text-align: center; margin-bottom: 20px; }
+        .kop-surat h1 { margin: 0; font-size: 24px; }
+        .kop-surat p { margin: 2px 0; }
+        hr { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #000; padding: 8px; text-align: left; }
+        .order-page { margin-bottom: 20px; }
+      </style>
+    </head>
+    <body>
+      <div class="kop-surat">
+        <h1>PT. Anto Frozen Food</h1>
+        <p>Jl. Raya Gatot Soebroto, Pd. Jaya, Kec. Sepatan, Kabupaten Tangerang, Banten 15520</p>
+        <p>Telp: 0812-8359-8079 | Email: mr.rafreaks@gmail.com</p>
+        <hr />
+      </div>
+      ${orders.map(generateOrderHTML).join('')}
+    </body>
+    </html>
+  `);
+  win.document.close();
+  win.print();
+}
+// Misal `allOrders` adalah array objek order yang di-fetch dari API
+printAllOrders(allOrders);
+
+
 
 	// Expose printSingleOrder globally
 	window.printSingleOrder = printSingleOrder;
